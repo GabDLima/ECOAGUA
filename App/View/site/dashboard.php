@@ -3,4 +3,4 @@
     <br>
     <?= $this->getView()->title;?>
 </h1>
-<a href="/contato" class="btn btn-primary">Contato</a>
+<a href="/" class="btn btn-primary">Voltar</a>

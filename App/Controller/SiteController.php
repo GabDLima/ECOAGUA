@@ -9,8 +9,8 @@ use App\Model\AlunosModel;
 
 class SiteController extends Action{
 
-    public function index(){
-        $title = "Home";
+    public function login(){
+        $title = "Login";
         $title_pagina = "Bem vindo ao site";
 
         
@@ -18,7 +18,7 @@ class SiteController extends Action{
         $this->getView()->title = $title;
         $this->getView()->title_pagina = $title_pagina;
 
-        $this->render('index', '');
+        $this->render('login', '');
     }
     
 
@@ -27,8 +27,8 @@ class SiteController extends Action{
         
     }
 
-    public function contato(){
-        $title = "Contato";
+    public function menu(){
+        $title = "Menu";
         $title_pagina = "Bem vindo ao site";
 
         
@@ -36,7 +36,27 @@ class SiteController extends Action{
         $this->getView()->title = $title;
         $this->getView()->title_pagina = $title_pagina;
 
-        $this->render('contato', '');
+        $this->render('menu', '');
+    }
+
+    public function dashboard(){
+        $title = "Dashboard";
+        $title_pagina = "Bem vindo ao site";
+
+        $this->getView()->title = $title;
+        $this->getView()->title_pagina = $title_pagina;
+
+        $this->render('dashboard', '');
+    }
+
+    public function consumo(){
+        $title = "Consumo";
+        $title_pagina = "Bem vindo ao site";
+
+        $this->getView()->title = $title;
+        $this->getView()->title_pagina = $title_pagina;
+
+        $this->render('consumo', '');
     }
 
 }

@@ -6,7 +6,7 @@
     
     class ErrorController extends Action{
 
-        public function index(){             
+        public function login(){             
             echo "Página não encontrada!";
         }        
 
