@@ -18,7 +18,7 @@ class SiteController extends Action{
         $this->getView()->title = $title;
         $this->getView()->title_pagina = $title_pagina;
 
-        $this->render('login', '');
+        $this->render('login', 'site_login');
     }
     
 
@@ -36,7 +36,7 @@ class SiteController extends Action{
         $this->getView()->title = $title;
         $this->getView()->title_pagina = $title_pagina;
 
-        $this->render('menu', '');
+        $this->render('menu', 'site');
     }
 
     public function dashboard(){
@@ -46,7 +46,7 @@ class SiteController extends Action{
         $this->getView()->title = $title;
         $this->getView()->title_pagina = $title_pagina;
 
-        $this->render('dashboard', '');
+        $this->render('dashboard', 'site');
     }
 
     public function consumo(){
@@ -56,7 +56,7 @@ class SiteController extends Action{
         $this->getView()->title = $title;
         $this->getView()->title_pagina = $title_pagina;
 
-        $this->render('consumo', '');
+        $this->render('consumo', 'site');
     }
 
 }
