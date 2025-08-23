@@ -59,4 +59,14 @@ class SiteController extends Action{
         $this->render('consumo', 'site');
     }
 
+    public function redefinirSenha(){
+        $title = "Consumo";
+        $title_pagina = "Bem vindo ao site";
+
+        $this->getView()->title = $title;
+        $this->getView()->title_pagina = $title_pagina;
+
+        $this->render('redefinirSenha', 'site_login');
+    }
+
 }

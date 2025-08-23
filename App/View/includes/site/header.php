@@ -9,6 +9,7 @@
   <!-- Bootstrap -->
   <link rel="stylesheet" href="css/bootstrap-533.min.css">
   <!-- 3) Estilos específicos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
 </head>
 
