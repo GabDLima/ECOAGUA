@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use FW\Controller\Action;
-use App\DAO\AlunosDAO;
-use App\Model\AlunosModel;
+use App\DAO\UsuarioDAO;
+use App\Model\UsuarioModel;
 
 
 class SiteController extends Action{
@@ -37,6 +37,26 @@ class SiteController extends Action{
         $this->getView()->title_pagina = $title_pagina;
 
         $this->render('menu', 'site');
+    }
+
+    public function inserirUsuario(){
+
+        $user_cpf = $obj->__get('user_cpf');
+        $user_nome = $obj->__get('user_nome');
+        $user_email = $obj->__get('user_email');
+        $user_senha = $obj->__get('user_senha');
+
+        $usuario = new UsuarioModel();
+        $usuario->__set("user_cpf",$_POST['USER_CPF']);
+        $gestor->__set("user_nome",$_POST['USER_NOME']);
+        $gestor->__set("user_email",$_POST['USER_EMAIL']);
+        $gestor->__set("user_senha",$_POST['USER_SENHA']);
+
+
+        $usuariodao = new UsuarioDAO();
+        $usuariodao->inserir($usuario);
+
+        header('Location: /'); 
     }
 
     public function dashboard(){

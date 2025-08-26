@@ -35,22 +35,22 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
         <div class="modal-body">
-          <form id="cadastroForm" novalidate>
+          <form id="cadastroForm" action="/inserirUsuario" method="POST" novalidate>
             <div class="mb-3">
               <label for="cpf" class="form-label">CPF</label>
-              <input type="text" class="form-control" id="cpf" maxlength="11" />
+              <input name="USER_CPF" type="text" class="form-control" id="cpf" maxlength="11" />
             </div>
             <div class="mb-3">
               <label for="nome" class="form-label">Nome completo</label>
-              <input type="text" class="form-control" id="nome" required />
+              <input name="USER_NOME" type="text" class="form-control" id="nome" required />
             </div>
             <div class="mb-3">
               <label for="cadastroEmail" class="form-label">E-mail</label>
-              <input type="email" class="form-control" id="cadastroEmail" required />
+              <input name="USER_EMAIL" type="email" class="form-control" id="cadastroEmail" required />
             </div>
             <div class="mb-3">
               <label for="cadastroSenha" class="form-label">Senha</label>
-              <input type="password" class="form-control" id="cadastroSenha" required minlength="6" />
+              <input name="USER_SENHA" type="password" class="form-control" id="cadastroSenha" required minlength="6" />
             </div>
             <div class="mb-3">
               <label for="confirmarSenha" class="form-label">Confirme a senha</label>
