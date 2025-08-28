@@ -35,7 +35,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
         <div class="modal-body">
-          <form id="cadastroForm" action="/inserirUsuario" method="POST" novalidate>
+          <form id="cadastroForm" action="/inserirusuario" method="POST" novalidate>
             <div class="mb-3">
               <label for="cpf" class="form-label">CPF</label>
               <input name="USER_CPF" type="text" class="form-control" id="cpf" maxlength="11" />
