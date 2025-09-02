@@ -39,26 +39,6 @@ class SiteController extends Action{
         $this->render('menu', 'site');
     }
 
-    public function inserirUsuario(){
-
-        /*$user_cpf = $obj->__get('user_cpf');
-        $user_nome = $obj->__get('user_nome');
-        $user_email = $obj->__get('user_email');
-        $user_senha = $obj->__get('user_senha');*/
-
-        $usuario = new UsuarioModel();
-        $usuario->__set("user_cpf",$_POST['USER_CPF']);
-        $usuario->__set("user_nome",$_POST['USER_NOME']);
-        $usuario->__set("user_email",$_POST['USER_EMAIL']);
-        $usuario->__set("user_senha",$_POST['USER_SENHA']);
-
-
-        $usuariodao = new UsuarioDAO();
-        $usuariodao->inserir($usuario);
-
-        header('Location: /'); 
-    }
-
     public function dashboard(){
         $title = "Dashboard";
         $title_pagina = "Bem vindo ao site";

@@ -30,20 +30,20 @@
       <h2 class="text-2xl font-semibold text-blue-900 mb-6">Inserir Valor da Conta</h2>
 
       <div class="max-w-md mx-auto">
-        <div id="successAlert" class="hidden mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
+        <!--<div id="successAlert" class="hidden mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
           Valor da conta registrado com sucesso!
         </div>
         <div id="monthError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
-        <div id="valueError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
+        <div id="valueError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>-->
 
-        <form id="contaForm" novalidate class="space-y-5">
+        <form id="contaForm" action="/InserirValordaConta" method="POST" novalidate class="space-y-5">
           <div>
             <label for="contaMonth" class="block text-gray-700 font-medium mb-1">Mês da Fatura</label>
-            <input type="month" id="contaMonth" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+            <input name="MES_DA_FATURA" type="month" id="contaMonth" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
           </div>
           <div>
             <label for="contaValue" class="block text-gray-700 font-medium mb-1">Valor (R$ ex: 123,45)</label>
-            <input type="text" id="contaValue" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe o valor da fatura" required>
+            <input name="VALOR" type="text" id="contaValue" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe o valor da fatura" required>
           </div>
           <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 rounded transition">Registrar Valor</button>
         </form>
@@ -116,6 +116,7 @@
     </div>
   </div>
 
+  <!--
   <script>
     // Conta de luz
     document.getElementById("contaForm").addEventListener("submit", function (e) {
@@ -201,6 +202,6 @@
 
       success.classList.remove("hidden");
     });
-  </script>
+  </script>-->
 </body>
 </html>
