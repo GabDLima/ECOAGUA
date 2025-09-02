@@ -39,11 +39,11 @@
         <form id="contaForm" action="/InserirValordaConta" method="POST" novalidate class="space-y-5">
           <div>
             <label for="contaMonth" class="block text-gray-700 font-medium mb-1">Mês da Fatura</label>
-            <input name="MES_DA_FATURA" type="month" id="contaMonth" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+            <input name="MES_DA_FATURA" type="month" id="MES_DA_FATURA" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
           </div>
           <div>
             <label for="contaValue" class="block text-gray-700 font-medium mb-1">Valor (R$ ex: 123,45)</label>
-            <input name="VALOR" type="text" id="contaValue" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe o valor da fatura" required>
+            <input name="VALOR" type="text" id="VALOR" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe o valor da fatura" required>
           </div>
           <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 rounded transition">Registrar Valor</button>
         </form>

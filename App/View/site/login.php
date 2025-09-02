@@ -86,8 +86,7 @@
 
   <!-- Bootstrap Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
+  <!--<script>
     // fundo.js - bolhas animadas
     function createBubble() {
       const bubble = document.createElement("div");
@@ -144,6 +143,7 @@
         alert("Informe seu e-mail.");
       }
     });
-  </script>
+  </script>-->
+  
 </body>
 

@@ -10,6 +10,9 @@ class ConsumoController extends Action{
 
     public function inserirValordaConta(){
 
+    var_dump($_POST);
+    exit;
+
     $mes_da_fatura = $_POST['MES_DA_FATURA'];
     $valor = $_POST['VALOR'];
 
