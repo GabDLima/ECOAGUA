@@ -27,41 +27,42 @@
   </div>
 
   <!-- Modal de Cadastro -->
-  <div class="modal fade" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastroLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content cadastro-card">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalCadastroLabel">Crie sua conta</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          <form id="cadastroForm" action="/inserirusuario" method="POST" novalidate>
-            <div class="mb-3">
-              <label for="cpf" class="form-label">CPF</label>
-              <input name="USER_CPF" type="text" class="form-control" id="cpf" maxlength="11" />
-            </div>
-            <div class="mb-3">
-              <label for="nome" class="form-label">Nome completo</label>
-              <input name="USER_NOME" type="text" class="form-control" id="nome" required />
-            </div>
-            <div class="mb-3">
-              <label for="cadastroEmail" class="form-label">E-mail</label>
-              <input name="USER_EMAIL" type="email" class="form-control" id="cadastroEmail" required />
-            </div>
-            <div class="mb-3">
-              <label for="cadastroSenha" class="form-label">Senha</label>
-              <input name="USER_SENHA" type="password" class="form-control" id="cadastroSenha" required minlength="6" />
-            </div>
-            <div class="mb-3">
-              <label for="confirmarSenha" class="form-label">Confirme a senha</label>
-              <input type="password" class="form-control" id="confirmarSenha" required />
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
-          </form>
-        </div>
+  <div class="modal modal-centered fade" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastroLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered d-flex justify-content-center ">
+    <div class="modal-content cadastro-card">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCadastroLabel">Crie sua conta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="cadastroForm" action="/inserirusuario" method="POST" novalidate>
+          <div class="mb-3">
+            <label for="cpf" class="form-label">CPF</label>
+            <input name="USER_CPF" type="text" class="form-control" id="cpf" maxlength="11" />
+          </div>
+          <div class="mb-3">
+            <label for="nome" class="form-label">Nome completo</label>
+            <input name="USER_NOME" type="text" class="form-control" id="nome" required />
+          </div>
+          <div class="mb-3">
+            <label for="cadastroEmail" class="form-label">E-mail</label>
+            <input name="USER_EMAIL" type="email" class="form-control" id="cadastroEmail" required />
+          </div>
+          <div class="mb-3">
+            <label for="cadastroSenha" class="form-label">Senha</label>
+            <input name="USER_SENHA" type="password" class="form-control" id="cadastroSenha" required minlength="6" />
+          </div>
+          <div class="mb-3">
+            <label for="confirmarSenha" class="form-label">Confirme a senha</label>
+            <input type="password" class="form-control" id="confirmarSenha" required />
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
+        </form>
       </div>
     </div>
   </div>
+</div>
+
 
   <!-- Modal Esqueci Minha Senha -->
   <div class="modal fade" id="modalEsqueciSenha" tabindex="-1" aria-labelledby="modalEsqueciSenhaLabel" aria-hidden="true">
