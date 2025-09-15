@@ -35,7 +35,7 @@
       </div>
 
       <!-- Gráficos -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
         <div class="bg-white shadow rounded-lg p-4">
           <h3 class="text-lg font-medium text-blue-900 mb-4">Consumo Mensal</h3>
           <canvas id="lineChart" class="w-full h-64"></canvas>
@@ -44,6 +44,14 @@
           <h3 class="text-lg font-medium text-blue-900 mb-4">Distribuição de Uso</h3>
           <canvas id="pieChart" class="w-full h-64"></canvas>
         </div>
+        <div class="bg-white shadow rounded-lg p-4">
+            <h3 class="text-lg font-medium text-blue-900 mb-4">Consumo Mensal (últimos 6 meses)</h3>
+            <canvas id="barChart" class="w-full h-64"></canvas>
+          </div>
+          <div class="bg-white shadow rounded-lg p-4">
+            <h3 class="text-lg font-medium text-blue-900 mb-4">Distribuição por Categoria</h3>
+            <canvas id="doughnutChart" class="w-full h-64"></canvas>
+          </div>
       </div>
 
       <!-- Relatórios -->
@@ -72,17 +80,6 @@
           </div>
         </div>
 
-        <!-- Mais Gráficos -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white shadow rounded-lg p-4">
-            <h3 class="text-lg font-medium text-blue-900 mb-4">Consumo Mensal (últimos 6 meses)</h3>
-            <canvas id="barChart" class="w-full h-64"></canvas>
-          </div>
-          <div class="bg-white shadow rounded-lg p-4">
-            <h3 class="text-lg font-medium text-blue-900 mb-4">Distribuição por Categoria</h3>
-            <canvas id="doughnutChart" class="w-full h-64"></canvas>
-          </div>
-        </div>
       </div>
 
       <!-- Exportar PDF -->
