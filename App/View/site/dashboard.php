@@ -18,9 +18,14 @@
         <div class="bg-white shadow rounded-lg overflow-hidden">
           <div class="bg-blue-900 text-white px-4 py-3">Dicas de Economia</div>
           <ul class="list-disc list-inside text-gray-700 space-y-1 p-4">
-            <li>Feche a torneira ao escovar os dentes.</li>
-            <li>Use balde em vez de mangueira.</li>
-            <li>Repare vazamentos imediatamente.</li>
+          <?php if (!empty($this->view->dicas)): ?>
+              <?php foreach ($this->view->dicas as $dica): ?>
+                  <li><?= htmlspecialchars($dica->__get('dicas_desc')) ?></li>
+              <?php endforeach; ?>
+          <?php else: ?>
+              <li>Nenhuma dica disponível</li>
+          <?php endif; ?>
+
           </ul>
         </div>
 

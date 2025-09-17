@@ -5,6 +5,7 @@ namespace App\Controller;
 use FW\Controller\Action;
 use App\DAO\UsuarioDAO;
 use App\Model\UsuarioModel;
+use App\DAO\DicasDAO;
 
 
 class SiteController extends Action{
@@ -39,15 +40,25 @@ class SiteController extends Action{
         $this->render('menu', 'site');
     }
 
-    public function dashboard(){
-        $title = "Dashboard";
-        $title_pagina = "Bem vindo ao site";
 
-        $this->getView()->title = $title;
-        $this->getView()->title_pagina = $title_pagina;
+    public function dashboard() {
+            $title = "Dashboard";
+            $title_pagina = "Painel do Usuário";
 
-        $this->render('dashboard', 'site');
+            $dicasDAO = new \App\DAO\DicasDAO();
+            $dicas = $dicasDAO->randomTips();
+
+            $this->getView()->title = $title;
+            $this->getView()->title_pagina = $title_pagina;
+            $this->getView()->dicas = $dicas;
+
+            // opcional: para garantir compatibilidade
+            $this->dicas = $dicas;
+
+            $this->render('dashboard', 'site');
     }
+
+
 
     public function consumo(){
         $title = "Consumo";
@@ -68,5 +79,7 @@ class SiteController extends Action{
 
         $this->render('redefinirSenha', 'site_login');
     }
+
+    
 
 }
