@@ -18,7 +18,10 @@ class ConsumoController extends Action{
     //var_dump($_POST);
     //exit;
 
+    //$mes_da_fatura = '0001-01-01';
     $mes_da_fatura = $_POST['MES_DA_FATURA'];
+    $mes_da_fatura = $mes_da_fatura . '-01';
+    //echo $mes_da_fatura;
     $valor = $_POST['VALOR'];
 
     $valordaconta = new ValordaContaModel();
@@ -29,7 +32,7 @@ class ConsumoController extends Action{
     $valordacontadao = new ValordaContaDAO();
     $valordacontadao->inserir($valordaconta);
 
-    header('Location: /'); 
+    header('Location: /consumo'); 
     }
 
     public function validaAutenticacao() {
@@ -57,13 +60,13 @@ class ConsumoController extends Action{
         $metaconsumodao = new MetaConsumoDAO();
         $metaconsumodao->inserir($metaconsumo);
     
-        header('Location: /'); 
+        header('Location: /consumo'); 
     }
 
     public function inserirConsumoDiario(){
 
-        //var_dump($_POST);
-        //exit;
+        var_dump($_POST);
+        exit;
 
         $data_consumo = $_POST['DATA_CONSUMO'];
         $quantidade = $_POST['QUANTIDADE'];
@@ -80,7 +83,7 @@ class ConsumoController extends Action{
         $consumodiariodao = new ConsumoDiarioDAO();
         $consumodiariodao->inserir($consumodiario);
     
-        header('Location: /'); 
+        header('Location: /consumo'); 
     }
     
 }
