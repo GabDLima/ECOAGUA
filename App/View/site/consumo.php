@@ -93,18 +93,18 @@
         <div id="quantityError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
         <div id="duplicateError" class="hidden mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 rounded">Você já registrou consumo para esta data.</div>
 
-        <form id="registroForm" novalidate class="space-y-5">
+        <form id="registroForm" action="/inserirconsumodiario" method="POST" novalidate class="space-y-5">
           <div>
             <label for="consumoDate" class="block text-gray-700 font-medium mb-1">Data do Consumo</label>
-            <input type="date" id="consumoDate" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+            <input name="DATA_CONSUMO" type="date" id="consumoDate" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
           </div>
           <div>
             <label for="consumoValue" class="block text-gray-700 font-medium mb-1">Quantidade (ex: 2,5 ou 2.5)</label>
-            <input type="text" id="consumoValue" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe a quantidade" required>
+            <input name="QUANTIDADE" type="text" id="consumoValue" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe a quantidade" required>
           </div>
           <div>
             <label for="consumoUnit" class="block text-gray-700 font-medium mb-1">Unidade</label>
-            <select id="consumoUnit" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+            <select name="UNIDADE" id="consumoUnit" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
               <option value="L">Litros (L)</option>
               <option value="m³">Metros Cúbicos (m³)</option>
               <option value="mL">Mililitros (mL)</option>

@@ -3,8 +3,13 @@
 namespace App\Controller;
 
 use FW\Controller\Action;
+use App\DAO\ValordaContaDAO;
+use App\Model\ValordaContaModel;
 use App\DAO\MetaConsumoDAO;
 use App\Model\MetaConsumoModel;
+use App\DAO\ConsumoDiarioDAO;
+use App\Model\ConsumoDiarioModel;
+
 
 class ConsumoController extends Action{
 
@@ -53,6 +58,29 @@ class ConsumoController extends Action{
         $metaconsumodao->inserir($metaconsumo);
     
         header('Location: /'); 
-        }
+    }
+
+    public function inserirConsumoDiario(){
+
+        //var_dump($_POST);
+        //exit;
+
+        $data_consumo = $_POST['DATA_CONSUMO'];
+        $quantidade = $_POST['QUANTIDADE'];
+        $unidade = $_POST['UNIDADE'];
+        //$id_usuario = $obj->__get('ID_USUARIO');
+    
+        $consumodiario = new ConsumoDiarioModel();
+        $consumodiario->__set("data_consumo",$data_consumo);
+        $consumodiario->__set("quantidade",$quantidade);
+        $consumodiario->__set("unidade",$unidade);
+        //$consumodiario->__set("id_usuario",$id_usuario);
+    
+    
+        $consumodiariodao = new ConsumoDiarioDAO();
+        $consumodiariodao->inserir($consumodiario);
+    
+        header('Location: /'); 
+    }
     
 }
