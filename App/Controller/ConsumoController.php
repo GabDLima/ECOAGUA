@@ -10,8 +10,8 @@ class ConsumoController extends Action{
 
     public function inserirValordaConta(){
 
-    var_dump($_POST);
-    exit;
+    //var_dump($_POST);
+    //exit;
 
     $mes_da_fatura = $_POST['MES_DA_FATURA'];
     $valor = $_POST['VALOR'];
@@ -31,5 +31,28 @@ class ConsumoController extends Action{
 
         
     }
+
+    public function inserirMetaConsumo(){
+
+        //var_dump($_POST);
+        //exit;
+    
+        $meta_mensal = $_POST['META_MENSAL'];
+        $meta_reducao = $_POST['META_REDUCAO'];
+        $prazo = $obj->__get('PRAZO');
+        //$usuario_id = $obj->__get('USUARIO_ID');
+    
+        $metaconsumo = new MetaConsumoModel();
+        $metaconsumo->__set("meta_mensal",$meta_mensal);
+        $metaconsumo->__set("meta_reducao",$meta_reducao);
+        $metaconsumo->__set("prazo",$prazo);
+        //$metaconsumo->__set("usuario_id",$usuario_id);
+    
+    
+        $metaconsumodao = new MetaConsumoDAO();
+        $metaconsumodao->inserir($metaconsumo);
+    
+        header('Location: /'); 
+        }
     
 }

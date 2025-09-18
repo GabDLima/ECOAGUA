@@ -57,18 +57,18 @@
           Metas salvas com sucesso!
         </div>
 
-        <form id="metasForm" class="space-y-4">
+        <form id="metasForm" action="/inserirmetaconsumo" method="POST" class="space-y-4">
           <div>
             <label for="monthlyGoal" class="block text-gray-700 font-medium mb-1">Meta Mensal (L)</label>
-            <input type="number" id="monthlyGoal" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 10000" required>
+            <input name="META_MENSAL" type="number" id="monthlyGoal" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 10000" required>
           </div>
           <div>
             <label for="reductionGoal" class="block text-gray-700 font-medium mb-1">Meta de Redução (%)</label>
-            <input type="number" id="reductionGoal" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 15" required>
+            <input name="META_REDUCAO" type="number" id="reductionGoal" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 15" required>
           </div>
           <div>
             <label for="periodMonths" class="block text-gray-700 font-medium mb-1">Prazo (meses)</label>
-            <input type="number" id="periodMonths" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 3" required>
+            <input name="PRAZO" type="number" id="periodMonths" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 3" required>
           </div>
           <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 rounded transition">Salvar Metas</button>
         </form>
