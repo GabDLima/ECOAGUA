@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class MetaConsumo
+class MetaConsumoModel
 {
     private $meta_mensal;
     private $meta_reducao;

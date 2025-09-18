@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use FW\Controller\Action;
-use App\DAO\ValordaContaDAO;
-use App\Model\ValordaContaModel;
+use App\DAO\MetaConsumoDAO;
+use App\Model\MetaConsumoModel;
 
 class ConsumoController extends Action{
 
@@ -39,7 +39,7 @@ class ConsumoController extends Action{
     
         $meta_mensal = $_POST['META_MENSAL'];
         $meta_reducao = $_POST['META_REDUCAO'];
-        $prazo = $obj->__get('PRAZO');
+        $prazo = $_POST['PRAZO'];
         //$usuario_id = $obj->__get('USUARIO_ID');
     
         $metaconsumo = new MetaConsumoModel();
