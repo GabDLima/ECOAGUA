@@ -32,5 +32,14 @@ class UsuarioController extends Action{
 
         
     }
+
+    public function login(){
+
+        //echo "ablueblue";
+
+        
+
+        header('Location: /'); 
+    }
     
 }

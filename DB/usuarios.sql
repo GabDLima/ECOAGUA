@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26-Ago-2025 às 02:35
+-- Tempo de geração: 19-Set-2025 às 01:22
 -- Versão do servidor: 10.4.25-MariaDB
 -- versão do PHP: 8.1.10
 
@@ -34,8 +34,21 @@ CREATE TABLE `usuarios` (
   `senha` varchar(100) NOT NULL,
   `action` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `id` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `usuarios`
+--
+
+INSERT INTO `usuarios` (`cpf`, `nome`, `email`, `senha`, `action`, `created_at`, `updated_at`, `id`) VALUES
+(21321321, '321321', '3213@21321', '1234', '', '2025-09-01 23:13:27', '2025-09-01 23:13:27', 0),
+(111111111, '111111111111111', '111111@1111', '1234', '', '2025-09-01 23:15:48', '2025-09-01 23:15:48', 0),
+(2147483647, 'Labubu Boob Goods', 'email@gmail.com', '1234mudar*', '', '2025-09-01 23:18:07', '2025-09-01 23:18:07', 0),
+(2147483647, 'Labubu da Silva', 'labubu@gmail.com', 'senha123', '', '2025-09-01 23:25:49', '2025-09-01 23:25:49', 0),
+(123213213, 'awdwa', 'dwad', 'wadwadwadwad', '', '2025-09-18 00:02:32', '2025-09-18 00:02:32', 0),
+(21321321, 'adcadwa', 'dwadwad@adw', 'wqewqewq', '', '2025-09-18 00:03:00', '2025-09-18 00:03:00', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

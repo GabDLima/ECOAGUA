@@ -4,7 +4,7 @@
     <div class="card login-card shadow-lg">
       <div class="card-body">
         <h2 class="card-title text-center mb-4">Faça seu login</h2>
-        <form id="loginForm" novalidate>
+        <form action="/login" method="POST" id="loginForm" novalidate>
           <div class="mb-3">
             <label for="email" class="form-label">E-mail</label>
             <input type="email" class="form-control" id="email" required />
