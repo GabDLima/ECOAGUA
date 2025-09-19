@@ -44,8 +44,13 @@ class UsuarioController extends Action{
         //echo $senha['senha']
         if($user_senha == $senha['senha']){
             $usuario_logado = $usuarioDAO->puxar_login($_POST['EMAIL']);
-            $_SESSION['login'] = $usuario_logado['id'];
-            echo $_SESSION['login'];
+            $_SESSION['cookie_id'] = $usuario_logado['id'];
+            $_SESSION['cookie_nome'] = $usuario_logado['nome'];
+            setcookie("cookie_id", $usuario_logado['id'], 2147483647, "/");
+            setcookie("cookie_nome", $usuario_logado['nome'], 2147483647, "/");
+            //echo $_SESSION['login'];
+            //echo $_COOKIE['login_cookie'];
+            header('Location: /dashboard'); 
         }
         else{
             //echo $user_senha;
