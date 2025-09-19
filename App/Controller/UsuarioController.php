@@ -48,8 +48,8 @@ class UsuarioController extends Action{
             $_SESSION['cookie_nome'] = $usuario_logado['nome'];
             setcookie("cookie_id", $usuario_logado['id'], 2147483647, "/");
             setcookie("cookie_nome", $usuario_logado['nome'], 2147483647, "/");
-            //echo $_SESSION['login'];
-            //echo $_COOKIE['login_cookie'];
+            //echo $_SESSION['cookie_id'];
+            //echo $_COOKIE['cookie_nome'];
             header('Location: /dashboard'); 
         }
         else{

@@ -1,7 +1,7 @@
 <body class="bg-gray-50">
   <div id="main-content" class="flex-1 pt-16 transition-[margin] duration-300">
     <main class="px-6 py-4">
-      <h2 class="text-2xl font-semibold text-blue-900 mb-6">Bem-vindo à sua Dashboard</h2>
+      <h2 class="text-2xl font-semibold text-blue-900 mb-6">Bem-vindo à sua Dashboard, <?= htmlspecialchars($this->view->nome_usuario) ?>!</h2>
 
       <!-- Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -13,7 +13,6 @@
             <p class="text-gray-600">Estimativa para o próximo mês.</p>
           </div>
         </div>
-
         <!-- Dicas -->
         <div class="bg-white shadow rounded-lg overflow-hidden">
           <div class="bg-blue-900 text-white px-4 py-3">Dicas de Economia</div>

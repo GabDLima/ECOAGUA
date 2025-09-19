@@ -48,8 +48,7 @@ class SiteController extends Action{
             $dicasDAO = new \App\DAO\DicasDAO();
             $dicas = $dicasDAO->randomTips();
 
-            $usuarioDAO = new \App\DAO\UsuarioDAO();
-            $usuario = $_COOKIE['cookie_nome'];
+            $nome_usuario = $_COOKIE['cookie_nome'];
 
             $this->getView()->title = $title;
             $this->getView()->title_pagina = $title_pagina;
