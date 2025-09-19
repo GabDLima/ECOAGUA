@@ -23,10 +23,12 @@ class ConsumoController extends Action{
     $mes_da_fatura = $mes_da_fatura . '-01';
     //echo $mes_da_fatura;
     $valor = $_POST['VALOR'];
+    $id_usuario = $_COOKIE['cookie_id'];
 
     $valordaconta = new ValordaContaModel();
     $valordaconta->__set("mes_da_fatura",$mes_da_fatura);
     $valordaconta->__set("valor",$valor);
+    $valordaconta->__set("id_usuairo",$id_usuario);
 
 
     $valordacontadao = new ValordaContaDAO();
