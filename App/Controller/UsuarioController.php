@@ -13,7 +13,7 @@ class UsuarioController extends Action{
     $user_cpf = $_POST['USER_CPF'];
     $user_nome = $_POST['USER_NOME'];
     $user_email = $_POST['USER_EMAIL'];
-    $user_senha =$_POST['USER_SENHA'];
+    $user_senha = $_POST['USER_SENHA'];
 
     $usuario = new UsuarioModel();
     $usuario->__set("user_cpf",$user_cpf);
@@ -35,11 +35,24 @@ class UsuarioController extends Action{
 
     public function login(){
 
+        //var_dump($_POST);
+        //exit;
         //echo "ablueblue";
+        $usuarioDAO = new \App\DAO\UsuarioDAO();
+        $senha = $usuarioDAO->procurar_login($_POST['EMAIL']);
+        $user_senha = $_POST['SENHA'];
+        //echo $senha['senha']
+        if($user_senha == $senha['senha']){
+            echo "acessou";
+        }
+        else{
+            //echo $user_senha;
+            //echo $senha;
+            echo $senha['senha'];
+        }
 
-        
 
-        header('Location: /'); 
+        //header('Location: /'); 
     }
     
 }

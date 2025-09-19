@@ -7,11 +7,11 @@
         <form action="/login" method="POST" id="loginForm" novalidate>
           <div class="mb-3">
             <label for="email" class="form-label">E-mail</label>
-            <input type="email" class="form-control" id="email" required />
+            <input name="EMAIL" type="email" class="form-control" id="email" required />
           </div>
           <div class="mb-3">
             <label for="senha" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="senha" required minlength="6" />
+            <input name="SENHA" type="password" class="form-control" id="senha" required minlength="6" />
           </div>
           <div class="mb-3 text-end">
             <a href="#" data-bs-toggle="modal" data-bs-target="#modalEsqueciSenha">Esqueci minha senha</a>
@@ -86,7 +86,7 @@
   </div>
 
   <!-- Bootstrap Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
   <!--<script>
     // fundo.js - bolhas animadas
     function createBubble() {

@@ -41,32 +41,17 @@ class UsuarioDAO extends DAO{
         }
     }
 
-    public function procurar_login(){
+    public function procurar_login($email){
            
         try{
-            //$alunos = array();
-            $sql = "SELECT 
-                            a.*, 
-                            l.log_email 
-                        FROM 
-                            alunos a,
-                            login l
-                        WHERE
-                            ad.fk_login_log_id = l.log_id
-                    ";
+            $sql = "SELECT senha FROM `usuarios` WHERE email='$email'";
             $stmt = $this->getConn()->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
             foreach($result as $row){
-                $alunosModel = new AlunosModel();
-                
-                $global = new FuncoesGlobais();
-                $global->popularModel($alunosModel, $row);
-
-                array_push($alunos, $alunosModel);
+                $senha = $row;
             }
-            return $alunos;
+            return $senha;
         }
         catch(\PDOException $ex){
             header('Location:/error103');
