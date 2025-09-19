@@ -59,6 +59,24 @@ class UsuarioDAO extends DAO{
         }    
     }
 
+    public function puxar_login($email){
+           
+        try{
+            $sql = "SELECT id, nome FROM `usuarios` WHERE email='$email'";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            foreach($result as $row){
+                $usuario_logado = $row;
+            }
+            return $usuario_logado;
+        }
+        catch(\PDOException $ex){
+            header('Location:/error103');
+            die();
+        }    
+    }
+
     public function listar(){
            
         try{

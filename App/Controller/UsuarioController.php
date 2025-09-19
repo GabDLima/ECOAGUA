@@ -43,7 +43,9 @@ class UsuarioController extends Action{
         $user_senha = $_POST['SENHA'];
         //echo $senha['senha']
         if($user_senha == $senha['senha']){
-            echo "acessou";
+            $usuario_logado = $usuarioDAO->puxar_login($_POST['EMAIL']);
+            $_SESSION['login'] = $usuario_logado['id'];
+            echo $_SESSION['login'];
         }
         else{
             //echo $user_senha;
