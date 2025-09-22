@@ -14,22 +14,24 @@ class MetaConsumoDAO extends DAO{
             $meta_mensal = $obj->__get('meta_mensal');
             $meta_reducao = $obj->__get('meta_reducao');
             $prazo = $obj->__get('prazo');
-            //$usuario_id = $obj->__get('usuario_id');
+            $usuario_id = $obj->__get('usuario_id');
 
             $sql = "INSERT INTO meta_consumo (
                         meta_mensal,
                         meta_reducao,
-                        prazo
+                        prazo,
+                        usuario_id
                     ) VALUES (
                         :meta_mensal,
                         :meta_reducao,
-                        :prazo
+                        :prazo,
+                        :usuario_id
                     )";
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bindValue(':meta_mensal', $meta_mensal);   
             $stmt->bindValue(':meta_reducao', $meta_reducao);
             $stmt->bindValue(':prazo', $prazo);   
-            //$stmt->bindValue(':usuario_id', $usuario_id);
+            $stmt->bindValue(':usuario_id', $usuario_id);
             $stmt->execute();
         }
         catch(\PDOException $ex){

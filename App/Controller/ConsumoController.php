@@ -54,13 +54,13 @@ class ConsumoController extends Action{
         $meta_mensal = $_POST['META_MENSAL'];
         $meta_reducao = $_POST['META_REDUCAO'];
         $prazo = $_POST['PRAZO'];
-        //$usuario_id = $obj->__get('USUARIO_ID');
+        $usuario_id = $_COOKIE['cookie_id'];
     
         $metaconsumo = new MetaConsumoModel();
         $metaconsumo->__set("meta_mensal",$meta_mensal);
         $metaconsumo->__set("meta_reducao",$meta_reducao);
         $metaconsumo->__set("prazo",$prazo);
-        //$metaconsumo->__set("usuario_id",$usuario_id);
+        $metaconsumo->__set("usuario_id",$usuario_id);
     
     
         $metaconsumodao = new MetaConsumoDAO();
@@ -71,19 +71,19 @@ class ConsumoController extends Action{
 
     public function inserirConsumoDiario(){
 
-        var_dump($_POST);
-        exit;
+        //var_dump($_POST);
+        //exit;
 
         $data_consumo = $_POST['DATA_CONSUMO'];
         $quantidade = $_POST['QUANTIDADE'];
         $unidade = $_POST['UNIDADE'];
-        //$id_usuario = $obj->__get('ID_USUARIO');
+        $id_usuario = $_COOKIE['cookie_id'];
     
         $consumodiario = new ConsumoDiarioModel();
         $consumodiario->__set("data_consumo",$data_consumo);
         $consumodiario->__set("quantidade",$quantidade);
         $consumodiario->__set("unidade",$unidade);
-        //$consumodiario->__set("id_usuario",$id_usuario);
+        $consumodiario->__set("id_usuario",$id_usuario);
     
     
         $consumodiariodao = new ConsumoDiarioDAO();
