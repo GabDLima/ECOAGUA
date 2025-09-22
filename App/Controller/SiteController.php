@@ -29,6 +29,13 @@ class SiteController extends Action{
     }
 
     public function menu(){
+        if (!isset($_COOKIE['cookie_id'])) {
+            header('Location: /');
+        }
+        else if($_COOKIE['cookie_id']==0){
+            header('Location: /');
+        }
+        
         $title = "Menu";
         $title_pagina = "Bem vindo ao site";
 
@@ -71,6 +78,13 @@ class SiteController extends Action{
 
 
     public function consumo(){
+        if (!isset($_COOKIE['cookie_id'])) {
+            header('Location: /');
+        }
+        else if($_COOKIE['cookie_id']==0){
+            header('Location: /');
+        }
+
         $title = "Consumo";
         $title_pagina = "Bem vindo ao site";
 

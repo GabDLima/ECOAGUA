@@ -41,6 +41,36 @@ class UsuarioDAO extends DAO{
         }
     }
 
+    public function alterar($obj) {
+        try{
+
+            $user_cpf = $obj->__get('user_cpf');
+            $user_nome = $obj->__get('user_nome');
+            $user_email = $obj->__get('user_email');
+
+            $sql = "UPDATE usuarios
+                    SET (
+                        cpf,
+                        nome,
+                        email
+                    ) VALUES (
+                        :user_cpf,
+                        :user_nome,
+                        :user_email
+                    )
+                    WHERE id=";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':user_cpf', $user_cpf);   
+            $stmt->bindValue(':user_nome', $user_nome);
+            $stmt->bindValue(':user_email', $user_email);
+            $stmt->execute();
+        }
+        catch(\PDOException $ex){
+            header('Location:/error103');
+            die();
+        }
+    }
+
     public function procurar_login($email){
            
         try{
@@ -111,7 +141,6 @@ class UsuarioDAO extends DAO{
     }
 
     public function excluir($obj) {}
-    public function alterar($obj) {}
     public function buscarPorId($id){ }
     public function buscarPorLogado($id){}
 }

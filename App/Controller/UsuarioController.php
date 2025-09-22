@@ -64,13 +64,31 @@ class UsuarioController extends Action{
 
     public function logout(){
 
-        $_COOKIE['cookie_id'] = 0;
-        $_COOKIE['cookie_nome'] = "";
+        setcookie('cookie_id', '', time() - 3600, '/');
+        setcookie('cookie_nome', '', time() - 3600, '/');
 
         //echo $_COOKIE['cookie_nome'];
         //echo $_COOKIE['cookie_id'];
         //exit;
         header('Location: /'); 
+
+    }
+
+    public function alterarUsuario(){
+
+        $user_cpf = $_POST['USER_CPF'];
+        $user_nome = $_POST['USER_NOME'];
+        $user_email = $_POST['USER_EMAIL'];
+
+        $usuario = new UsuarioModel();
+        $usuario->__set("user_cpf",$user_cpf);
+        $usuario->__set("user_nome",$user_nome);
+        $usuario->__set("user_email",$user_email);
+
+        $usuariodao = new UsuarioDAO();
+        $usuariodao->alterar($usuario);
+
+        header('Location: /dashboard'); 
 
     }
     
