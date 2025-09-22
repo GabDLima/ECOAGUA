@@ -67,6 +67,9 @@ class UsuarioController extends Action{
         $_COOKIE['cookie_id'] = 0;
         $_COOKIE['cookie_nome'] = "";
 
+        //echo $_COOKIE['cookie_nome'];
+        //echo $_COOKIE['cookie_id'];
+        //exit;
         header('Location: /'); 
 
     }

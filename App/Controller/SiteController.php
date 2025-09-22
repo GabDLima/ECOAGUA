@@ -42,23 +42,30 @@ class SiteController extends Action{
 
 
     public function dashboard() {
-            $title = "Dashboard";
-            $title_pagina = "Painel do Usuário";
+        if (!isset($_COOKIE['cookie_id'])) {
+            header('Location: /');
+        }
+        else if($_COOKIE['cookie_id']==0){
+            header('Location: /');
+        }
 
-            $dicasDAO = new \App\DAO\DicasDAO();
-            $dicas = $dicasDAO->randomTips();
+        $title = "Dashboard";
+        $title_pagina = "Painel do Usuário";
 
-            $nome_usuario = $_COOKIE['cookie_nome'];
+        $dicasDAO = new \App\DAO\DicasDAO();
+        $dicas = $dicasDAO->randomTips();
 
-            $this->getView()->title = $title;
-            $this->getView()->title_pagina = $title_pagina;
-            $this->getView()->dicas = $dicas;
-            $this->getView()->nome_usuario = $nome_usuario;
+        $nome_usuario = $_COOKIE['cookie_nome'];
 
-            // opcional: para garantir compatibilidade
-            $this->dicas = $dicas;
+        $this->getView()->title = $title;
+        $this->getView()->title_pagina = $title_pagina;
+        $this->getView()->dicas = $dicas;
+        $this->getView()->nome_usuario = $nome_usuario;
 
-            $this->render('dashboard', 'site');
+        // opcional: para garantir compatibilidade
+        $this->dicas = $dicas;
+
+        $this->render('dashboard', 'site');
     }
 
 
