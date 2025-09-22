@@ -13,13 +13,14 @@
 
   <!-- Menu de perfil -->
   <div class="ml-auto relative">
+    <span class="text-blue-900 font-medium hidden sm:inline"><?= htmlspecialchars($_COOKIE['cookie_nome']) ?></span>
     <button id="perfilToggle" class="px-4 py-2 text-blue-900 hover:bg-gray-100 rounded transition duration-150">
       Menu ▾
     </button>
     <div id="perfilDropdown"
          class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-md overflow-hidden z-50">
       <a href="menu" class="block px-4 py-2 text-sm text-blue-900 hover:bg-gray-100">👤 Menu</a>
-      <a href="/" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">🚪 Sair</a>
+      <a href="/sair" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">🚪 Sair</a>
     </div>
   </div>
 </nav>

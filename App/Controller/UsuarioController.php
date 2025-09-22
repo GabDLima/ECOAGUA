@@ -61,5 +61,14 @@ class UsuarioController extends Action{
 
         //header('Location: /'); 
     }
+
+    public function logout(){
+
+        $_COOKIE['cookie_id'] = 0;
+        $_COOKIE['cookie_nome'] = "";
+
+        header('Location: /'); 
+
+    }
     
 }

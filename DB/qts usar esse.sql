@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 22/09/2025 às 14:02
+-- Tempo de geração: 22/09/2025 às 14:47
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -41,7 +41,8 @@ CREATE TABLE `consumo_diario` (
 
 INSERT INTO `consumo_diario` (`id`, `data_consumo`, `quantidade`, `unidade`, `id_usuario`) VALUES
 (1, '2025-09-10', 123, 'm³', 0),
-(2, '2004-10-01', 123, 'L', 0);
+(2, '2004-10-01', 123, 'L', 0),
+(3, '2025-09-03', 12, 'm³', 9);
 
 -- --------------------------------------------------------
 
@@ -110,7 +111,8 @@ CREATE TABLE `meta_consumo` (
 
 INSERT INTO `meta_consumo` (`id`, `meta_mensal`, `meta_reducao`, `prazo`, `usuario_id`) VALUES
 (1, 123, 123, 213, 0),
-(2, 215125, 215315325, 21, 0);
+(2, 215125, 215315325, 21, 0),
+(3, 12, 12, 12, 9);
 
 -- --------------------------------------------------------
 
@@ -145,7 +147,8 @@ INSERT INTO `routes` (`id`, `nome_rota`, `slug`, `controller`, `action`, `status
 (7, 'InserirValordaConta', 'InserirValordaConta', 'ConsumoController', 'inserirValordaConta', 1, '2025-09-01 23:33:28', '2025-09-02 00:36:38', 0, NULL),
 (8, 'InserirMetaConsumo', 'inserirmetaconsumo', 'ConsumoController', 'inserirMetaConsumo', 1, '2025-09-18 00:23:58', '2025-09-18 00:23:58', 0, NULL),
 (9, 'InserirConsumoDiario', 'inserirconsumodiario', 'ConsumoController', 'inserirConsumoDiario', 1, '2025-09-18 22:19:43', '2025-09-18 22:19:43', 0, NULL),
-(10, 'Login', 'login', 'UsuarioController', 'login', 1, '2025-09-18 23:10:33', '2025-09-18 23:10:33', 0, NULL);
+(10, 'Login', 'login', 'UsuarioController', 'login', 1, '2025-09-18 23:10:33', '2025-09-18 23:10:33', 0, NULL),
+(11, 'Sair', 'sair', 'UsuarioController', 'logout', 1, '2025-09-22 12:41:16', '2025-09-22 12:41:16', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -268,7 +271,7 @@ ALTER TABLE `valordaconta`
 -- AUTO_INCREMENT de tabela `consumo_diario`
 --
 ALTER TABLE `consumo_diario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `dicas`
@@ -280,13 +283,13 @@ ALTER TABLE `dicas`
 -- AUTO_INCREMENT de tabela `meta_consumo`
 --
 ALTER TABLE `meta_consumo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `routes`
 --
 ALTER TABLE `routes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
