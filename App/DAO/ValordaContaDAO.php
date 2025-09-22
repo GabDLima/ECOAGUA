@@ -14,11 +14,13 @@ class ValordaContaDAO extends DAO{
             $mes_da_fatura = $obj->__get('mes_da_fatura');
             $valor = $obj->__get('valor');
             $id_usuario = $obj->__get('id_usuario');
+            //echo $id_usuario;
+            //exit;
                                                                  //o ERRO está aqui, $obj->__get('id_usuario') não está chegando, verifica
             $sql = "INSERT INTO valordaconta (
                         mes_da_fatura,
                         valor,
-                        id_usuari                    
+                        id_usuario                 
                     ) VALUES (
                         :mes_da_fatura,
                         :valor,
@@ -31,7 +33,7 @@ class ValordaContaDAO extends DAO{
             $stmt->execute();
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
+            header('Location:/error104');
             die();
         }
     }
