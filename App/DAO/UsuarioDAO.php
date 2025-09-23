@@ -41,32 +41,29 @@ class UsuarioDAO extends DAO{
         }
     }
 
-    public function alterar($obj) {
+    public function editar($obj) {
         try{
 
-            $user_cpf = $obj->__get('user_cpf');
             $user_nome = $obj->__get('user_nome');
             $user_email = $obj->__get('user_email');
+            $user_id = $obj->__get('user_id');
+
+            //echo $user_id;
+            //exit;
 
             $sql = "UPDATE usuarios
-                    SET (
-                        cpf,
-                        nome,
-                        email
-                    ) VALUES (
-                        :user_cpf,
-                        :user_nome,
-                        :user_email
-                    )
-                    WHERE id=";
+                    SET 
+                        nome = :user_nome,
+                        email = :user_email
+                    WHERE id = :id";
             $stmt = $this->getConn()->prepare($sql);
-            $stmt->bindValue(':user_cpf', $user_cpf);   
             $stmt->bindValue(':user_nome', $user_nome);
             $stmt->bindValue(':user_email', $user_email);
+            $stmt->bindValue(':id', $user_id);
             $stmt->execute();
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
+            header('Location:/error104');
             die();
         }
     }
@@ -92,7 +89,7 @@ class UsuarioDAO extends DAO{
     public function puxar_login($email){
            
         try{
-            $sql = "SELECT id, nome FROM `usuarios` WHERE email='$email'";
+            $sql = "SELECT id, nome, cpf FROM `usuarios` WHERE email='$email'";
             $stmt = $this->getConn()->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -105,6 +102,31 @@ class UsuarioDAO extends DAO{
             header('Location:/error103');
             die();
         }    
+    }
+
+    public function alterarSenha($obj){
+           
+        try{
+
+            $user_id = $obj->__get('user_id');
+            $user_senha = $obj->__get('user_senha');
+
+            //echo $user_senha;
+            //exit;
+
+            $sql = "UPDATE usuarios
+                    SET 
+                        senha = :user_senha
+                    WHERE id = :id";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':user_senha', $user_senha);
+            $stmt->bindValue(':id', $user_id);
+            $stmt->execute();
+        }
+        catch(\PDOException $ex){
+            header('Location:/error104');
+            die();
+        } 
     }
 
     public function listar(){
@@ -141,6 +163,7 @@ class UsuarioDAO extends DAO{
     }
 
     public function excluir($obj) {}
+    public function alterar($obj) {}
     public function buscarPorId($id){ }
     public function buscarPorLogado($id){}
 }

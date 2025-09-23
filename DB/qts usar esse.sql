@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 22/09/2025 às 14:47
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Tempo de geração: 23-Set-2025 às 02:37
+-- Versão do servidor: 10.4.25-MariaDB
+-- versão do PHP: 8.1.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `consumo_diario`
+-- Estrutura da tabela `consumo_diario`
 --
 
 CREATE TABLE `consumo_diario` (
@@ -33,10 +33,10 @@ CREATE TABLE `consumo_diario` (
   `quantidade` double NOT NULL,
   `unidade` varchar(80) NOT NULL,
   `id_usuario` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `consumo_diario`
+-- Extraindo dados da tabela `consumo_diario`
 --
 
 INSERT INTO `consumo_diario` (`id`, `data_consumo`, `quantidade`, `unidade`, `id_usuario`) VALUES
@@ -47,16 +47,16 @@ INSERT INTO `consumo_diario` (`id`, `data_consumo`, `quantidade`, `unidade`, `id
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `dicas`
+-- Estrutura da tabela `dicas`
 --
 
 CREATE TABLE `dicas` (
   `ID_DICAS` int(11) NOT NULL,
   `DICAS_DESC` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `dicas`
+-- Extraindo dados da tabela `dicas`
 --
 
 INSERT INTO `dicas` (`ID_DICAS`, `DICAS_DESC`) VALUES
@@ -94,7 +94,7 @@ INSERT INTO `dicas` (`ID_DICAS`, `DICAS_DESC`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `meta_consumo`
+-- Estrutura da tabela `meta_consumo`
 --
 
 CREATE TABLE `meta_consumo` (
@@ -103,10 +103,10 @@ CREATE TABLE `meta_consumo` (
   `meta_reducao` int(11) NOT NULL,
   `prazo` int(11) NOT NULL,
   `usuario_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `meta_consumo`
+-- Extraindo dados da tabela `meta_consumo`
 --
 
 INSERT INTO `meta_consumo` (`id`, `meta_mensal`, `meta_reducao`, `prazo`, `usuario_id`) VALUES
@@ -117,7 +117,7 @@ INSERT INTO `meta_consumo` (`id`, `meta_mensal`, `meta_reducao`, `prazo`, `usuar
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `routes`
+-- Estrutura da tabela `routes`
 --
 
 CREATE TABLE `routes` (
@@ -131,10 +131,10 @@ CREATE TABLE `routes` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `is_dynamic` tinyint(1) DEFAULT 0,
   `pattern` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `routes`
+-- Extraindo dados da tabela `routes`
 --
 
 INSERT INTO `routes` (`id`, `nome_rota`, `slug`, `controller`, `action`, `status`, `created_at`, `updated_at`, `is_dynamic`, `pattern`) VALUES
@@ -148,12 +148,14 @@ INSERT INTO `routes` (`id`, `nome_rota`, `slug`, `controller`, `action`, `status
 (8, 'InserirMetaConsumo', 'inserirmetaconsumo', 'ConsumoController', 'inserirMetaConsumo', 1, '2025-09-18 00:23:58', '2025-09-18 00:23:58', 0, NULL),
 (9, 'InserirConsumoDiario', 'inserirconsumodiario', 'ConsumoController', 'inserirConsumoDiario', 1, '2025-09-18 22:19:43', '2025-09-18 22:19:43', 0, NULL),
 (10, 'Login', 'login', 'UsuarioController', 'login', 1, '2025-09-18 23:10:33', '2025-09-18 23:10:33', 0, NULL),
-(11, 'Sair', 'sair', 'UsuarioController', 'logout', 1, '2025-09-22 12:41:16', '2025-09-22 12:41:16', 0, NULL);
+(11, 'Sair', 'sair', 'UsuarioController', 'logout', 1, '2025-09-22 12:41:16', '2025-09-22 12:41:16', 0, NULL),
+(12, 'EditarUsuario', 'editarusuario', 'UsuarioController', 'editar', 1, '2025-09-22 23:23:06', '2025-09-22 23:23:06', 0, NULL),
+(13, 'AlteraSenha', 'alterasenha', 'UsuarioController', 'alteraSenha', 1, '2025-09-23 00:26:26', '2025-09-23 00:26:26', 0, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `usuarios`
+-- Estrutura da tabela `usuarios`
 --
 
 CREATE TABLE `usuarios` (
@@ -165,10 +167,10 @@ CREATE TABLE `usuarios` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `usuarios`
+-- Extraindo dados da tabela `usuarios`
 --
 
 INSERT INTO `usuarios` (`cpf`, `nome`, `email`, `senha`, `action`, `created_at`, `updated_at`, `id`) VALUES
@@ -176,16 +178,16 @@ INSERT INTO `usuarios` (`cpf`, `nome`, `email`, `senha`, `action`, `created_at`,
 (111111111, '111111111111111', '111111@1111', '1234', '', '2025-09-01 23:15:48', '2025-09-01 23:15:48', 2),
 (2147483647, 'Labubu Boob Goods', 'email@gmail.com', '1234mudar*', '', '2025-09-01 23:18:07', '2025-09-01 23:18:07', 3),
 (2147483647, 'Labubu da Silva', 'labubu@gmail.com', 'senha123', '', '2025-09-01 23:25:49', '2025-09-01 23:25:49', 4),
-(123213213, 'awdwa', 'dwad', 'wadwadwadwad', '', '2025-09-18 00:02:32', '2025-09-18 00:02:32', 5),
-(21321321, 'adcadwa', 'dwadwad@adw', 'wqewqewq', '', '2025-09-18 00:03:00', '2025-09-18 00:03:00', 6),
-(123, '123', '77@gmai.com', '123mudar*', '', '2025-09-19 16:05:39', '2025-09-19 16:05:39', 7),
+(123213213, 'awdwa', 'dwad', '321321', '', '2025-09-18 00:02:32', '2025-09-23 00:36:01', 5),
+(21321321, 'João Jão João', 'joao@joao.com', '', '', '2025-09-18 00:03:00', '2025-09-23 00:33:29', 6),
+(123, 'João Jão', 'joao@jao.com', '123mudar*', '', '2025-09-19 16:05:39', '2025-09-23 00:11:29', 7),
 (213, '123', '123', '123', '', '2025-09-19 16:06:03', '2025-09-19 16:06:03', 8),
 (123, '123', '123@gmail.com', '123', '', '2025-09-19 16:09:02', '2025-09-19 16:09:02', 9);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `valordaconta`
+-- Estrutura da tabela `valordaconta`
 --
 
 CREATE TABLE `valordaconta` (
@@ -193,10 +195,10 @@ CREATE TABLE `valordaconta` (
   `mes_da_fatura` date NOT NULL,
   `valor` float NOT NULL,
   `id_usuario` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `valordaconta`
+-- Extraindo dados da tabela `valordaconta`
 --
 
 INSERT INTO `valordaconta` (`id`, `mes_da_fatura`, `valor`, `id_usuario`) VALUES
@@ -227,44 +229,44 @@ INSERT INTO `valordaconta` (`id`, `mes_da_fatura`, `valor`, `id_usuario`) VALUES
 --
 
 --
--- Índices de tabela `consumo_diario`
+-- Índices para tabela `consumo_diario`
 --
 ALTER TABLE `consumo_diario`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `dicas`
+-- Índices para tabela `dicas`
 --
 ALTER TABLE `dicas`
   ADD PRIMARY KEY (`ID_DICAS`);
 
 --
--- Índices de tabela `meta_consumo`
+-- Índices para tabela `meta_consumo`
 --
 ALTER TABLE `meta_consumo`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `routes`
+-- Índices para tabela `routes`
 --
 ALTER TABLE `routes`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `slug` (`slug`(191));
 
 --
--- Índices de tabela `usuarios`
+-- Índices para tabela `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `valordaconta`
+-- Índices para tabela `valordaconta`
 --
 ALTER TABLE `valordaconta`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT para tabelas despejadas
+-- AUTO_INCREMENT de tabelas despejadas
 --
 
 --
@@ -289,7 +291,7 @@ ALTER TABLE `meta_consumo`
 -- AUTO_INCREMENT de tabela `routes`
 --
 ALTER TABLE `routes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`

@@ -16,22 +16,22 @@
           Perfil atualizado com sucesso!
         </div>
 
-        <form id="perfilForm" class="space-y-4">
+        <form id="perfilForm" action="/editarusuario" method="POST" class="space-y-4">
           <div>
             <label for="nome" class="block text-gray-700 font-medium mb-1">Nome Completo</label>
-            <input type="text" id="nome" value="João da Silva"
+            <input name="USER_NOME" type="text" id="nome" value="João da Silva"
                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                    required>
           </div>
           <div>
             <label for="cpf" class="block text-gray-700 font-medium mb-1">CPF</label>
-            <input type="text" id="cpf" value="123.456.789-00"
+            <input type="text" id="cpf" value="<?php echo htmlspecialchars($_COOKIE['cookie_cpf']); ?>"
                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                   required>
+                   required readonly>
           </div>
           <div>
             <label for="email" class="block text-gray-700 font-medium mb-1">E-mail</label>
-            <input type="email" id="email" value="joao@email.com"
+            <input name="USER_EMAIL" type="email" id="email" value="joao@email.com"
                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                    required>
           </div>
@@ -110,6 +110,7 @@
     </div>
   </div>
 
+  <!--
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Formulário de perfil
@@ -149,6 +150,6 @@
         }
       }
     });
-  </script>
+  </script>-->
 </body>
 </html>
