@@ -8,6 +8,7 @@ class UsuarioModel
     private $user_nome;
     private $user_email;
     private $user_senha;
+    private $user_id;
     //private $fk_login_log_id;
 
     

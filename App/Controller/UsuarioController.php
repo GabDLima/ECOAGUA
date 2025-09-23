@@ -28,6 +28,23 @@ class UsuarioController extends Action{
     header('Location: /'); 
     }
 
+    public function editar(){
+
+        $user_nome = $_POST['USER_NOME'];
+        $user_email = $_POST['USER_EMAIL'];
+        $user_id = $_COOKIE['cookie_id'];
+    
+        $usuario = new UsuarioModel();
+        $usuario->__set("user_nome",$user_nome);
+        $usuario->__set("user_email",$user_email);
+        $usuario->__set("user_id",$user_id);
+    
+        $usuariodao = new UsuarioDAO();
+        $usuariodao->editar($usuario);
+    
+        header('Location: /menu'); 
+        }
+
     public function validaAutenticacao() {
 
         
@@ -48,6 +65,7 @@ class UsuarioController extends Action{
             $_SESSION['cookie_nome'] = $usuario_logado['nome'];
             setcookie("cookie_id", $usuario_logado['id'], 2147483647, "/");
             setcookie("cookie_nome", $usuario_logado['nome'], 2147483647, "/");
+            setcookie("cookie_cpf", $usuario_logado['cpf'], 2147483647, "/");
             //echo $_SESSION['cookie_id'];
             //echo $_COOKIE['cookie_nome'];
             header('Location: /dashboard'); 
