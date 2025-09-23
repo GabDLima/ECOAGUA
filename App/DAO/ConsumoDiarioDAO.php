@@ -15,23 +15,27 @@ class ConsumoDiarioDAO extends DAO{
             $quantidade = $obj->__get('quantidade');
             $unidade = $obj->__get('unidade');
             $id_usuario = $obj->__get('id_usuario');
+            $tipo = $obj->__get('tipo');
 
             $sql = "INSERT INTO consumo_diario (
                         data_consumo,
                         quantidade,
                         unidade,
-                        id_usuario
+                        id_usuario,
+                        tipo
                     ) VALUES (
                         :data_consumo,
                         :quantidade,
                         :unidade,
-                        :id_usuario
+                        :id_usuario,
+                        :tipo
                     )";
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bindValue(':data_consumo', $data_consumo);   
             $stmt->bindValue(':quantidade', $quantidade);
             $stmt->bindValue(':unidade', $unidade);   
             $stmt->bindValue(':id_usuario', $id_usuario);
+            $stmt->bindValue(':tipo', $tipo);
             $stmt->execute();
         }
         catch(\PDOException $ex){
