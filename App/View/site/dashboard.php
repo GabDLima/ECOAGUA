@@ -156,7 +156,7 @@
       const btnMetas = document.getElementById('btnMetas');
       if (btnMetas) {
         btnMetas.addEventListener('click', () => {
-          window.location.href = 'metas.html';
+          window.location.href = 'consumo';
         });
       }
 
