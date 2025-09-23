@@ -73,7 +73,8 @@ class UsuarioController extends Action{
         else{
             //echo $user_senha;
             //echo $senha;
-            echo $senha['senha'];
+            //ho $senha['senha'];
+            header('Location: /login');
         }
 
 
