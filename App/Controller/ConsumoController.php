@@ -78,12 +78,14 @@ class ConsumoController extends Action{
         $quantidade = $_POST['QUANTIDADE'];
         $unidade = $_POST['UNIDADE'];
         $id_usuario = $_COOKIE['cookie_id'];
-    
+        $tipo = $_POST['TIPO'];
+
         $consumodiario = new ConsumoDiarioModel();
         $consumodiario->__set("data_consumo",$data_consumo);
         $consumodiario->__set("quantidade",$quantidade);
         $consumodiario->__set("unidade",$unidade);
         $consumodiario->__set("id_usuario",$id_usuario);
+        $consumodiario->__set("tipo",$tipo);
     
     
         $consumodiariodao = new ConsumoDiarioDAO();
