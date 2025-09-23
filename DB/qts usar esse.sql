@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 23-Set-2025 às 02:19
+-- Tempo de geração: 23-Set-2025 às 02:37
 -- Versão do servidor: 10.4.25-MariaDB
 -- versão do PHP: 8.1.10
 
@@ -149,7 +149,8 @@ INSERT INTO `routes` (`id`, `nome_rota`, `slug`, `controller`, `action`, `status
 (9, 'InserirConsumoDiario', 'inserirconsumodiario', 'ConsumoController', 'inserirConsumoDiario', 1, '2025-09-18 22:19:43', '2025-09-18 22:19:43', 0, NULL),
 (10, 'Login', 'login', 'UsuarioController', 'login', 1, '2025-09-18 23:10:33', '2025-09-18 23:10:33', 0, NULL),
 (11, 'Sair', 'sair', 'UsuarioController', 'logout', 1, '2025-09-22 12:41:16', '2025-09-22 12:41:16', 0, NULL),
-(12, 'EditarUsuario', 'editarusuario', 'UsuarioController', 'editar', 1, '2025-09-22 23:23:06', '2025-09-22 23:23:06', 0, NULL);
+(12, 'EditarUsuario', 'editarusuario', 'UsuarioController', 'editar', 1, '2025-09-22 23:23:06', '2025-09-22 23:23:06', 0, NULL),
+(13, 'AlteraSenha', 'alterasenha', 'UsuarioController', 'alteraSenha', 1, '2025-09-23 00:26:26', '2025-09-23 00:26:26', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -177,8 +178,8 @@ INSERT INTO `usuarios` (`cpf`, `nome`, `email`, `senha`, `action`, `created_at`,
 (111111111, '111111111111111', '111111@1111', '1234', '', '2025-09-01 23:15:48', '2025-09-01 23:15:48', 2),
 (2147483647, 'Labubu Boob Goods', 'email@gmail.com', '1234mudar*', '', '2025-09-01 23:18:07', '2025-09-01 23:18:07', 3),
 (2147483647, 'Labubu da Silva', 'labubu@gmail.com', 'senha123', '', '2025-09-01 23:25:49', '2025-09-01 23:25:49', 4),
-(123213213, 'awdwa', 'dwad', 'wadwadwadwad', '', '2025-09-18 00:02:32', '2025-09-18 00:02:32', 5),
-(21321321, 'João Jão João', 'joao@joao.com', 'wqewqewq', '', '2025-09-18 00:03:00', '2025-09-23 00:19:35', 6),
+(123213213, 'awdwa', 'dwad', '321321', '', '2025-09-18 00:02:32', '2025-09-23 00:36:01', 5),
+(21321321, 'João Jão João', 'joao@joao.com', '', '', '2025-09-18 00:03:00', '2025-09-23 00:33:29', 6),
 (123, 'João Jão', 'joao@jao.com', '123mudar*', '', '2025-09-19 16:05:39', '2025-09-23 00:11:29', 7),
 (213, '123', '123', '123', '', '2025-09-19 16:06:03', '2025-09-19 16:06:03', 8),
 (123, '123', '123@gmail.com', '123', '', '2025-09-19 16:09:02', '2025-09-19 16:09:02', 9);
@@ -290,7 +291,7 @@ ALTER TABLE `meta_consumo`
 -- AUTO_INCREMENT de tabela `routes`
 --
 ALTER TABLE `routes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
