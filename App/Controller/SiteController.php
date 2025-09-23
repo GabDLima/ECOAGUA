@@ -95,6 +95,13 @@ class SiteController extends Action{
     }
 
     public function redefinirSenha(){
+        if (!isset($_COOKIE['cookie_id'])) {
+            header('Location: /');
+        }
+        else if($_COOKIE['cookie_id']==0){
+            header('Location: /');
+        }
+        
         $title = "Consumo";
         $title_pagina = "Bem vindo ao site";
 

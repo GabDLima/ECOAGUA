@@ -5,10 +5,10 @@
     <div class="card set-password-card shadow-lg">
       <div class="card-body">
         <h2 class="card-title text-center mb-4">Redefinir Senha</h2>
-        <form id="redefinirSenhaForm" novalidate>
+        <form action="/alterasenha" method="POST" id="redefinirSenhaForm" novalidate>
           <div class="mb-3">
             <label for="novaSenha" class="form-label">Nova senha</label>
-            <input type="password" class="form-control" id="novaSenha" required minlength="6" />
+            <input name="USER_SENHA" type="password" class="form-control" id="novaSenha" required minlength="6" />
           </div>
           <div class="mb-3">
             <label for="confirmarSenha" class="form-label">Confirmar senha</label>
@@ -24,8 +24,9 @@
   </div>
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
 
+  <!--
   <script>
     // Bolhas animadas
     function createBubble() {
@@ -62,6 +63,6 @@
       alert("Senha redefinida com sucesso!");
       // Aqui você pode chamar sua função de redefinição de senha no backend
     });
-  </script>
+  </script>-->
 </body>
 </html>

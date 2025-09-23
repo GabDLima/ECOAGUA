@@ -104,6 +104,31 @@ class UsuarioDAO extends DAO{
         }    
     }
 
+    public function alterarSenha($obj){
+           
+        try{
+
+            $user_id = $obj->__get('user_id');
+            $user_senha = $obj->__get('user_senha');
+
+            //echo $user_senha;
+            //exit;
+
+            $sql = "UPDATE usuarios
+                    SET 
+                        senha = :user_senha
+                    WHERE id = :id";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':user_senha', $user_senha);
+            $stmt->bindValue(':id', $user_id);
+            $stmt->execute();
+        }
+        catch(\PDOException $ex){
+            header('Location:/error104');
+            die();
+        } 
+    }
+
     public function listar(){
            
         try{
