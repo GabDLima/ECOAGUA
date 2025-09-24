@@ -1,3 +1,33 @@
+<style>
+        @keyframes bounce-subtle {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .bounce-subtle {
+            animation: bounce-subtle 2s infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(30, 58, 138, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(30, 58, 138, 0.6), 0 0 40px rgba(30, 58, 138, 0.3);
+            }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
 <body class="bg-gray-50">
   <div id="main-content" class="flex-1 pt-16 transition-[margin] duration-300">
     <main class="px-6 py-4">
@@ -147,6 +177,23 @@
           </form>
         </div>
       </div>
+      <button id="pdfButton" 
+            class="fixed bottom-8 left-8 w-16 h-16 bg-blue-900 hover:bg-blue-800 text-white rounded-full shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-300 z-50 opacity-0 invisible pulse-glow"
+            onclick="generatePDF()"
+            title="Gerar Relatório PDF">
+        <!-- Ícone PDF personalizado -->
+        <svg class="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+            <text x="12" y="17" font-family="Arial, sans-serif" font-size="4" font-weight="bold" text-anchor="middle" fill="currentColor">PDF</text>
+        </svg>
+    </button>
+    
+    <!-- Tooltip -->
+    <div id="pdfTooltip" 
+         class="fixed bottom-20 left-6 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 invisible transition-all duration-300 z-40 whitespace-nowrap">
+        📄 Gerar Relatório PDF
+        <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+    </div>
     </main>
   </div>
 
@@ -156,7 +203,7 @@
       const btnMetas = document.getElementById('btnMetas');
       if (btnMetas) {
         btnMetas.addEventListener('click', () => {
-          window.location.href = 'consumo';
+          window.location.href = 'metas';
         });
       }
 
@@ -261,6 +308,68 @@
         });
       }
     });
+
+     // Função para detectar quando chegar perto do fim da página
+     function checkScrollPosition() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            // Calcula se está nos últimos 20% da página
+            const scrollPercentage = (scrollTop + windowHeight) / documentHeight;
+            const pdfButton = document.getElementById('pdfButton');
+            const tooltip = document.getElementById('pdfTooltip');
+            
+            if (scrollPercentage >= 0.8) { // 80% da página
+                // Mostra o botão com animação
+                pdfButton.classList.remove('opacity-0', 'invisible');
+                pdfButton.classList.add('opacity-100', 'visible', 'bounce-subtle');
+            } else {
+                // Esconde o botão
+                pdfButton.classList.add('opacity-0', 'invisible');
+                pdfButton.classList.remove('opacity-100', 'visible', 'bounce-subtle');
+                tooltip.classList.add('opacity-0', 'invisible');
+            }
+        }
+        
+        // Função para gerar PDF (placeholder)
+        function generatePDF() {
+            // Aqui você colocaria sua lógica real de geração de PDF
+            alert('🎉 Gerando relatório PDF!\n\nEm uma implementação real, aqui seria chamada a função para gerar o PDF.');
+            
+            // Exemplo de como poderia ser:
+            // window.print(); // Para impressão
+            // ou
+            // fetch('/api/generate-pdf', { method: 'POST' })...
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const pdfButton = document.getElementById('pdfButton');
+            const tooltip = document.getElementById('pdfTooltip');
+            
+            // Listener para scroll
+            window.addEventListener('scroll', checkScrollPosition);
+            
+            // Tooltip no hover
+            pdfButton.addEventListener('mouseenter', function() {
+                tooltip.classList.remove('opacity-0', 'invisible');
+                tooltip.classList.add('opacity-100', 'visible');
+            });
+            
+            pdfButton.addEventListener('mouseleave', function() {
+                tooltip.classList.add('opacity-0', 'invisible');
+                tooltip.classList.remove('opacity-100', 'visible');
+            });
+            
+            // Feedback visual no click
+            pdfButton.addEventListener('click', function() {
+                this.classList.add('animate-ping');
+                setTimeout(() => {
+                    this.classList.remove('animate-ping');
+                }, 600);
+            });
+        });
   </script>
 </body>
 </html>
