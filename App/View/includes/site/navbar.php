@@ -1,4 +1,3 @@
-
 <!-- NAVBAR -->
 <nav class="fixed top-0 left-0 right-0 h-16 bg-white shadow-md flex items-center px-6 z-50">
 
@@ -9,6 +8,7 @@
   <div class="ml-8 space-x-4 hidden sm:flex">
     <a href="dashboard" class="text-blue-900 hover:text-blue-600 font-medium">Dashboard</a>
     <a href="consumo" class="text-blue-900 hover:text-blue-600 font-medium">Consumo</a>
+    <a href="metas" class="text-blue-900 hover:text-blue-600 font-medium">Metas</a>
   </div>
 
   <!-- Menu de perfil -->
