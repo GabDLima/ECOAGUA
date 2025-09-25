@@ -85,7 +85,7 @@
           </div>
           <button type="submit"
                   class="w-full bg-blue-600 hover:bg-blue-800 text-white font-medium py-2 rounded transition">
-            Salvar Alterações
+            💾 Salvar Alterações
           </button>
         </form>
       </div>
@@ -97,32 +97,7 @@
                     </div>
                 </div>
 
-                <form id="perfilForm" class="space-y-6">
-                    <div class="grid md:grid-cols-2 gap-6 py-6">
-                        <div>
-                            <label for="nome" class="block text-gray-700 font-medium mb-2">Nome Completo</label>
-                            <input type="text" id="nome" value="João da Silva"
-                                   class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                   required>
-                        </div>
-                        <div>
-                            <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF</label>
-                            <input type="text" id="cpf" value="123.456.789-00"
-                                   class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                   required>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="email" class="block text-gray-700 font-medium mb-2">E-mail</label>
-                        <input type="email" id="email" value="joao@email.com"
-                               class="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                               required>
-                    </div>
-                    <button type="submit"
-                            class="w-full bg-blue-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 rounded-lg transition-all transform hover:scale-105 shadow-lg">
-                        💾 Salvar Alterações
-                    </button>
-                </form>
+                
             </div>
         </div>
 
