@@ -14,18 +14,23 @@ class UsuarioController extends Action{
     $user_nome = $_POST['USER_NOME'];
     $user_email = $_POST['USER_EMAIL'];
     $user_senha = $_POST['USER_SENHA'];
+    $user_senha_2 = $_POST['USER_SENHA_2'];
 
-    $usuario = new UsuarioModel();
-    $usuario->__set("user_cpf",$user_cpf);
-    $usuario->__set("user_nome",$user_nome);
-    $usuario->__set("user_email",$user_email);
-    $usuario->__set("user_senha",$user_senha);
+    if($user_senha == $user_senha_2){
+        $usuario = new UsuarioModel();
+        $usuario->__set("user_cpf",$user_cpf);
+        $usuario->__set("user_nome",$user_nome);
+        $usuario->__set("user_email",$user_email);
+        $usuario->__set("user_senha",$user_senha);
 
 
-    $usuariodao = new UsuarioDAO();
-    $usuariodao->inserir($usuario);
+        $usuariodao = new UsuarioDAO();
+        $usuariodao->inserir($usuario);
 
-    header('Location: /'); 
+    }
+
+    header('Location: /');
+
     }
 
     public function editar(){
