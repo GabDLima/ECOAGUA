@@ -1,6 +1,6 @@
--- Banco de dados unificado qts_merged
-CREATE DATABASE IF NOT EXISTS qts_merged DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-USE qts_merged;
+-- Banco de dados unificado qts
+CREATE DATABASE IF NOT EXISTS qts DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+USE qts;
 
 -- --------------------------------------------------------
 -- Estrutura da tabela consumo_diario
