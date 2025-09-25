@@ -81,6 +81,8 @@ class UsuarioController extends Action{
             //alert('Mensagem aqui');  
             //$link = "/";
             //echo "<script>alert('Email ou senha incorreta.'); location.href='{$link}';</script>";
+            session_start();
+            $_SESSION['mensagem_login_incorreto'] = 1;
             header('Location: /');
         }
 

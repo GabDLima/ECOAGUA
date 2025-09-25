@@ -1,5 +1,23 @@
-<body>
+<?php
+$mensagem = "Operação concluída com sucesso!";
+?>
 
+<body>
+<?php
+session_start();
+//echo $_SESSION['mensagem_login_incorreto'];
+//exit;
+if(isset($_SESSION['mensagem_login_incorreto'])){
+  if($_SESSION['mensagem_login_incorreto'] == 1){
+    mostrarPopup("E-mail ou senha incorretos!");
+    $_SESSION['mensagem_login_incorreto'] = 0;
+  }
+}
+else{
+  mostrarPopup("Login realizado com sucesso!");
+}
+
+?>
   <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
     <div class="card login-card shadow-lg">
       <div class="card-body">
@@ -84,7 +102,6 @@
       </div>
     </div>
   </div>
-
   <!-- Bootstrap Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!--<script>
@@ -145,6 +162,75 @@
       }
     });
   </script>-->
-  
+
 </body>
 
+<?php
+function mostrarPopup($mensagem, $tipo = "sucesso") {
+    // Escapa o conteúdo para evitar problemas de segurança
+    $mensagem = htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8');
+    $tipo = ($tipo === "erro") ? "erro" : "sucesso";
+
+    echo <<<HTML
+    <div id="popupMensagem" class="popup $tipo">
+        <div class="popup-conteudo">
+            <span id="fecharPopup" class="fechar">&times;</span>
+            <p>$mensagem</p>
+        </div>
+    </div>
+
+    <style>
+    .popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    .popup-conteudo {
+        background-color: #fff;
+        padding: 20px 30px;
+        border-radius: 8px;
+        text-align: center;
+        min-width: 300px;
+        max-width: 90%;
+        box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        position: relative;
+    }
+    .fechar {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    .popup.sucesso .popup-conteudo {
+        border-left: 5px solid #2b3f9bff;
+    }
+    .popup.erro .popup-conteudo {
+        border-left: 5px solid #dc3545;
+    }
+    </style>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var popup = document.getElementById("popupMensagem");
+        if (popup) {
+            var fechar = document.getElementById("fecharPopup");
+            fechar.onclick = function() {
+                popup.style.display = "none";
+            }
+            setTimeout(function() {
+                popup.style.display = "none";
+            }, 10000);
+        }
+    });
+    </script>
+HTML;
+}
+?>

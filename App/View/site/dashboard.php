@@ -28,6 +28,7 @@
             animation: pulse-glow 2s infinite;
         }
     </style>
+
 <body class="bg-gray-50">
   <div id="main-content" class="flex-1 pt-16 transition-[margin] duration-300">
     <main class="px-6 py-4">
