@@ -117,7 +117,7 @@ INSERT INTO `routes` (`id`,`nome_rota`,`slug`,`controller`,`action`,`status`,`cr
 (10,'Login','login','UsuarioController','login',1,'2025-09-18 23:10:33','2025-09-18 23:10:33',0,NULL),
 (11,'Sair','sair','UsuarioController','logout',1,'2025-09-22 12:41:16','2025-09-22 12:41:16',0,NULL),
 (12,'EditarUsuario','editarusuario','UsuarioController','editar',1,'2025-09-22 23:23:06','2025-09-22 23:23:06',0,NULL),
-(13,'AlteraSenha','alterasenha','UsuarioController','alteraSenha',1,'2025-09-23 00:26:26','2025-09-23 00:26:26',0,NULL);
+(13,'AlteraSenha','alterasenha','UsuarioController','alteraSenha',1,'2025-09-23 00:26:26','2025-09-23 00:26:26',0,NULL),
 (14, 'Site_Metas', 'metas', 'SiteController', 'metas', 1, '2025-09-23 00:32:08', '2025-09-23 00:32:08', 0, NULL);
 
 -- --------------------------------------------------------
