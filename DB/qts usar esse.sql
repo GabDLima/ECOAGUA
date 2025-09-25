@@ -149,11 +149,11 @@ INSERT INTO `usuarios` (`cpf`,`nome`,`email`,`senha`,`action`,`created_at`,`upda
 
 -- Dados qts (1).sql depois
 INSERT INTO `usuarios` (`cpf`,`nome`,`email`,`senha`,`action`,`created_at`,`updated_at`,`id`) VALUES
-(123213213,'awdwa','dwad','321321','', '2025-09-18 00:02:32','2025-09-23 00:36:01',5),
-(21321321,'João Jão João','joao@joao.com','','','2025-09-18 00:03:00','2025-09-23 00:33:29',6),
-(123,'João Jão','joao@jao.com','123mudar*','', '2025-09-19 16:05:39','2025-09-23 00:11:29',7),
-(2147483647,'Nome Completo Plus','gmail@joao.com','senha123','', '2025-09-23 00:42:03','2025-09-23 00:43:55',10),
-(2147483647,'Joao Joao de Joao','joao@joaomail.com','123mudar*','', '2025-09-23 00:45:48','2025-09-23 00:45:48',11);
+(123213213,'awdwa','dwad','321321','', '2025-09-18 00:02:32','2025-09-23 00:36:01',10),
+(21321321,'João Jão João','joao@joao.com','','','2025-09-18 00:03:00','2025-09-23 00:33:29',11),
+(123,'João Jão','joao@jao.com','123mudar*','', '2025-09-19 16:05:39','2025-09-23 00:11:29',12),
+(2147483647,'Nome Completo Plus','gmail@joao.com','senha123','', '2025-09-23 00:42:03','2025-09-23 00:43:55',13),
+(2147483647,'Joao Joao de Joao','joao@joaomail.com','123mudar*','', '2025-09-23 00:45:48','2025-09-23 00:45:48',14);
 
 -- --------------------------------------------------------
 -- Estrutura da tabela valordaconta
