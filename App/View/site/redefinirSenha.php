@@ -5,14 +5,14 @@
     <div class="card set-password-card shadow-lg">
       <div class="card-body">
         <h2 class="card-title text-center mb-4">Redefinir Senha</h2>
-        <form action="/alterasenha" method="POST" id="redefinirSenhaForm" novalidate>
+        <form action="/alterasenha" method="POST" id="redefinirSenhaForm">
           <div class="mb-3">
             <label for="novaSenha" class="form-label">Nova senha</label>
             <input name="USER_SENHA" type="password" class="form-control" id="novaSenha" required minlength="6" />
           </div>
           <div class="mb-3">
             <label for="confirmarSenha" class="form-label">Confirmar senha</label>
-            <input type="password" class="form-control" id="confirmarSenha" required />
+            <input name="USER_SENHA_2" type="password" class="form-control" id="confirmarSenha" required />
           </div>
           <button type="submit" class="btn btn-primary w-100">Salvar nova senha</button>
         </form>

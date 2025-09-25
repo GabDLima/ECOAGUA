@@ -116,16 +116,20 @@ class UsuarioController extends Action{
     public function alteraSenha(){
 
         $user_senha = $_POST['USER_SENHA'];
+        $user_senha_2 = $_POST['USER_SENHA_2'];
         $user_id = $_COOKIE['cookie_id'];
 
-        $usuario = new UsuarioModel();
-        $usuario->__set("user_senha",$user_senha);
-        $usuario->__set("user_id",$user_id);
+        if($user_senha == $user_senha_2){
+            $usuario = new UsuarioModel();
+            $usuario->__set("user_senha",$user_senha);
+            $usuario->__set("user_id",$user_id);
 
-        $usuariodao = new UsuarioDAO();
-        $usuariodao->alterarSenha($usuario);
+            $usuariodao = new UsuarioDAO();
+            $usuariodao->alterarSenha($usuario);
+            header('Location: /menu'); 
+        }
 
-        header('Location: /menu'); 
+        header('Location: /redefinirSenha'); 
 
     }
     
