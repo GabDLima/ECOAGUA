@@ -68,13 +68,15 @@ class UsuarioController extends Action{
             setcookie("cookie_cpf", $usuario_logado['cpf'], 2147483647, "/");
             //echo $_SESSION['cookie_id'];
             //echo $_COOKIE['cookie_nome'];
-            header('Location: /dashboard'); 
-        }
+            header('Location: /dashboard');         }
         else{
             //echo $user_senha;
             //echo $senha;
             //ho $senha['senha'];
-            header('Location: /login');
+            //alert('Mensagem aqui');  
+            //$link = "/";
+            //echo "<script>alert('Email ou senha incorreta.'); location.href='{$link}';</script>";
+            header('Location: /');
         }
 
 
