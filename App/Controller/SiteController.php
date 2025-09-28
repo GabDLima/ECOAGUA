@@ -111,6 +111,20 @@ class SiteController extends Action{
         $this->render('redefinirSenha', 'site_login');
     }
 
+    public function metas(){
+
+        $title = "Metas";
+        $title_pagina = "Bem vindo ao site";
+
+        
+
+        $this->getView()->title = $title;
+        $this->getView()->title_pagina = $title_pagina;
+
+        $this->render('metas', 'site');
+
+    }
+
     
 
 }
