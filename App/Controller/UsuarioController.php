@@ -27,6 +27,13 @@ class UsuarioController extends Action{
         $usuariodao = new UsuarioDAO();
         $usuariodao->inserir($usuario);
 
+        session_start();
+        $_SESSION['usuario_cadastrado'] = 1;
+
+    }
+    else{
+        session_start();
+        $_SESSION['senhas_nao_conferem'] = 1;
     }
 
     header('Location: /');

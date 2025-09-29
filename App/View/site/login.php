@@ -25,7 +25,24 @@ if(isset($_SESSION['usuario_desconectado'])){
 else{
   //mostrarPopup("Login realizado com sucesso!");
 }
-
+if(isset($_SESSION['usuario_cadastrado'])){
+  if($_SESSION['usuario_cadastrado'] == 1){
+    mostrarPopup("Usuário cadastrado!");
+    $_SESSION['usuario_cadastrado'] = 0;
+  }
+}
+else{
+  //mostrarPopup("Login realizado com sucesso!");
+}
+if(isset($_SESSION['senhas_nao_conferem'])){
+  if($_SESSION['senhas_nao_conferem'] == 1){
+    mostrarPopup("As senhas não conferem!");
+    $_SESSION['senhas_nao_conferem'] = 0;
+  }
+}
+else{
+  //mostrarPopup("Login realizado com sucesso!");
+}
 ?>
   <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
     <div class="card login-card shadow-lg">
