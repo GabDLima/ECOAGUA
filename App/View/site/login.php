@@ -14,7 +14,16 @@ if(isset($_SESSION['mensagem_login_incorreto'])){
   }
 }
 else{
-  mostrarPopup("Login realizado com sucesso!");
+  //mostrarPopup("Login realizado com sucesso!");
+}
+if(isset($_SESSION['usuario_desconectado'])){
+  if($_SESSION['usuario_desconectado'] == 1){
+    mostrarPopup("Usuário desconectado!");
+    $_SESSION['usuario_desconectado'] = 0;
+  }
+}
+else{
+  //mostrarPopup("Login realizado com sucesso!");
 }
 
 ?>

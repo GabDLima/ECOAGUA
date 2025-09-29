@@ -73,6 +73,8 @@ class UsuarioController extends Action{
             setcookie("cookie_cpf", $usuario_logado['cpf'], 2147483647, "/");
             //echo $_SESSION['cookie_id'];
             //echo $_COOKIE['cookie_nome'];
+            session_start();
+            $_SESSION['login_realizado'] = 1;
             header('Location: /dashboard');         }
         else{
             //echo $user_senha;
@@ -98,6 +100,8 @@ class UsuarioController extends Action{
         //echo $_COOKIE['cookie_nome'];
         //echo $_COOKIE['cookie_id'];
         //exit;
+        session_start();
+        $_SESSION['usuario_desconectado'] = 1;
         header('Location: /'); 
 
     }
