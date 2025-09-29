@@ -144,10 +144,17 @@ class UsuarioController extends Action{
 
             $usuariodao = new UsuarioDAO();
             $usuariodao->alterarSenha($usuario);
+            session_start();
+            $_SESSION['senha_alterada'] = 1;
             header('Location: /menu'); 
         }
+        else{
 
-        header('Location: /redefinirSenha'); 
+            session_start();
+            $_SESSION['senha_nao_confere'] = 1;
+            header('Location: /redefinirSenha'); 
+
+        }
 
     }
     
