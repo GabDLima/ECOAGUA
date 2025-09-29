@@ -1,3 +1,15 @@
+<?php 
+    session_start();
+    $cpf_exibir = strval($_COOKIE['cookie_cpf']);
+    while(strlen($cpf_exibir) < 11){
+        $cpf_exibir = "0". $cpf_exibir;
+    }
+    $cpf_exibir = substr_replace($cpf_exibir, ".", 3, 0);
+    $cpf_exibir = substr_replace($cpf_exibir, ".", 7, 0);
+    $cpf_exibir = substr_replace($cpf_exibir, "-", 11, 0);
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -73,7 +85,7 @@
           </div>
           <div>
             <label for="cpf" class="block text-gray-700 font-medium mb-1">CPF</label>
-            <input type="text" id="cpf" value="<?php echo htmlspecialchars($_COOKIE['cookie_cpf']); ?>"
+            <input type="text" id="cpf" value="<?php echo htmlspecialchars($cpf_exibir); ?>"
                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                    required readonly>
           </div>
