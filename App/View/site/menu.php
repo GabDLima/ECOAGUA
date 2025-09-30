@@ -9,6 +9,21 @@
     $cpf_exibir = substr_replace($cpf_exibir, "-", 11, 0);
 ?>
 
+<?php
+session_start();
+
+if(isset($_SESSION['senha_alterada'])){
+  if($_SESSION['senha_alterada'] == 1){
+    mostrarPopup("Senha alterada!");
+    $_SESSION['senha_alterada'] = 0;
+  }
+}
+else{
+  //mostrarPopup("Login realizado com sucesso!");
+}
+
+?>
+
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -286,7 +301,6 @@
                 });
             }
 
-<<<<<<< HEAD
             // Animação suave ao carregar
             const cards = document.querySelectorAll('.bg-white');
             cards.forEach((card, index) => {
@@ -298,7 +312,6 @@
                     card.style.transform = 'translateY(0)';
                 }, index * 100);
             });
-=======
   <!--
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -329,7 +342,6 @@
         darkModeCheckbox.addEventListener('change', () => {
           document.documentElement.classList.toggle('dark', darkModeCheckbox.checked);
           localStorage.setItem('ecoagua-dark-mode', darkModeCheckbox.checked);
->>>>>>> 5d937d036beaa8cde43e456bdeadb6f336aea347
         });
 
         // Função para detectar quando chegar perto do fim da página
@@ -354,7 +366,6 @@
                 tooltip.classList.add('opacity-0', 'invisible');
             }
         }
-<<<<<<< HEAD
         
         // Função para gerar PDF (placeholder)
         function generatePDF() {
@@ -395,10 +406,78 @@
             });
         });
     </script>
-=======
       }
     });
   </script>-->
->>>>>>> 5d937d036beaa8cde43e456bdeadb6f336aea347
 </body>
 </html>
+
+<?php
+function mostrarPopup($mensagem, $tipo = "sucesso") {
+    // Escapa o conteúdo para evitar problemas de segurança
+    $mensagem = htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8');
+    $tipo = ($tipo === "erro") ? "erro" : "sucesso";
+
+    echo <<<HTML
+    <div id="popupMensagem" class="popup $tipo">
+        <div class="popup-conteudo">
+            <span id="fecharPopup" class="fechar">&times;</span>
+            <p>$mensagem</p>
+        </div>
+    </div>
+
+    <style>
+    .popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    .popup-conteudo {
+        background-color: #fff;
+        padding: 20px 30px;
+        border-radius: 8px;
+        text-align: center;
+        min-width: 300px;
+        max-width: 90%;
+        box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        position: relative;
+    }
+    .fechar {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    .popup.sucesso .popup-conteudo {
+        border-left: 5px solid #2b3f9bff;
+    }
+    .popup.erro .popup-conteudo {
+        border-left: 5px solid #dc3545;
+    }
+    </style>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var popup = document.getElementById("popupMensagem");
+        if (popup) {
+            var fechar = document.getElementById("fecharPopup");
+            fechar.onclick = function() {
+                popup.style.display = "none";
+            }
+            setTimeout(function() {
+                popup.style.display = "none";
+            }, 10000);
+        }
+    });
+    </script>
+HTML;
+}
+?>
