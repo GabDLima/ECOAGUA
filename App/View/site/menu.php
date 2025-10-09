@@ -53,26 +53,6 @@ else{
     </script>
 </head>
 <body class="bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-lg">💧</span>
-                    </div>
-                    <h1 class="text-2xl font-bold bg-blue-600 bg-clip-text text-transparent">
-                        EcoÁgua
-                    </h1>
-                </div>
-                <nav class="hidden md:flex space-x-6">
-                    <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Dashboard</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Relatórios</a>
-                    <a href="#" class="text-blue-600 font-medium">Perfil</a>
-                </nav>
-            </div>
-        </div>
-    </header>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-4">
