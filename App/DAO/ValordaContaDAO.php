@@ -10,13 +10,10 @@ class ValordaContaDAO extends DAO{
 
     public function inserir($obj) {
         try{
-
             $mes_da_fatura = $obj->__get('mes_da_fatura');
             $valor = $obj->__get('valor');
             $id_usuario = $obj->__get('id_usuario');
-            //echo $id_usuario;
-            //exit;
-                                                                 //o ERRO está aqui, $obj->__get('id_usuario') não está chegando, verifica
+
             $sql = "INSERT INTO valordaconta (
                         mes_da_fatura,
                         valor,
@@ -38,36 +35,138 @@ class ValordaContaDAO extends DAO{
         }
     }
 
-    public function listar(){
-           
-        try{
-            $alunos = array();
+    /**
+     * Busca a última fatura registrada do usuário
+     */
+    public function buscarUltimaFatura($id_usuario) {
+        try {
             $sql = "SELECT 
-                            a.*, 
-                            l.log_email 
-                        FROM 
-                            alunos a,
-                            login l
-                        WHERE
-                            ad.fk_login_log_id = l.log_id
-                    ";
+                        mes_da_fatura,
+                        valor
+                    FROM 
+                        valordaconta
+                    WHERE
+                        id_usuario = :id_usuario
+                    ORDER BY 
+                        mes_da_fatura DESC
+                    LIMIT 1
+                   ";
+            
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':id_usuario', $id_usuario);
+            $stmt->execute();
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        }
+        catch(\PDOException $ex){
+            return null;
+        }    
+    }
+
+    /**
+     * Busca faturas dos últimos meses
+     */
+    public function buscarFaturasRecentes($id_usuario, $meses = 6) {
+        try {
+            $sql = "SELECT 
+                        DATE_FORMAT(mes_da_fatura, '%b') as mes_nome,
+                        DATE_FORMAT(mes_da_fatura, '%Y-%m') as mes,
+                        valor
+                    FROM 
+                        valordaconta
+                    WHERE
+                        id_usuario = :id_usuario
+                        AND mes_da_fatura >= DATE_SUB(CURDATE(), INTERVAL :meses MONTH)
+                    ORDER BY 
+                        mes_da_fatura ASC
+                   ";
+            
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':id_usuario', $id_usuario);
+            $stmt->bindValue(':meses', $meses, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        }
+        catch(\PDOException $ex){
+            return array();
+        }    
+    }
+
+    /**
+     * Calcula o total gasto no ano
+     */
+    public function buscarTotalGastoAno($id_usuario, $ano = null) {
+        try {
+            if (!$ano) {
+                $ano = date('Y');
+            }
+            
+            $sql = "SELECT 
+                        SUM(valor) as total_gasto
+                    FROM 
+                        valordaconta
+                    WHERE
+                        id_usuario = :id_usuario
+                        AND YEAR(mes_da_fatura) = :ano
+                   ";
+            
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':id_usuario', $id_usuario);
+            $stmt->bindValue(':ano', $ano, \PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            return $result['total_gasto'] ?? 0;
+        }
+        catch(\PDOException $ex){
+            return 0;
+        }    
+    }
+
+    /**
+     * Busca a média de gasto mensal
+     */
+    public function buscarMediaMensal($id_usuario, $meses = 6) {
+        try {
+            $sql = "SELECT 
+                        AVG(valor) as media_valor
+                    FROM 
+                        valordaconta
+                    WHERE
+                        id_usuario = :id_usuario
+                        AND mes_da_fatura >= DATE_SUB(CURDATE(), INTERVAL :meses MONTH)
+                   ";
+            
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':id_usuario', $id_usuario);
+            $stmt->bindValue(':meses', $meses, \PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            return $result['media_valor'] ?? 0;
+        }
+        catch(\PDOException $ex){
+            return 0;
+        }    
+    }
+
+    public function listar(){
+        try{
+            $faturas = array();
+            $sql = "SELECT * FROM valordaconta ORDER BY mes_da_fatura DESC";
             $stmt = $this->getConn()->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach($result as $row){
-                $alunosModel = new AlunosModel();
-                
+                $faturaModel = new ValordaContaModel();
                 $global = new FuncoesGlobais();
-                $global->popularModel($alunosModel, $row);
-
-                array_push($alunos, $alunosModel);
+                $global->popularModel($faturaModel, $row);
+                array_push($faturas, $faturaModel);
             }
-            return $alunos;
+            return $faturas;
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
-            die();
+            return array();
         }    
     }
 

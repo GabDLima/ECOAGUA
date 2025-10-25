@@ -3,14 +3,27 @@
     <main class="px-6 py-4">
       <h2 class="text-2xl font-semibold text-blue-900 mb-6">Gerenciar Dados de Consumo</h2>
 
-      <!-- Cards de Ações -->
+      <!-- Cards de Ações com Dados Reais -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        
         <!-- Card Inserir Valor da Conta -->
         <div class="bg-white shadow rounded-lg overflow-hidden">
           <div class="bg-blue-900 text-white px-4 py-3">Inserir Valor da Conta</div>
           <div class="p-4">
-            <div class="text-3xl font-bold mb-2">R$ 0,00</div>
-            <p class="text-gray-600 mb-4">Registre o valor da sua fatura mensal.</p>
+            <div class="text-3xl font-bold mb-2">
+              <?php if ($this->view->ultimaFatura): ?>
+                R$ <?= number_format($this->view->ultimaFatura['valor'], 2, ',', '.') ?>
+              <?php else: ?>
+                R$ 0,00
+              <?php endif; ?>
+            </div>
+            <p class="text-gray-600 mb-4">
+              <?php if ($this->view->ultimaFatura): ?>
+                Última fatura: <?= date('m/Y', strtotime($this->view->ultimaFatura['mes_da_fatura'])) ?>
+              <?php else: ?>
+                Registre o valor da sua fatura mensal.
+              <?php endif; ?>
+            </p>
             <button id="btnConta" class="w-full bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 rounded">Registrar Fatura</button>
           </div>
         </div>
@@ -19,18 +32,32 @@
         <div class="bg-white shadow rounded-lg overflow-hidden">
           <div class="bg-blue-900 text-white px-4 py-3">Metas de Consumo</div>
           <div class="p-4">
-            <div class="text-3xl font-bold mb-2">10.000 L</div>
-            <p class="text-gray-600 mb-4">Defina suas metas de economia.</p>
+            <div class="text-3xl font-bold mb-2">
+              <?php if ($this->view->metaAtiva): ?>
+                <?= number_format($this->view->metaAtiva['meta_mensal'], 0, ',', '.') ?> L
+              <?php else: ?>
+                -- L
+              <?php endif; ?>
+            </div>
+            <p class="text-gray-600 mb-4">
+              <?php if ($this->view->progressoMeta): ?>
+                Progresso: <?= $this->view->progressoMeta['percentual'] ?>%
+              <?php else: ?>
+                Defina suas metas de economia.
+              <?php endif; ?>
+            </p>
             <button id="btnMetas" class="w-full bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 rounded">Definir Metas</button>
           </div>
         </div>
 
         <!-- Card Consumo Diário -->
         <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Consumo Diário</div>
+          <div class="bg-blue-900 text-white px-4 py-3">Consumo do Mês</div>
           <div class="p-4">
-            <div class="text-3xl font-bold mb-2">0 L</div>
-            <p class="text-gray-600 mb-4">Registre seu consumo do dia.</p>
+            <div class="text-3xl font-bold mb-2">
+              <?= number_format($this->view->totalMesAtual, 0, ',', '.') ?> L
+            </div>
+            <p class="text-gray-600 mb-4">Total consumido este mês</p>
             <button id="btnConsumo" class="w-full bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 rounded">Registrar Consumo</button>
           </div>
         </div>
@@ -93,14 +120,33 @@
             </form>
           </div>
 
-          <!-- Metas Atuais -->
+          <!-- Metas Atuais - DINÂMICO -->
           <div class="bg-gray-50 rounded-lg p-4">
             <h4 class="text-lg font-semibold text-blue-900 mb-4">Metas Atuais</h4>
-            <ul class="space-y-2 text-gray-700">
-              <li><strong>Meta Mensal:</strong> <span id="displayMonthlyGoal">—</span> L</li>
-              <li><strong>Meta de Redução:</strong> <span id="displayReductionGoal">—</span> %</li>
-              <li><strong>Prazo:</strong> <span id="displayPeriodMonths">—</span> meses</li>
-            </ul>
+            <?php if ($this->view->metaAtiva): ?>
+              <ul class="space-y-2 text-gray-700">
+                <li><strong>Meta Mensal:</strong> <?= number_format($this->view->metaAtiva['meta_mensal'], 0, ',', '.') ?> L</li>
+                <li><strong>Meta de Redução:</strong> <?= $this->view->metaAtiva['meta_reducao'] ?>%</li>
+                <li><strong>Prazo:</strong> <?= $this->view->metaAtiva['prazo'] ?> meses</li>
+              </ul>
+              <?php if ($this->view->progressoMeta): ?>
+                <div class="mt-4">
+                  <div class="flex justify-between text-sm text-gray-600 mb-1">
+                    <span>Progresso</span>
+                    <span><?= $this->view->progressoMeta['percentual'] ?>%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="<?= $this->view->progressoMeta['alerta'] ? 'bg-red-600' : 'bg-green-600' ?> h-3 rounded-full transition-all" 
+                         style="width: <?= min($this->view->progressoMeta['percentual'], 100) ?>%"></div>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-2">
+                    Consumido: <?= number_format($this->view->progressoMeta['consumo_atual'], 0, ',', '.') ?> L
+                  </p>
+                </div>
+              <?php endif; ?>
+            <?php else: ?>
+              <p class="text-gray-500">Nenhuma meta definida ainda. Preencha o formulário ao lado para criar sua primeira meta!</p>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -114,9 +160,6 @@
         </div>
         <div id="dateError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
         <div id="quantityError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
-        <div id="duplicateError" class="hidden mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 rounded">
-          Você já registrou consumo para esta data.
-        </div>
 
         <form id="registroForm" action="/inserirconsumodiario" method="POST" novalidate class="max-w-md space-y-4">
           <div>
@@ -124,17 +167,13 @@
             <input name="DATA_CONSUMO" type="date" id="consumoDate" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
           </div>
           <div>
-            <label for="consumoUnit" class="block text-gray-700 font-medium mb-1">Tipo</label>
-            <input name="TIPO" type="text" id="tipo" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe o tipo" required>
+            <label for="tipo" class="block text-gray-700 font-medium mb-1">Tipo</label>
+            <input name="TIPO" type="text" id="tipo" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: Banho, Louça, Faxina" required>
           </div>
           <div>
             <label for="consumoValue" class="block text-gray-700 font-medium mb-1">Quantidade (ex: 2,5 ou 2.5)</label>
             <input name="QUANTIDADE" type="text" id="consumoValue" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe a quantidade" required>
           </div>
-          <!--<div>
-            <label for="consumoUnit" class="block text-gray-700 font-medium mb-1">Tipo</label>
-            <input name="TIPO" id="tipo" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" requiredtype="text" name="TIPO"></label>
-          </div>-->
           <div>
             <label for="consumoUnit" class="block text-gray-700 font-medium mb-1">Unidade</label>
             <select name="UNIDADE" id="consumoUnit" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
@@ -150,26 +189,93 @@
         </form>
       </div>
 
-      <!-- Resumo dos Dados Registrados -->
+      <!-- Resumo dos Dados Registrados - DINÂMICO -->
       <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-6 py-3 bg-blue-900 text-white font-medium">Resumo dos Dados Registrados</div>
+        <div class="px-6 py-3 bg-blue-900 text-white font-medium">📋 Resumo dos Dados Registrados</div>
         <div class="p-4 overflow-x-auto">
-          <table class="min-w-full table-auto divide-y divide-gray-200">
-            <thead class="bg-gray-100">
-              <tr>
-                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tipo</th>
-                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Data</th>
-                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Valor</th>
-                <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <tr><td class="px-4 py-2">Fatura</td><td class="px-4 py-2">Maio/2025</td><td class="px-4 py-2">R$ 85,90</td><td class="px-4 py-2"><span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Registrado</span></td></tr>
-              <tr><td class="px-4 py-2">Meta Mensal</td><td class="px-4 py-2">Junho/2025</td><td class="px-4 py-2">10.000 L</td><td class="px-4 py-2"><span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Ativa</span></td></tr>
-              <tr><td class="px-4 py-2">Consumo</td><td class="px-4 py-2">22/09/2025</td><td class="px-4 py-2">350 L</td><td class="px-4 py-2"><span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Registrado</span></td></tr>
-              <tr><td class="px-4 py-2">Consumo</td><td class="px-4 py-2">21/09/2025</td><td class="px-4 py-2">420 L</td><td class="px-4 py-2"><span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Registrado</span></td></tr>
-            </tbody>
-          </table>
+          <?php 
+          $temDados = !empty($this->view->ultimasFaturas) || 
+                      !empty($this->view->ultimasMetas) || 
+                      !empty($this->view->ultimosConsumos);
+          ?>
+          
+          <?php if ($temDados): ?>
+            <table class="min-w-full table-auto divide-y divide-gray-200">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tipo</th>
+                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Data</th>
+                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Valor</th>
+                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                
+                <!-- Faturas -->
+                <?php if (!empty($this->view->ultimasFaturas)): ?>
+                  <?php foreach ($this->view->ultimasFaturas as $fatura): ?>
+                    <tr>
+                      <td class="px-4 py-2">💰 Fatura</td>
+                      <td class="px-4 py-2"><?= date('m/Y', strtotime($fatura['mes'])) ?></td>
+                      <td class="px-4 py-2">R$ <?= number_format($fatura['valor'], 2, ',', '.') ?></td>
+                      <td class="px-4 py-2">
+                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Registrado</span>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+
+                <!-- Metas -->
+                <?php if (!empty($this->view->ultimasMetas)): ?>
+                  <?php foreach ($this->view->ultimasMetas as $meta): ?>
+                    <tr>
+                      <td class="px-4 py-2">🎯 Meta Mensal</td>
+                      <td class="px-4 py-2">--</td>
+                      <td class="px-4 py-2"><?= number_format($meta->__get('meta_mensal'), 0, ',', '.') ?> L</td>
+                      <td class="px-4 py-2">
+                        <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Ativa</span>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+
+                <!-- Consumos -->
+                <?php if (!empty($this->view->ultimosConsumos)): ?>
+                  <?php foreach ($this->view->ultimosConsumos as $consumo): ?>
+                    <?php 
+                      $quantidade = $consumo->__get('quantidade');
+                      $unidade = $consumo->__get('unidade');
+                      
+                      // Conversão para litros
+                      $litros = $quantidade;
+                      if ($unidade == 'mL') {
+                        $litros = $quantidade / 1000;
+                      } elseif ($unidade == 'm³') {
+                        $litros = $quantidade * 1000;
+                      }
+                    ?>
+                    <tr>
+                      <td class="px-4 py-2">💧 Consumo (<?= htmlspecialchars($consumo->__get('tipo')) ?>)</td>
+                      <td class="px-4 py-2"><?= date('d/m/Y', strtotime($consumo->__get('data_consumo'))) ?></td>
+                      <td class="px-4 py-2"><?= number_format($litros, 2, ',', '.') ?> L</td>
+                      <td class="px-4 py-2">
+                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Registrado</span>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+
+              </tbody>
+            </table>
+          <?php else: ?>
+            <div class="text-center py-8 text-gray-500">
+              <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <p class="text-lg font-medium mb-2">Nenhum dado registrado ainda</p>
+              <p class="text-sm">Comece registrando sua fatura, meta ou consumo diário!</p>
+            </div>
+          <?php endif; ?>
         </div>
       </div>
 
@@ -188,105 +294,37 @@
 
       const cancelBtns = document.querySelectorAll('.cancelBtn');
 
-      // Função para esconder todas as seções
       function hideAllSections() {
         secaoConta.classList.add('hidden');
         secaoMetas.classList.add('hidden');
         secaoConsumo.classList.add('hidden');
       }
 
-      // Botão Conta
       btnConta.addEventListener('click', () => {
         hideAllSections();
         secaoConta.classList.remove('hidden');
         secaoConta.scrollIntoView({ behavior: 'smooth' });
       });
 
-      // Botão Metas
       btnMetas.addEventListener('click', () => {
         hideAllSections();
         secaoMetas.classList.remove('hidden');
         secaoMetas.scrollIntoView({ behavior: 'smooth' });
       });
 
-      // Botão Consumo
       btnConsumo.addEventListener('click', () => {
         hideAllSections();
         secaoConsumo.classList.remove('hidden');
         secaoConsumo.scrollIntoView({ behavior: 'smooth' });
       });
 
-      // Botões de Cancelar
       cancelBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           hideAllSections();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       });
-/*
-      // Form de Conta
-      const contaForm = document.getElementById('contaForm');
-      const successAlertConta = document.getElementById('successAlertConta');
-      
-      contaForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const mes = document.getElementById('MES_DA_FATURA').value;
-        const valor = document.getElementById('VALOR').value;
-        
-        if (mes && valor) {
-          successAlertConta.classList.remove('hidden');
-          contaForm.reset();
-          setTimeout(() => {
-            successAlertConta.classList.add('hidden');
-          }, 3000);
-        }
-      });
 
-      // Form de Metas
-      const metasForm = document.getElementById('metasForm');
-      const metasAlert = document.getElementById('metasAlert');
-      
-      metasForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const metaMensal = document.getElementById('monthlyGoal').value;
-        const metaReducao = document.getElementById('reductionGoal').value;
-        const prazo = document.getElementById('periodMonths').value;
-        
-        if (metaMensal && metaReducao && prazo) {
-          // Atualizar displays
-          document.getElementById('displayMonthlyGoal').textContent = metaMensal;
-          document.getElementById('displayReductionGoal').textContent = metaReducao;
-          document.getElementById('displayPeriodMonths').textContent = prazo;
-          
-          metasAlert.classList.remove('hidden');
-          setTimeout(() => {
-            metasAlert.classList.add('hidden');
-          }, 3000);
-        }
-      });
-
-      // Form de Consumo
-      const registroForm = document.getElementById('registroForm');
-      const successAlertConsumo = document.getElementById('successAlertConsumo');
-      
-      registroForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const data = document.getElementById('consumoDate').value;
-        const quantidade = document.getElementById('consumoValue').value;
-        const unidade = document.getElementById('consumoUnit').value;
-        
-        if (data && quantidade && unidade) {
-          successAlertConsumo.classList.remove('hidden');
-          registroForm.reset();
-          setTimeout(() => {
-            successAlertConsumo.classList.add('hidden');
-          }, 3000);
-        }
-      });
-*/
       // Definir data atual como padrão
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('consumoDate').value = today;

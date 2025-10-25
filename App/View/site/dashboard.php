@@ -1,462 +1,444 @@
 <?php
 session_start();
-//echo $_SESSION['mensagem_login_incorreto'];
-//exit;
 if(isset($_SESSION['login_realizado'])){
   if($_SESSION['login_realizado'] == 1){
-    mostrarPopup("Login realizado com sucesso!");
+    echo '<script>alert("Login realizado com sucesso!");</script>';
     $_SESSION['login_realizado'] = 0;
   }
 }
-else{
-  //mostrarPopup("Login realizado com sucesso!");
-}
-
 ?>
 
 <style>
-        @keyframes bounce-subtle {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-        
-        .bounce-subtle {
-            animation: bounce-subtle 2s infinite;
-        }
-        
-        @keyframes pulse-glow {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(30, 58, 138, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(30, 58, 138, 0.6), 0 0 40px rgba(30, 58, 138, 0.3);
-            }
-        }
-        
-        .pulse-glow {
-            animation: pulse-glow 2s infinite;
-        }
-    </style>
+  @keyframes bounce-subtle {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+  .bounce-subtle { animation: bounce-subtle 2s infinite; }
+  
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(30, 58, 138, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(30, 58, 138, 0.6), 0 0 40px rgba(30, 58, 138, 0.3); }
+  }
+  .pulse-glow { animation: pulse-glow 2s infinite; }
+</style>
 
 <body class="bg-gray-50">
   <div id="main-content" class="flex-1 pt-16 transition-[margin] duration-300">
     <main class="px-6 py-4">
-      <h2 class="text-2xl font-semibold text-blue-900 mb-6">Bem-vindo à sua Dashboard, <?= htmlspecialchars($this->view->nome_usuario) ?>!</h2>
+      <h2 class="text-2xl font-semibold text-blue-900 mb-6">
+        Bem-vindo à sua Dashboard, <?= htmlspecialchars($this->view->nome_usuario) ?>!
+      </h2>
 
-      <!-- Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Projeção -->
+      <!-- Cards Principais com Dados Reais -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        
+        <!-- Card: Consumo do Mês Atual -->
         <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Projeção de Consumo</div>
+          <div class="bg-blue-900 text-white px-4 py-3">Consumo do Mês</div>
           <div class="p-4">
-            <div class="text-3xl font-bold mb-2">1.200 L</div>
-            <p class="text-gray-600">Estimativa para o próximo mês.</p>
+            <div class="text-3xl font-bold mb-2">
+              <?= number_format($this->view->totalMesAtual, 0, ',', '.') ?> L
+            </div>
+            <p class="text-gray-600">
+              <?php if ($this->view->variacaoPercentual > 0): ?>
+                <span class="text-red-600">▲ <?= abs($this->view->variacaoPercentual) ?>%</span> vs mês anterior
+              <?php elseif ($this->view->variacaoPercentual < 0): ?>
+                <span class="text-green-600">▼ <?= abs($this->view->variacaoPercentual) ?>%</span> vs mês anterior
+              <?php else: ?>
+                <span class="text-gray-600">Sem variação</span>
+              <?php endif; ?>
+            </p>
           </div>
         </div>
-        <!-- Dicas -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Dicas de Economia</div>
-          <ul class="list-disc list-inside text-gray-700 space-y-1 p-4">
-          <?php if (!empty($this->view->dicas)): ?>
-              <?php foreach ($this->view->dicas as $dica): ?>
-                  <li><?= htmlspecialchars($dica->__get('dicas_desc')) ?></li>
-              <?php endforeach; ?>
-          <?php else: ?>
-              <li>Nenhuma dica disponível</li>
-          <?php endif; ?>
 
+        <!-- Card: Projeção Mensal -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+          <div class="bg-blue-900 text-white px-4 py-3">Projeção do Mês</div>
+          <div class="p-4">
+            <div class="text-3xl font-bold mb-2">
+              <?= number_format($this->view->projecaoMensal, 0, ',', '.') ?> L
+            </div>
+            <p class="text-gray-600">Estimativa para o fim do mês</p>
+          </div>
+        </div>
+
+        <!-- Card: Última Fatura -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+          <div class="bg-blue-900 text-white px-4 py-3">Última Fatura</div>
+          <div class="p-4">
+            <div class="text-3xl font-bold mb-2">
+              <?php if ($this->view->ultimaFatura): ?>
+                R$ <?= number_format($this->view->ultimaFatura['valor'], 2, ',', '.') ?>
+              <?php else: ?>
+                R$ 0,00
+              <?php endif; ?>
+            </div>
+            <p class="text-gray-600">
+              <?php if ($this->view->ultimaFatura): ?>
+                <?= date('m/Y', strtotime($this->view->ultimaFatura['mes_da_fatura'])) ?>
+              <?php else: ?>
+                Sem dados
+              <?php endif; ?>
+            </p>
+          </div>
+        </div>
+
+        <!-- Card: Meta do Mês -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+          <div class="bg-blue-900 text-white px-4 py-3">Meta do Mês</div>
+          <div class="p-4">
+            <?php if ($this->view->progressoMeta): ?>
+              <div class="text-3xl font-bold mb-2">
+                <?= $this->view->progressoMeta['percentual'] ?>%
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: <?= min($this->view->progressoMeta['percentual'], 100) ?>%"></div>
+              </div>
+              <p class="text-gray-600 text-sm">
+                <?= number_format($this->view->progressoMeta['consumo_atual'], 0) ?> / 
+                <?= number_format($this->view->progressoMeta['meta_litros'], 0) ?> L
+              </p>
+            <?php else: ?>
+              <div class="text-xl font-bold mb-2">Sem meta</div>
+              <p class="text-gray-600">Defina sua meta em Metas</p>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertas -->
+      <?php if (!empty($this->view->alertas)): ?>
+        <div class="mb-6">
+          <?php foreach ($this->view->alertas as $alerta): ?>
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-3 rounded">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <p class="text-red-800 font-semibold"><?= htmlspecialchars($alerta['mensagem']) ?></p>
+                </div>
+                <?php if ($alerta['tipo'] == 'meta'): ?>
+                  <div class="ml-auto">
+                    <button onclick="window.location.href='/metas'" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+                      Ver Metas
+                    </button>
+                  </div>
+                <?php endif; ?>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+
+      <!-- Dicas de Economia -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div class="lg:col-span-2 bg-white shadow rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-blue-900 mb-4">📊 Estatísticas Rápidas</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="text-center p-4 bg-blue-50 rounded">
+              <div class="text-2xl font-bold text-blue-900">
+                R$ <?= number_format($this->view->mediaMensal, 2, ',', '.') ?>
+              </div>
+              <div class="text-sm text-gray-600">Média Mensal</div>
+            </div>
+            <div class="text-center p-4 bg-green-50 rounded">
+              <div class="text-2xl font-bold text-green-900">
+                R$ <?= number_format($this->view->totalGastoAno, 2, ',', '.') ?>
+              </div>
+              <div class="text-sm text-gray-600">Total no Ano</div>
+            </div>
+            <div class="text-center p-4 bg-purple-50 rounded">
+              <div class="text-2xl font-bold text-purple-900">
+                <?= number_format($this->view->totalMesAnterior, 0, ',', '.') ?> L
+              </div>
+              <div class="text-sm text-gray-600">Mês Anterior</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+          <div class="bg-blue-900 text-white px-4 py-3">💡 Dicas de Economia</div>
+          <ul class="list-disc list-inside text-gray-700 space-y-1 p-4">
+            <?php if (!empty($this->view->dicas)): ?>
+              <?php foreach ($this->view->dicas as $dica): ?>
+                <li class="text-sm"><?= htmlspecialchars($dica->__get('dicas_desc')) ?></li>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <li>Nenhuma dica disponível</li>
+            <?php endif; ?>
           </ul>
         </div>
+      </div>
 
-        <!-- Alerta -->
-        <div class="bg-white shadow rounded-lg overflow-hidden border-2 border-red-500">
-          <div class="bg-red-50 text-red-700 px-4 py-3 font-semibold">Consumo Alto</div>
-          <div class="p-4">
-            <p class="text-red-600 mb-3">Você excedeu 90% da sua meta mensal.</p>
-            <button id="btnMetas" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded">Ver Metas</button>
+      <!-- Gráficos com Dados Reais -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        
+        <!-- Gráfico de Linha: Consumo Mensal -->
+        <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
+          <h3 class="text-lg font-medium text-blue-900 mb-4">📈 Consumo Mensal (Litros)</h3>
+          <div style="width: 500px; height: 500px; max-width: 100%;">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico de Linha: Faturas -->
+        <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
+          <h3 class="text-lg font-medium text-blue-900 mb-4">💰 Valor das Faturas (R$)</h3>
+          <div style="width: 500px; height: 500px; max-width: 100%;">
+            <canvas id="lineChartFaturas"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico Pizza: Consumo por Tipo -->
+        <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
+          <h3 class="text-lg font-medium text-blue-900 mb-4">🥧 Consumo por Tipo</h3>
+          <div style="width: 500px; height: 500px; max-width: 100%;">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico Rosca: Distribuição Detalhada -->
+        <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
+          <h3 class="text-lg font-medium text-blue-900 mb-4">🍩 Distribuição Detalhada</h3>
+          <div style="width: 500px; height: 500px; max-width: 100%;">
+            <canvas id="doughnutChart"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- Gráficos -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-4">
-        <div class="bg-white shadow rounded-lg p-4">
-          <h3 class="text-lg font-medium text-blue-900 mb-4">Consumo Mensal</h3>
-          <canvas id="lineChart" class="w-full h-64"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-4">
-          <h3 class="text-lg font-medium text-blue-900 mb-4">Distribuição de Uso</h3>
-          <canvas id="pieChart" class="w-full h-64"></canvas>
-        </div>
-        <div class="bg-white shadow rounded-lg p-4">
-            <h3 class="text-lg font-medium text-blue-900 mb-4">Consumo Mensal (últimos 6 meses)</h3>
-            <canvas id="barChart" class="w-full h-64"></canvas>
-          </div>
-          <div class="bg-white shadow rounded-lg p-4">
-            <h3 class="text-lg font-medium text-blue-900 mb-4">Distribuição por Categoria</h3>
-            <canvas id="doughnutChart" class="w-full h-64"></canvas>
-          </div>
-      </div>
-
-      <!-- Relatórios -->
-      <div class="pt-16 px-6 pb-6">
-        <h2 class="text-2xl font-semibold text-blue-900 mb-6">Relatórios de Consumo</h2>
-        <div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-          <div class="px-6 py-3 bg-blue-900 text-white font-medium">Consumo Diário (últimos 7 dias)</div>
-          <div class="p-4 overflow-x-auto">
+      <!-- Tabela: Últimos 7 Dias -->
+      <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-3 bg-blue-900 text-white font-medium">📋 Consumo Diário (Últimos 7 dias)</div>
+        <div class="p-4 overflow-x-auto">
+          <?php if (!empty($this->view->ultimos7dias)): ?>
             <table class="min-w-full table-auto divide-y divide-gray-200">
               <thead class="bg-gray-100">
                 <tr>
                   <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Data</th>
-                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Consumo (L)</th>
+                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tipo</th>
+                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Quantidade</th>
+                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Em Litros</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
-                <tr><td class="px-4 py-2">01/06/2025</td><td class="px-4 py-2">350</td></tr>
-                <tr><td class="px-4 py-2">02/06/2025</td><td class="px-4 py-2">420</td></tr>
-                <tr><td class="px-4 py-2">03/06/2025</td><td class="px-4 py-2">390</td></tr>
-                <tr><td class="px-4 py-2">04/06/2025</td><td class="px-4 py-2">440</td></tr>
-                <tr><td class="px-4 py-2">05/06/2025</td><td class="px-4 py-2">410</td></tr>
-                <tr><td class="px-4 py-2">06/06/2025</td><td class="px-4 py-2">380</td></tr>
-                <tr><td class="px-4 py-2">07/06/2025</td><td class="px-4 py-2">430</td></tr>
+                <?php foreach ($this->view->ultimos7dias as $consumo): ?>
+                  <?php 
+                    $quantidade = $consumo->__get('quantidade');
+                    $unidade = $consumo->__get('unidade');
+                    
+                    // Conversão para litros
+                    $litros = $quantidade;
+                    if ($unidade == 'mL') {
+                      $litros = $quantidade / 1000;
+                    } elseif ($unidade == 'm³') {
+                      $litros = $quantidade * 1000;
+                    }
+                  ?>
+                  <tr>
+                    <td class="px-4 py-2">
+                      <?= date('d/m/Y', strtotime($consumo->__get('data_consumo'))) ?>
+                    </td>
+                    <td class="px-4 py-2"><?= htmlspecialchars($consumo->__get('tipo')) ?></td>
+                    <td class="px-4 py-2">
+                      <?= number_format($quantidade, 2, ',', '.') ?> <?= $unidade ?>
+                    </td>
+                    <td class="px-4 py-2 font-semibold">
+                      <?= number_format($litros, 2, ',', '.') ?> L
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
               </tbody>
             </table>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Exportar PDF -->
-      <div class="pt-16 px-6 pb-6">
-        <h2 class="text-2xl font-semibold text-blue-900 mb-6">Exportar Relatório em PDF</h2>
-        <div class="max-w-xl mx-auto space-y-6">
-          <div id="exportSuccess" class="hidden bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded">
-            Relatório gerado com sucesso!
-          </div>
-
-          <form id="exportForm" class="space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label for="startDate" class="block text-gray-700 font-medium mb-1">Data Início</label>
-                <input type="date" id="startDate" required class="w-full border border-gray-300 rounded px-3 py-2" />
-              </div>
-              <div>
-                <label for="endDate" class="block text-gray-700 font-medium mb-1">Data Fim</label>
-                <input type="date" id="endDate" required class="w-full border border-gray-300 rounded px-3 py-2" />
-              </div>
-            </div>
-
-            <div>
-              <label for="observations" class="block text-gray-700 font-medium mb-1">Observações (opcional)</label>
-              <textarea id="observations" rows="4" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Adicione comentários"></textarea>
-            </div>
-
-            <div>
-              <span class="block mb-2 text-gray-700 font-medium">Orientação</span>
-              <div class="flex items-center space-x-6">
-                <label class="flex items-center space-x-2">
-                  <input type="radio" name="orientation" value="portrait" checked class="h-4 w-4" />
-                  <span class="text-gray-700">Retrato</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                  <input type="radio" name="orientation" value="landscape" class="h-4 w-4" />
-                  <span class="text-gray-700">Paisagem</span>
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label for="includeOptions" class="block mb-1 text-gray-700 font-medium">Incluir no PDF</label>
-              <select id="includeOptions" multiple class="w-full border border-gray-300 rounded px-3 py-2">
-                <option value="table" selected>Tabela de Consumo</option>
-                <option value="charts" selected>Gráficos</option>
-                <option value="metas">Metas</option>
-              </select>
-              <p class="text-sm text-gray-500 mt-1">Segure Ctrl (Windows) ou Cmd (Mac) para múltipla seleção.</p>
-            </div>
-
-            <div class="relative">
-              <button id="exportBtn" type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 rounded">
-                <span id="btnText">Gerar PDF</span>
-                <svg id="btnSpinner" class="hidden animate-spin absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-4-3-4v4a8 8 0 00-8 8z"></path>
-                </svg>
+          <?php else: ?>
+            <div class="text-center py-8 text-gray-500">
+              <p>Nenhum consumo registrado nos últimos 7 dias.</p>
+              <button onclick="window.location.href='/consumo'" class="mt-4 bg-blue-900 hover:bg-blue-800 text-white px-6 py-2 rounded">
+                Registrar Consumo
               </button>
             </div>
-          </form>
+          <?php endif; ?>
         </div>
       </div>
-      <button id="pdfButton" 
-            class="fixed bottom-8 left-8 w-16 h-16 bg-blue-900 hover:bg-blue-800 text-white rounded-full shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-300 z-50 opacity-0 invisible pulse-glow"
-            onclick="generatePDF()"
-            title="Gerar Relatório PDF">
-        <!-- Ícone PDF personalizado -->
-        <svg class="w-8 h-8 mx-auto" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
-            <text x="12" y="17" font-family="Arial, sans-serif" font-size="4" font-weight="bold" text-anchor="middle" fill="currentColor">PDF</text>
-        </svg>
-    </button>
-    
-    <!-- Tooltip -->
-    <div id="pdfTooltip" 
-         class="fixed bottom-20 left-6 bg-gray-800 text-white px-3 py-2 rounded-lg text-sm opacity-0 invisible transition-all duration-300 z-40 whitespace-nowrap">
-        📄 Gerar Relatório PDF
-        <div class="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
-    </div>
+
     </main>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Redirecionamento para Metas
-      const btnMetas = document.getElementById('btnMetas');
-      if (btnMetas) {
-        btnMetas.addEventListener('click', () => {
-          window.location.href = 'metas';
-        });
-      }
+      
+      // === DADOS DO PHP PARA JAVASCRIPT ===
+      const graficoLinhaLabels = <?= $this->view->graficoLinhaLabels ?>;
+      const graficoLinhaData = <?= $this->view->graficoLinhaData ?>;
+      const graficoPizzaLabels = <?= $this->view->graficoPizzaLabels ?>;
+      const graficoPizzaData = <?= $this->view->graficoPizzaData ?>;
+      const graficoBarraLabels = <?= $this->view->graficoBarraLabels ?>;
+      const graficoBarraData = <?= $this->view->graficoBarraData ?>;
 
-      // Chart: Linha - Consumo Mensal
+      // === GRÁFICO DE LINHA: Consumo Mensal ===
       const ctxLine = document.getElementById('lineChart');
-      if (ctxLine) {
+      if (ctxLine && graficoLinhaLabels.length > 0) {
         new Chart(ctxLine, {
           type: 'line',
           data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+            labels: graficoLinhaLabels,
             datasets: [{
               label: 'Consumo (L)',
-              data: [1100, 950, 1020, 980, 1200, 1150],
+              data: graficoLinhaData,
               borderColor: 'rgba(30,60,114,1)',
               backgroundColor: 'rgba(30,60,114,0.1)',
               tension: 0.4,
-              fill: true
+              fill: true,
+              pointRadius: 5,
+              pointHoverRadius: 7
             }]
           },
           options: {
             responsive: true,
-            plugins: { legend: { display: true } },
-            scales: { y: { beginAtZero: false } }
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { display: true },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return 'Consumo: ' + context.parsed.y.toLocaleString('pt-BR') + ' L';
+                  }
+                }
+              }
+            },
+            scales: { 
+              y: { 
+                beginAtZero: false,
+                ticks: {
+                  callback: function(value) {
+                    return value.toLocaleString('pt-BR') + ' L';
+                  }
+                }
+              } 
+            }
           }
         });
       }
 
-      // Chart: Pizza - Distribuição de Uso
+      // === GRÁFICO PIZZA: Consumo por Tipo ===
       const ctxPie = document.getElementById('pieChart');
-      if (ctxPie) {
+      if (ctxPie && graficoPizzaLabels.length > 0) {
         new Chart(ctxPie, {
           type: 'pie',
           data: {
-            labels: ['Banho', 'Lavagem de Roupa', 'Limpeza'],
-            datasets: [{ data: [45, 30, 25], backgroundColor: ['#1e3c72', '#3c78b4', '#5fa5e5'] }]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } }
-          }
-        });
-      }
-
-      // Chart: Barra - Últimos 6 meses
-      const ctxBar = document.getElementById('barChart');
-      if (ctxBar) {
-        new Chart(ctxBar, {
-          type: 'bar',
-          data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+            labels: graficoPizzaLabels,
             datasets: [{
-              label: 'Consumo (L)',
-              data: [1200, 1350, 1280, 1420, 1500, 1380],
-              backgroundColor: 'rgba(30,60,114,0.7)'
+              data: graficoPizzaData,
+              backgroundColor: [
+                '#1e3c72', '#3c78b4', '#5fa5e5', '#78b4f0', 
+                '#91c4ff', '#aad4ff', '#c3e4ff'
+              ]
             }]
           },
           options: {
             responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { position: 'bottom' },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return context.label + ': ' + context.parsed.toLocaleString('pt-BR') + ' L';
+                  }
+                }
+              }
+            }
           }
         });
       }
 
-      // Chart: Rosca - Por Categoria
+      // === GRÁFICO DE LINHA: Faturas ===
+      const ctxLineFaturas = document.getElementById('lineChartFaturas');
+      if (ctxLineFaturas && graficoBarraLabels.length > 0) {
+        new Chart(ctxLineFaturas, {
+          type: 'line',
+          data: {
+            labels: graficoBarraLabels,
+            datasets: [{
+              label: 'Valor (R$)',
+              data: graficoBarraData,
+              borderColor: 'rgba(220, 38, 38, 1)',
+              backgroundColor: 'rgba(220, 38, 38, 0.1)',
+              tension: 0.4,
+              fill: true,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointBackgroundColor: 'rgba(220, 38, 38, 1)'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { display: true },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    return 'R$ ' + context.parsed.y.toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    });
+                  }
+                }
+              }
+            },
+            scales: { 
+              y: { 
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return 'R$ ' + value.toLocaleString('pt-BR');
+                  }
+                }
+              } 
+            }
+          }
+        });
+      }
+
+      // === GRÁFICO ROSCA: Mesmos dados da pizza ===
       const ctxDonut = document.getElementById('doughnutChart');
-      if (ctxDonut) {
+      if (ctxDonut && graficoPizzaLabels.length > 0) {
         new Chart(ctxDonut, {
           type: 'doughnut',
           data: {
-            labels: ['Banho', 'Limpeza', 'Cozinha', 'Jardim'],
+            labels: graficoPizzaLabels,
             datasets: [{
-              data: [40, 25, 20, 15],
-              backgroundColor: ['#1e3c72', '#3c78b4', '#5fa5e5', '#78b4f0']
+              data: graficoPizzaData,
+              backgroundColor: [
+                '#1e3c72', '#3c78b4', '#5fa5e5', '#78b4f0',
+                '#91c4ff', '#aad4ff', '#c3e4ff'
+              ]
             }]
           },
           options: {
             responsive: true,
-            plugins: { legend: { position: 'bottom' } }
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { position: 'bottom' },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percent = ((context.parsed / total) * 100).toFixed(1);
+                    return context.label + ': ' + context.parsed.toLocaleString('pt-BR') + ' L (' + percent + '%)';
+                  }
+                }
+              }
+            }
           }
         });
       }
 
-      // Formulário de exportação (exemplo de uso de spinner)
-      const exportForm = document.getElementById('exportForm');
-      const exportSuccess = document.getElementById('exportSuccess');
-      const btnSpinner = document.getElementById('btnSpinner');
-      const btnText = document.getElementById('btnText');
-
-      if (exportForm) {
-        exportForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          btnSpinner.classList.remove('hidden');
-          btnText.textContent = 'Gerando...';
-
-          // Simulação (remover em produção)
-          setTimeout(() => {
-            btnSpinner.classList.add('hidden');
-            btnText.textContent = 'Gerar PDF';
-            exportSuccess.classList.remove('hidden');
-          }, 2000);
-        });
-      }
     });
-
-     // Função para detectar quando chegar perto do fim da página
-     function checkScrollPosition() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            
-            // Calcula se está nos últimos 20% da página
-            const scrollPercentage = (scrollTop + windowHeight) / documentHeight;
-            const pdfButton = document.getElementById('pdfButton');
-            const tooltip = document.getElementById('pdfTooltip');
-            
-            if (scrollPercentage >= 0.8) { // 80% da página
-                // Mostra o botão com animação
-                pdfButton.classList.remove('opacity-0', 'invisible');
-                pdfButton.classList.add('opacity-100', 'visible', 'bounce-subtle');
-            } else {
-                // Esconde o botão
-                pdfButton.classList.add('opacity-0', 'invisible');
-                pdfButton.classList.remove('opacity-100', 'visible', 'bounce-subtle');
-                tooltip.classList.add('opacity-0', 'invisible');
-            }
-        }
-        
-        // Função para gerar PDF (placeholder)
-        function generatePDF() {
-            // Aqui você colocaria sua lógica real de geração de PDF
-            alert('🎉 Gerando relatório PDF!\n\nEm uma implementação real, aqui seria chamada a função para gerar o PDF.');
-            
-            // Exemplo de como poderia ser:
-            // window.print(); // Para impressão
-            // ou
-            // fetch('/api/generate-pdf', { method: 'POST' })...
-        }
-        
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            const pdfButton = document.getElementById('pdfButton');
-            const tooltip = document.getElementById('pdfTooltip');
-            
-            // Listener para scroll
-            window.addEventListener('scroll', checkScrollPosition);
-            
-            // Tooltip no hover
-            pdfButton.addEventListener('mouseenter', function() {
-                tooltip.classList.remove('opacity-0', 'invisible');
-                tooltip.classList.add('opacity-100', 'visible');
-            });
-            
-            pdfButton.addEventListener('mouseleave', function() {
-                tooltip.classList.add('opacity-0', 'invisible');
-                tooltip.classList.remove('opacity-100', 'visible');
-            });
-            
-            // Feedback visual no click
-            pdfButton.addEventListener('click', function() {
-                this.classList.add('animate-ping');
-                setTimeout(() => {
-                    this.classList.remove('animate-ping');
-                }, 600);
-            });
-        });
   </script>
 </body>
 </html>
-
-<?php
-function mostrarPopup($mensagem, $tipo = "sucesso") {
-    // Escapa o conteúdo para evitar problemas de segurança
-    $mensagem = htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8');
-    $tipo = ($tipo === "erro") ? "erro" : "sucesso";
-
-    echo <<<HTML
-    <div id="popupMensagem" class="popup $tipo">
-        <div class="popup-conteudo">
-            <span id="fecharPopup" class="fechar">&times;</span>
-            <p>$mensagem</p>
-        </div>
-    </div>
-
-    <style>
-    .popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-    .popup-conteudo {
-        background-color: #fff;
-        padding: 20px 30px;
-        border-radius: 8px;
-        text-align: center;
-        min-width: 300px;
-        max-width: 90%;
-        box-shadow: 0 0 15px rgba(0,0,0,0.3);
-        position: relative;
-    }
-    .fechar {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 20px;
-        cursor: pointer;
-    }
-    .popup.sucesso .popup-conteudo {
-        border-left: 5px solid #2b3f9bff;
-    }
-    .popup.erro .popup-conteudo {
-        border-left: 5px solid #dc3545;
-    }
-    </style>
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var popup = document.getElementById("popupMensagem");
-        if (popup) {
-            var fechar = document.getElementById("fecharPopup");
-            fechar.onclick = function() {
-                popup.style.display = "none";
-            }
-            setTimeout(function() {
-                popup.style.display = "none";
-            }, 10000);
-        }
-    });
-    </script>
-HTML;
-}
-?>
