@@ -6,14 +6,15 @@ use App\DAO;
 use App\Model\UsuarioModel;
 use FW\Controller\FuncoesGlobais;
 
+class UsuarioDAO extends DAO {
 
-class UsuarioDAO extends DAO{
-
+    /**
+     * Insere um novo usuário
+     */
     public function inserir($obj) {
-        try{
-
-            $user_cpf = $obj->__get('user_cpf');
-            $user_nome = $obj->__get('user_nome');
+        try {
+            $user_cpf   = $obj->__get('user_cpf');
+            $user_nome  = $obj->__get('user_nome');
             $user_email = $obj->__get('user_email');
             $user_senha = $obj->__get('user_senha');
 
@@ -28,133 +29,166 @@ class UsuarioDAO extends DAO{
                         :user_email,
                         :user_senha
                     )";
+
             $stmt = $this->getConn()->prepare($sql);
-            $stmt->bindValue(':user_cpf', $user_cpf);   
+            $stmt->bindValue(':user_cpf', $user_cpf);
             $stmt->bindValue(':user_nome', $user_nome);
             $stmt->bindValue(':user_email', $user_email);
             $stmt->bindValue(':user_senha', $user_senha);
             $stmt->execute();
         }
-        catch(\PDOException $ex){
+        catch(\PDOException $ex) {
             header('Location:/error103');
             die();
         }
     }
 
-    public function editar($obj) {
-        try{
-
-            $user_nome = $obj->__get('user_nome');
+    /**
+     * Atualiza informações do usuário (nome e email)
+     */
+    public function alterar($obj) {
+        try {
+            $user_id    = $obj->__get('user_id');
+            $user_nome  = $obj->__get('user_nome');
             $user_email = $obj->__get('user_email');
-            $user_id = $obj->__get('user_id');
 
-            //echo $user_id;
-            //exit;
-
-            $sql = "UPDATE usuarios
+            $sql = "UPDATE usuarios 
                     SET 
                         nome = :user_nome,
-                        email = :user_email
+                        email = :user_email,
+                        updated_at = NOW()
                     WHERE id = :id";
+
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bindValue(':user_nome', $user_nome);
             $stmt->bindValue(':user_email', $user_email);
-            $stmt->bindValue(':id', $user_id);
+            $stmt->bindValue(':id', $user_id, \PDO::PARAM_INT);
             $stmt->execute();
+            return true;
         }
-        catch(\PDOException $ex){
-            header('Location:/error104');
-            die();
+        catch(\PDOException $ex) {
+            return false;
         }
     }
 
-    public function procurar_login($email){
-           
-        try{
-            $sql = "SELECT senha FROM `usuarios` WHERE email='$email'";
+    /**
+     * Busca usuário por ID
+     */
+    public function buscarPorId($id) {
+        try {
+            $sql = "SELECT 
+                        id,
+                        cpf,
+                        nome,
+                        email,
+                        created_at
+                    FROM 
+                        usuarios
+                    WHERE
+                        id = :id
+                    LIMIT 1";
+            
             $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
             $stmt->execute();
-            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            foreach($result as $row){
-                $senha = $row;
-            }
-            return $senha;
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
-            die();
+            return null;
         }    
     }
 
-    public function puxar_login($email){
-           
-        try{
-            $sql = "SELECT id, nome, cpf FROM `usuarios` WHERE email='$email'";
+    /**
+     * Busca usuário por email (para login)
+     */
+    public function buscarPorEmail($email) {
+        try {
+            $sql = "SELECT 
+                        id,
+                        cpf,
+                        nome,
+                        email,
+                        senha
+                    FROM 
+                        usuarios
+                    WHERE
+                        email = :email
+                    LIMIT 1";
+            
             $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':email', $email);
             $stmt->execute();
-            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            foreach($result as $row){
-                $usuario_logado = $row;
-            }
-            return $usuario_logado;
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
-            die();
+            return null;
         }    
     }
 
-    public function alterarSenha($obj){
-           
-        try{
+    /**
+     * Verifica se email já existe (para evitar duplicatas)
+     */
+    public function emailExiste($email, $excluirId = null) {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM usuarios WHERE email = :email";
+            
+            if ($excluirId) {
+                $sql .= " AND id != :id";
+            }
+            
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':email', $email);
+            
+            if ($excluirId) {
+                $stmt->bindValue(':id', $excluirId, \PDO::PARAM_INT);
+            }
+            
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            return $result['total'] > 0;
+        }
+        catch(\PDOException $ex){
+            return false;
+        }    
+    }
 
-            $user_id = $obj->__get('user_id');
+    /**
+     * Altera a senha do usuário
+     */
+    public function alterarSenha($obj) {
+        try {
+            $user_id    = $obj->__get('user_id');
             $user_senha = $obj->__get('user_senha');
-
-            //echo $user_senha;
-            //exit;
 
             $sql = "UPDATE usuarios
                     SET 
-                        senha = :user_senha
+                        senha = :user_senha,
+                        updated_at = NOW()
                     WHERE id = :id";
+            
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bindValue(':user_senha', $user_senha);
-            $stmt->bindValue(':id', $user_id);
+            $stmt->bindValue(':id', $user_id, \PDO::PARAM_INT);
             $stmt->execute();
+            return true;
         }
-        catch(\PDOException $ex){
-            header('Location:/error104');
-            die();
+        catch(\PDOException $ex) {
+            return false;
         } 
     }
 
-    public function listar(){
-           
-        try{
-            $alunos = array();
-            $sql = "SELECT 
-                            a.*, 
-                            l.log_email 
-                        FROM 
-                            alunos a,
-                            login l
-                        WHERE
-                            ad.fk_login_log_id = l.log_id
-                    ";
+    /**
+     * Método usado no login (retorna hash da senha)
+     */
+    public function procurar_login($email) {
+        try {
+            $sql = "SELECT senha FROM usuarios WHERE email = :email";
             $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':email', $email);
             $stmt->execute();
-            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-            foreach($result as $row){
-                $alunosModel = new AlunosModel();
-                
-                $global = new FuncoesGlobais();
-                $global->popularModel($alunosModel, $row);
-
-                array_push($alunos, $alunosModel);
-            }
-            return $alunos;
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result ?: null;
         }
         catch(\PDOException $ex){
             header('Location:/error103');
@@ -162,8 +196,56 @@ class UsuarioDAO extends DAO{
         }    
     }
 
-    public function excluir($obj) {}
-    public function alterar($obj) {}
-    public function buscarPorId($id){ }
-    public function buscarPorLogado($id){}
+    /**
+     * Retorna dados do usuário logado (ID, nome, CPF)
+     */
+    public function puxar_login($email) {
+        try {
+            $sql = "SELECT id, nome, cpf FROM usuarios WHERE email = :email";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':email', $email);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result ?: null;
+        }
+        catch(\PDOException $ex){
+            header('Location:/error103');
+            die();
+        }    
+    }
+
+    /**
+     * Lista todos os usuários cadastrados
+     */
+    public function listar() {
+        try {
+            $usuarios = [];
+            $sql = "SELECT * FROM usuarios ORDER BY nome ASC";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            foreach($result as $row){
+                $usuarioModel = new UsuarioModel();
+                $global = new FuncoesGlobais();
+                $global->popularModel($usuarioModel, $row);
+                array_push($usuarios, $usuarioModel);
+            }
+            return $usuarios;
+        }
+        catch(\PDOException $ex){
+            return [];
+        }    
+    }
+
+    /**
+     * Retorna dados do usuário logado (por ID)
+     */
+    public function buscarPorLogado($id) {
+        return $this->buscarPorId($id);
+    }
+
+    public function excluir($obj) {
+        // Implementar se necessário
+    }
 }

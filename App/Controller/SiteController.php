@@ -30,20 +30,73 @@ class SiteController extends Action{
     }
 
     public function menu(){
+        session_start();
+        
+        // Verifica autenticação
         if (!isset($_COOKIE['cookie_id'])) {
             header('Location: /');
+            exit;
         }
         else if($_COOKIE['cookie_id']==0){
             header('Location: /');
+            exit;
         }
         
-        $title = "Menu";
-        $title_pagina = "Bem vindo ao site";
-
+        $id_usuario = $_COOKIE['cookie_id'];
         
+        $title = "Menu";
+        $title_pagina = "Meu Perfil";
 
+        // === BUSCAR DADOS DO USUÁRIO ===
+        $usuarioDAO = new \App\DAO\UsuarioDAO();
+        $usuario = $usuarioDAO->buscarPorId($id_usuario);
+        
+        if (!$usuario) {
+            // Se não encontrar o usuário, desloga
+            setcookie('cookie_id', '', time() - 3600, '/');
+            setcookie('cookie_nome', '', time() - 3600, '/');
+            setcookie('cookie_cpf', '', time() - 3600, '/');
+            header('Location: /');
+            exit;
+        }
+
+        // === FORMATAR CPF ===
+        $cpf_exibir = str_pad($usuario['cpf'], 11, '0', STR_PAD_LEFT);
+        $cpf_formatado = substr($cpf_exibir, 0, 3) . '.' . 
+                        substr($cpf_exibir, 3, 3) . '.' . 
+                        substr($cpf_exibir, 6, 3) . '-' . 
+                        substr($cpf_exibir, 9, 2);
+
+        // === VERIFICAR MENSAGENS DE FEEDBACK ===
+        $mensagemSucesso = null;
+        $mensagemErro = null;
+        
+        if (isset($_SESSION['perfil_atualizado']) && $_SESSION['perfil_atualizado'] == 1) {
+            $mensagemSucesso = 'Perfil atualizado com sucesso!';
+            $_SESSION['perfil_atualizado'] = 0;
+        }
+        
+        if (isset($_SESSION['senha_alterada']) && $_SESSION['senha_alterada'] == 1) {
+            $mensagemSucesso = 'Senha alterada com sucesso!';
+            $_SESSION['senha_alterada'] = 0;
+        }
+        
+        if (isset($_SESSION['erro_edicao'])) {
+            $mensagemErro = $_SESSION['erro_edicao'];
+            unset($_SESSION['erro_edicao']);
+        }
+
+        // === PASSAR DADOS PARA A VIEW ===
         $this->getView()->title = $title;
         $this->getView()->title_pagina = $title_pagina;
+        
+        // Dados do usuário
+        $this->getView()->usuario = $usuario;
+        $this->getView()->cpf_formatado = $cpf_formatado;
+        
+        // Mensagens de feedback
+        $this->getView()->mensagemSucesso = $mensagemSucesso;
+        $this->getView()->mensagemErro = $mensagemErro;
 
         $this->render('menu', 'site');
     }
@@ -203,6 +256,10 @@ class SiteController extends Action{
         $this->getView()->graficoPizzaData = json_encode($graficoPizzaData);
         $this->getView()->graficoBarraLabels = json_encode($graficoBarraLabels);
         $this->getView()->graficoBarraData = json_encode($graficoBarraData);
+        
+        // CONSUMO DE HOJE PARA A NAVBAR
+        $consumoHoje = $consumoDAO->buscarConsumoHoje($id_usuario);
+        $this->getView()->consumoHoje = round($consumoHoje, 0);
 
         $this->render('dashboard', 'site');
     }
@@ -269,6 +326,10 @@ class SiteController extends Action{
     $this->getView()->ultimasFaturas = $ultimasFaturas;
     $this->getView()->ultimasMetas = $ultimasMetas;
     $this->getView()->ultimosConsumos = $ultimosConsumos;
+    
+    // CONSUMO DE HOJE PARA A NAVBAR
+    $consumoHoje = $consumoDAO->buscarConsumoHoje($id_usuario);
+    $this->getView()->consumoHoje = round($consumoHoje, 0);
 
     $this->render('consumo', 'site');
 }

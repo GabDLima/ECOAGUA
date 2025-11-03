@@ -1,5 +1,5 @@
 <body class="bg-gray-50">
-  <div id="main-content" class="flex-1 pt-16 transition-[margin] duration-300">
+  <div id="main-content" class="flex-1 pt-5 transition-[margin] duration-300">
     <main class="px-6 py-4">
       <h2 class="text-2xl font-semibold text-blue-900 mb-6">Gerenciar Dados de Consumo</h2>
 

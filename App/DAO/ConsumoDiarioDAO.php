@@ -232,6 +232,39 @@ class ConsumoDiarioDAO extends DAO{
     }
 
     /**
+     * Busca consumo apenas de HOJE
+     */
+    public function buscarConsumoHoje($id_usuario) {
+        try {
+            $sql = "SELECT 
+                        SUM(
+                            CASE 
+                                WHEN unidade = 'L' THEN quantidade
+                                WHEN unidade = 'mL' THEN quantidade / 1000
+                                WHEN unidade = 'm³' THEN quantidade * 1000
+                                ELSE quantidade
+                            END
+                        ) as total_litros
+                    FROM 
+                        consumo_diario
+                    WHERE
+                        id_usuario = :id_usuario
+                        AND DATE(data_consumo) = CURDATE()
+                   ";
+            
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':id_usuario', $id_usuario);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            return $result['total_litros'] ?? 0;
+        }
+        catch(\PDOException $ex){
+            return 0;
+        }    
+    }
+
+    /**
      * Busca consumo por mês específico (para comparar com meta)
      */
     public function buscarConsumoPorMes($id_usuario, $mes, $ano) {
