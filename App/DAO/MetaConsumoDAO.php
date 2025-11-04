@@ -13,24 +13,24 @@ class MetaConsumoDAO extends DAO{
             $meta_mensal = $obj->__get('meta_mensal');
             $meta_reducao = $obj->__get('meta_reducao');
             $prazo = $obj->__get('prazo');
-            $usuario_id = $obj->__get('usuario_id');
+            $id_usuario = $obj->__get('id_usuario');
 
             $sql = "INSERT INTO meta_consumo (
                         meta_mensal,
                         meta_reducao,
                         prazo,
-                        usuario_id
+                        id_usuario
                     ) VALUES (
                         :meta_mensal,
                         :meta_reducao,
                         :prazo,
-                        :usuario_id
+                        :id_usuario
                     )";
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bindValue(':meta_mensal', $meta_mensal);   
             $stmt->bindValue(':meta_reducao', $meta_reducao);
             $stmt->bindValue(':prazo', $prazo);   
-            $stmt->bindValue(':usuario_id', $usuario_id);
+            $stmt->bindValue(':id_usuario', $id_usuario);
             $stmt->execute();
         }
         catch(\PDOException $ex){
@@ -52,14 +52,14 @@ class MetaConsumoDAO extends DAO{
                     FROM 
                         meta_consumo
                     WHERE
-                        usuario_id = :usuario_id
+                        id_usuario = :id_usuario
                     ORDER BY 
                         id DESC
                     LIMIT 1
                    ";
             
             $stmt = $this->getConn()->prepare($sql);
-            $stmt->bindValue(':usuario_id', $id_usuario);
+            $stmt->bindValue(':id_usuario', $id_usuario);
             $stmt->execute();
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
@@ -115,13 +115,13 @@ class MetaConsumoDAO extends DAO{
                     FROM 
                         meta_consumo
                     WHERE
-                        usuario_id = :usuario_id
+                        id_usuario = :id_usuario
                     ORDER BY 
                         id DESC
                    ";
             
             $stmt = $this->getConn()->prepare($sql);
-            $stmt->bindValue(':usuario_id', $id_usuario);
+            $stmt->bindValue(':id_usuario', $id_usuario);
             $stmt->execute();
             $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
