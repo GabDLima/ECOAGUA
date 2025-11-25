@@ -8,32 +8,22 @@ use App\Model\UsuarioModel;
 
 class UsuarioController extends Action{
 
-    /**
-     * Editar informações do usuário (nome e email)
-     */
     public function editar(){
-        session_start();
-        
-        // Verifica autenticação
-        if (!isset($_COOKIE['cookie_id']) || $_COOKIE['cookie_id'] == 0) {
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
             header('Location: /');
             exit;
         }
 
-        $id_usuario = $_COOKIE['cookie_id'];
-        
-        // Pega dados do POST
-        $nome = $_POST['USER_NOME'] ?? '';
-        $email = $_POST['USER_EMAIL'] ?? '';
+        $id_usuario = $_SESSION['usuario_id'];
+        $nome = trim($_POST['USER_NOME'] ?? '');
+        $email = trim($_POST['USER_EMAIL'] ?? '');
 
-        // Validações básicas
         if (empty($nome) || empty($email)) {
             $_SESSION['erro_edicao'] = 'Nome e email são obrigatórios';
             header('Location: /menu');
             exit;
         }
 
-        // Valida email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['erro_edicao'] = 'Email inválido';
             header('Location: /menu');
@@ -41,57 +31,43 @@ class UsuarioController extends Action{
         }
 
         $usuarioDAO = new UsuarioDAO();
-        
-        // Verifica se o email já existe (em outro usuário)
+
         if ($usuarioDAO->emailExiste($email, $id_usuario)) {
             $_SESSION['erro_edicao'] = 'Este email já está sendo usado por outro usuário';
             header('Location: /menu');
             exit;
         }
 
-        // Cria o model e popula
         $usuario = new UsuarioModel();
-        $usuario->__set('id', $id_usuario);
-        $usuario->__set('nome', $nome);
-        $usuario->__set('email', $email);
+        $usuario->__set('user_id', $id_usuario);
+        $usuario->__set('user_nome', $nome);
+        $usuario->__set('user_email', $email);
 
-        // Atualiza no banco
         $sucesso = $usuarioDAO->alterar($usuario);
 
         if ($sucesso) {
-            // Atualiza o cookie do nome
-            setcookie('cookie_nome', $nome, time() + (86400 * 30), '/');
-            
+            $_SESSION['usuario_nome'] = $nome;
             $_SESSION['perfil_atualizado'] = 1;
             header('Location: /menu');
         } else {
             $_SESSION['erro_edicao'] = 'Erro ao atualizar perfil';
             header('Location: /menu');
         }
-        
+
         exit;
     }
 
-    /**
-     * Alterar senha do usuário
-     */
     public function alteraSenha(){
-        session_start();
-        
-        // Verifica autenticação
-        if (!isset($_COOKIE['cookie_id']) || $_COOKIE['cookie_id'] == 0) {
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
             header('Location: /');
             exit;
         }
 
-        $id_usuario = $_COOKIE['cookie_id'];
-        
-        // Pega dados do POST
+        $id_usuario = $_SESSION['usuario_id'];
         $senhaAtual = $_POST['SENHA_ATUAL'] ?? '';
         $novaSenha = $_POST['NOVA_SENHA'] ?? '';
         $confirmarSenha = $_POST['CONFIRMAR_SENHA'] ?? '';
 
-        // Validações
         if (empty($senhaAtual) || empty($novaSenha) || empty($confirmarSenha)) {
             $_SESSION['erro_senha'] = 'Todos os campos são obrigatórios';
             header('Location: /redefinirSenha');
@@ -111,28 +87,25 @@ class UsuarioController extends Action{
         }
 
         $usuarioDAO = new UsuarioDAO();
-        
-        // Busca usuário atual
         $usuarioAtual = $usuarioDAO->buscarPorId($id_usuario);
-        
+
         if (!$usuarioAtual) {
             $_SESSION['erro_senha'] = 'Usuário não encontrado';
             header('Location: /redefinirSenha');
             exit;
         }
 
-        // Verifica senha atual
-        // NOTA: Ajuste aqui se você usa hash (password_verify)
-        // Por enquanto está comparando direto como no seu banco
         if ($usuarioAtual['senha'] !== $senhaAtual) {
             $_SESSION['erro_senha'] = 'Senha atual incorreta';
             header('Location: /redefinirSenha');
             exit;
         }
 
-        // Atualiza senha
-        // NOTA: Você pode adicionar hash aqui: password_hash($novaSenha, PASSWORD_DEFAULT)
-        $sucesso = $usuarioDAO->alterarSenha($id_usuario, $novaSenha);
+        $usuario = new UsuarioModel();
+        $usuario->__set('user_id', $id_usuario);
+        $usuario->__set('user_senha', $novaSenha);
+
+        $sucesso = $usuarioDAO->alterarSenha($usuario);
 
         if ($sucesso) {
             $_SESSION['senha_alterada'] = 1;
@@ -141,115 +114,140 @@ class UsuarioController extends Action{
             $_SESSION['erro_senha'] = 'Erro ao alterar senha';
             header('Location: /redefinirSenha');
         }
-        
+
         exit;
     }
 
     public function inserirUsuario(){
+        $user_cpf = trim($_POST['USER_CPF'] ?? '');
+        $user_nome = trim($_POST['USER_NOME'] ?? '');
+        $user_email = trim($_POST['USER_EMAIL'] ?? '');
+        $user_senha = $_POST['USER_SENHA'] ?? '';
+        $user_senha_2 = $_POST['USER_SENHA_2'] ?? '';
 
-    $user_cpf = $_POST['USER_CPF'];
-    $user_nome = $_POST['USER_NOME'];
-    $user_email = $_POST['USER_EMAIL'];
-    $user_senha = $_POST['USER_SENHA'];
-    $user_senha_2 = $_POST['USER_SENHA_2'];
+        if (empty($user_cpf) || empty($user_nome) || empty($user_email) || empty($user_senha)) {
+            $_SESSION['erro_cadastro'] = 'Todos os campos são obrigatórios';
+            header('Location: /');
+            exit;
+        }
 
-    if($user_senha == $user_senha_2){
+        if (!filter_var($user_email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['erro_cadastro'] = 'Email inválido';
+            header('Location: /');
+            exit;
+        }
+
+        if ($user_senha !== $user_senha_2) {
+            $_SESSION['senhas_nao_conferem'] = 1;
+            header('Location: /');
+            exit;
+        }
+
+        if (strlen($user_senha) < 6) {
+            $_SESSION['erro_cadastro'] = 'A senha deve ter no mínimo 6 caracteres';
+            header('Location: /');
+            exit;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+
+        if ($usuarioDAO->emailExiste($user_email)) {
+            $_SESSION['erro_cadastro'] = 'Este email já está cadastrado';
+            header('Location: /');
+            exit;
+        }
+
         $usuario = new UsuarioModel();
-        $usuario->__set("user_cpf",$user_cpf);
-        $usuario->__set("user_nome",$user_nome);
-        $usuario->__set("user_email",$user_email);
-        $usuario->__set("user_senha",$user_senha);
+        $usuario->__set("user_cpf", $user_cpf);
+        $usuario->__set("user_nome", $user_nome);
+        $usuario->__set("user_email", $user_email);
+        $usuario->__set("user_senha", $user_senha);
 
-
-        $usuariodao = new UsuarioDAO();
-        $usuariodao->inserir($usuario);
-
-        session_start();
+        $usuarioDAO->inserir($usuario);
         $_SESSION['usuario_cadastrado'] = 1;
 
-    }
-    else{
-        session_start();
-        $_SESSION['senhas_nao_conferem'] = 1;
-    }
-
-    header('Location: /');
-
+        header('Location: /');
+        exit;
     }
 
 
     public function validaAutenticacao() {
-
-        
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
+            header('Location: /');
+            exit;
+        }
     }
 
     public function login(){
+        $email = trim($_POST['EMAIL'] ?? '');
+        $senha = $_POST['SENHA'] ?? '';
 
-        //var_dump($_POST);
-        //exit;
-        //echo "ablueblue";
-        $usuarioDAO = new \App\DAO\UsuarioDAO();
-        $senha = $usuarioDAO->procurar_login($_POST['EMAIL']);
-        $user_senha = $_POST['SENHA'];
-        //echo $senha['senha']
-        if($user_senha == $senha['senha']){
-            $usuario_logado = $usuarioDAO->puxar_login($_POST['EMAIL']);
-            $_SESSION['cookie_id'] = $usuario_logado['id'];
-            $_SESSION['cookie_nome'] = $usuario_logado['nome'];
-            setcookie("cookie_id", $usuario_logado['id'], 2147483647, "/");
-            setcookie("cookie_nome", $usuario_logado['nome'], 2147483647, "/");
-            setcookie("cookie_cpf", $usuario_logado['cpf'], 2147483647, "/");
-            //echo $_SESSION['cookie_id'];
-            //echo $_COOKIE['cookie_nome'];
-            session_start();
-            $_SESSION['login_realizado'] = 1;
-            header('Location: /dashboard');         }
-        else{
-            //echo $user_senha;
-            //echo $senha;
-            //ho $senha['senha'];
-            //alert('Mensagem aqui');  
-            //$link = "/";
-            //echo "<script>alert('Email ou senha incorreta.'); location.href='{$link}';</script>";
-            session_start();
+        if (empty($email) || empty($senha)) {
             $_SESSION['mensagem_login_incorreto'] = 1;
             header('Location: /');
+            exit;
         }
 
+        $usuarioDAO = new UsuarioDAO();
+        $usuario = $usuarioDAO->buscarPorEmail($email);
 
-        //header('Location: /'); 
+        if (!$usuario || $usuario['senha'] !== $senha) {
+            $_SESSION['mensagem_login_incorreto'] = 1;
+            header('Location: /');
+            exit;
+        }
+
+        $_SESSION['usuario_id'] = $usuario['id'];
+        $_SESSION['usuario_nome'] = $usuario['nome'];
+        $_SESSION['usuario_cpf'] = $usuario['cpf'];
+        $_SESSION['usuario_email'] = $usuario['email'];
+        $_SESSION['dark_mode'] = $usuario['dark_mode'] ?? 0;
+        $_SESSION['login_realizado'] = 1;
+
+        header('Location: /dashboard');
+        exit;
     }
 
     public function logout(){
+        $_SESSION = array();
 
-        setcookie('cookie_id', '', time() - 3600, '/');
-        setcookie('cookie_nome', '', time() - 3600, '/');
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
 
-        //echo $_COOKIE['cookie_nome'];
-        //echo $_COOKIE['cookie_id'];
-        //exit;
+        session_destroy();
         session_start();
         $_SESSION['usuario_desconectado'] = 1;
-        header('Location: /'); 
 
+        header('Location: /');
+        exit;
     }
 
-    public function alterarUsuario(){
+    public function toggleDarkMode(){
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'Não autorizado']);
+            exit;
+        }
 
-        $user_cpf = $_POST['USER_CPF'];
-        $user_nome = $_POST['USER_NOME'];
-        $user_email = $_POST['USER_EMAIL'];
+        $id_usuario = $_SESSION['usuario_id'];
+        $dark_mode = isset($_POST['dark_mode']) ? (int)$_POST['dark_mode'] : 0;
 
-        $usuario = new UsuarioModel();
-        $usuario->__set("user_cpf",$user_cpf);
-        $usuario->__set("user_nome",$user_nome);
-        $usuario->__set("user_email",$user_email);
+        $usuarioDAO = new UsuarioDAO();
+        $sucesso = $usuarioDAO->alterarDarkMode($id_usuario, $dark_mode);
 
-        $usuariodao = new UsuarioDAO();
-        $usuariodao->alterar($usuario);
-
-        header('Location: /dashboard'); 
-
+        if ($sucesso) {
+            $_SESSION['dark_mode'] = $dark_mode;
+            echo json_encode(['success' => true, 'dark_mode' => $dark_mode]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Erro ao atualizar preferência']);
+        }
+        exit;
     }
-    
+
 }

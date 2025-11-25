@@ -8,9 +8,6 @@ use FW\Controller\FuncoesGlobais;
 
 class UsuarioDAO extends DAO {
 
-    /**
-     * Insere um novo usuário
-     */
     public function inserir($obj) {
         try {
             $user_cpf   = $obj->__get('user_cpf');
@@ -38,14 +35,12 @@ class UsuarioDAO extends DAO {
             $stmt->execute();
         }
         catch(\PDOException $ex) {
-            header('Location:/error103');
-            die();
+            error_log("Erro ao inserir usuário: " . $ex->getMessage());
+            return false;
         }
+        return true;
     }
 
-    /**
-     * Atualiza informações do usuário (nome e email)
-     */
     public function alterar($obj) {
         try {
             $user_id    = $obj->__get('user_id');
@@ -67,67 +62,63 @@ class UsuarioDAO extends DAO {
             return true;
         }
         catch(\PDOException $ex) {
+            error_log("Erro ao alterar usuário: " . $ex->getMessage());
             return false;
         }
     }
 
-    /**
-     * Busca usuário por ID
-     */
     public function buscarPorId($id) {
         try {
-            $sql = "SELECT 
+            $sql = "SELECT
                         id,
                         cpf,
                         nome,
                         email,
+                        dark_mode,
                         created_at
-                    FROM 
+                    FROM
                         usuarios
                     WHERE
                         id = :id
                     LIMIT 1";
-            
+
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar usuário por ID: " . $ex->getMessage());
             return null;
-        }    
+        }
     }
 
-    /**
-     * Busca usuário por email (para login)
-     */
     public function buscarPorEmail($email) {
         try {
-            $sql = "SELECT 
+            $sql = "SELECT
                         id,
                         cpf,
                         nome,
                         email,
-                        senha
-                    FROM 
+                        senha,
+                        dark_mode
+                    FROM
                         usuarios
                     WHERE
                         email = :email
                     LIMIT 1";
-            
+
             $stmt = $this->getConn()->prepare($sql);
             $stmt->bindValue(':email', $email);
             $stmt->execute();
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar usuário por email: " . $ex->getMessage());
             return null;
-        }    
+        }
     }
 
-    /**
-     * Verifica se email já existe (para evitar duplicatas)
-     */
     public function emailExiste($email, $excluirId = null) {
         try {
             $sql = "SELECT COUNT(*) as total FROM usuarios WHERE email = :email";
@@ -149,13 +140,11 @@ class UsuarioDAO extends DAO {
             return $result['total'] > 0;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao verificar email existente: " . $ex->getMessage());
             return false;
-        }    
+        }
     }
 
-    /**
-     * Altera a senha do usuário
-     */
     public function alterarSenha($obj) {
         try {
             $user_id    = $obj->__get('user_id');
@@ -174,13 +163,11 @@ class UsuarioDAO extends DAO {
             return true;
         }
         catch(\PDOException $ex) {
+            error_log("Erro ao alterar senha: " . $ex->getMessage());
             return false;
-        } 
+        }
     }
 
-    /**
-     * Método usado no login (retorna hash da senha)
-     */
     public function procurar_login($email) {
         try {
             $sql = "SELECT senha FROM usuarios WHERE email = :email";
@@ -191,14 +178,11 @@ class UsuarioDAO extends DAO {
             return $result ?: null;
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
-            die();
-        }    
+            error_log("Erro ao procurar login: " . $ex->getMessage());
+            return null;
+        }
     }
 
-    /**
-     * Retorna dados do usuário logado (ID, nome, CPF)
-     */
     public function puxar_login($email) {
         try {
             $sql = "SELECT id, nome, cpf FROM usuarios WHERE email = :email";
@@ -209,14 +193,11 @@ class UsuarioDAO extends DAO {
             return $result ?: null;
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
-            die();
-        }    
+            error_log("Erro ao puxar login: " . $ex->getMessage());
+            return null;
+        }
     }
 
-    /**
-     * Lista todos os usuários cadastrados
-     */
     public function listar() {
         try {
             $usuarios = [];
@@ -234,18 +215,34 @@ class UsuarioDAO extends DAO {
             return $usuarios;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao listar usuários: " . $ex->getMessage());
             return [];
-        }    
+        }
     }
 
-    /**
-     * Retorna dados do usuário logado (por ID)
-     */
     public function buscarPorLogado($id) {
         return $this->buscarPorId($id);
     }
 
+    public function alterarDarkMode($id, $dark_mode) {
+        try {
+            $sql = "UPDATE usuarios
+                    SET dark_mode = :dark_mode,
+                        updated_at = NOW()
+                    WHERE id = :id";
+
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->bindValue(':dark_mode', $dark_mode, \PDO::PARAM_INT);
+            $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+            $stmt->execute();
+            return true;
+        }
+        catch(\PDOException $ex) {
+            error_log("Erro ao alterar dark mode: " . $ex->getMessage());
+            return false;
+        }
+    }
+
     public function excluir($obj) {
-        // Implementar se necessário
     }
 }

@@ -1,12 +1,4 @@
-<?php
-session_start();
-if(isset($_SESSION['login_realizado'])){
-  if($_SESSION['login_realizado'] == 1){
-    echo '<script>alert("Login realizado com sucesso!");</script>';
-    $_SESSION['login_realizado'] = 0;
-  }
-}
-?>
+<?php include __DIR__ . '/../includes/mensagens.php'; ?>
 
 <style>
   @keyframes bounce-subtle {
@@ -24,110 +16,134 @@ if(isset($_SESSION['login_realizado'])){
 </style>
 
 <body class="bg-gray-50">
-  <div id="main-content" class="flex-1 pt-5 transition-[margin] duration-300">
+  <div id="main-content" class="flex-1 pt-20 transition-[margin] duration-300">
     <main class="px-6 py-4">
       <h2 class="text-2xl font-semibold text-blue-900 mb-6">
         Bem-vindo à sua Dashboard, <?= htmlspecialchars($this->view->nome_usuario) ?>!
       </h2>
 
       <!-- Cards Principais com Dados Reais -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+
         <!-- Card: Consumo do Mês Atual -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Consumo do Mês</div>
-          <div class="p-4">
-            <div class="text-3xl font-bold mb-2">
-              <?= number_format($this->view->totalMesAtual, 0, ',', '.') ?> L
+        <div class="eco-card animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="eco-card-icon bg-blue-100">
+              <i class="fas fa-tint text-blue-600"></i>
             </div>
-            <p class="text-gray-600">
-              <?php if ($this->view->variacaoPercentual > 0): ?>
-                <span class="text-red-600">▲ <?= abs($this->view->variacaoPercentual) ?>%</span> vs mês anterior
-              <?php elseif ($this->view->variacaoPercentual < 0): ?>
-                <span class="text-green-600">▼ <?= abs($this->view->variacaoPercentual) ?>%</span> vs mês anterior
-              <?php else: ?>
-                <span class="text-gray-600">Sem variação</span>
-              <?php endif; ?>
-            </p>
+            <?php if ($this->view->variacaoPercentual < 0): ?>
+              <span class="eco-badge eco-badge-success">
+                <i class="fas fa-arrow-down mr-1"></i><?= abs($this->view->variacaoPercentual) ?>%
+              </span>
+            <?php elseif ($this->view->variacaoPercentual > 0): ?>
+              <span class="eco-badge eco-badge-danger">
+                <i class="fas fa-arrow-up mr-1"></i><?= abs($this->view->variacaoPercentual) ?>%
+              </span>
+            <?php endif; ?>
+          </div>
+          <p class="text-sm text-gray-500 font-medium mb-1">Consumo do Mês</p>
+          <p class="text-3xl font-bold text-gray-800 mb-2 counter" data-target="<?= $this->view->totalMesAtual ?>">
+            <?= number_format($this->view->totalMesAtual, 0, ',', '.') ?> L
+          </p>
+          <div class="flex items-center text-sm">
+            <?php if ($this->view->variacaoPercentual > 0): ?>
+              <span class="text-red-600">
+                <i class="fas fa-arrow-up mr-1"></i>vs mês anterior
+              </span>
+            <?php elseif ($this->view->variacaoPercentual < 0): ?>
+              <span class="text-green-600">
+                <i class="fas fa-arrow-down mr-1"></i>vs mês anterior
+              </span>
+            <?php else: ?>
+              <span class="text-gray-600">Sem variação</span>
+            <?php endif; ?>
           </div>
         </div>
 
         <!-- Card: Projeção Mensal -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Projeção do Mês</div>
-          <div class="p-4">
-            <div class="text-3xl font-bold mb-2">
-              <?= number_format($this->view->projecaoMensal, 0, ',', '.') ?> L
-            </div>
-            <p class="text-gray-600">Estimativa para o fim do mês</p>
+        <div class="eco-card animate-fade-in" style="animation-delay: 0.1s;">
+          <div class="eco-card-icon bg-purple-100 mb-4">
+            <i class="fas fa-chart-line text-purple-600"></i>
           </div>
+          <p class="text-sm text-gray-500 font-medium mb-1">Projeção do Mês</p>
+          <p class="text-3xl font-bold text-gray-800 mb-2">
+            <?= number_format($this->view->projecaoMensal, 0, ',', '.') ?> L
+          </p>
+          <p class="text-sm text-gray-600">Estimativa para o fim do mês</p>
         </div>
 
         <!-- Card: Última Fatura -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Última Fatura</div>
-          <div class="p-4">
-            <div class="text-3xl font-bold mb-2">
-              <?php if ($this->view->ultimaFatura): ?>
-                R$ <?= number_format($this->view->ultimaFatura['valor'], 2, ',', '.') ?>
-              <?php else: ?>
-                R$ 0,00
-              <?php endif; ?>
-            </div>
-            <p class="text-gray-600">
-              <?php if ($this->view->ultimaFatura): ?>
-                <?= date('m/Y', strtotime($this->view->ultimaFatura['mes_da_fatura'])) ?>
-              <?php else: ?>
-                Sem dados
-              <?php endif; ?>
-            </p>
+        <div class="eco-card animate-fade-in" style="animation-delay: 0.2s;">
+          <div class="eco-card-icon bg-green-100 mb-4">
+            <i class="fas fa-dollar-sign text-green-600"></i>
           </div>
+          <p class="text-sm text-gray-500 font-medium mb-1">Última Fatura</p>
+          <p class="text-3xl font-bold text-gray-800 mb-2">
+            <?php if ($this->view->ultimaFatura): ?>
+              R$ <?= number_format($this->view->ultimaFatura['valor'], 2, ',', '.') ?>
+            <?php else: ?>
+              R$ 0,00
+            <?php endif; ?>
+          </p>
+          <p class="text-sm text-gray-600">
+            <?php if ($this->view->ultimaFatura): ?>
+              <?= date('m/Y', strtotime($this->view->ultimaFatura['mes_da_fatura'])) ?>
+            <?php else: ?>
+              Sem dados
+            <?php endif; ?>
+          </p>
         </div>
 
         <!-- Card: Meta do Mês -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Meta do Mês</div>
-          <div class="p-4">
-            <?php if ($this->view->progressoMeta): ?>
-              <div class="text-3xl font-bold mb-2">
-                <?= $this->view->progressoMeta['percentual'] ?>%
-              </div>
-              <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
-                <div class="bg-blue-600 h-2 rounded-full" style="width: <?= min($this->view->progressoMeta['percentual'], 100) ?>%"></div>
-              </div>
-              <p class="text-gray-600 text-sm">
-                <?= number_format($this->view->progressoMeta['consumo_atual'], 0) ?> / 
-                <?= number_format($this->view->progressoMeta['meta_litros'], 0) ?> L
-              </p>
-            <?php else: ?>
-              <div class="text-xl font-bold mb-2">Sem meta</div>
-              <p class="text-gray-600">Defina sua meta em Metas</p>
-            <?php endif; ?>
+        <div class="eco-card animate-fade-in" style="animation-delay: 0.3s;">
+          <div class="eco-card-icon bg-orange-100 mb-4">
+            <i class="fas fa-bullseye text-orange-600"></i>
           </div>
+          <p class="text-sm text-gray-500 font-medium mb-1">Meta do Mês</p>
+          <?php if ($this->view->progressoMeta): ?>
+            <p class="text-3xl font-bold text-gray-800 mb-3">
+              <?= $this->view->progressoMeta['percentual'] ?>%
+            </p>
+            <div class="eco-progress mb-2">
+              <div class="eco-progress-bar <?= $this->view->progressoMeta['alerta'] ? 'eco-progress-danger' : ($this->view->progressoMeta['percentual'] > 80 ? 'eco-progress-warning' : 'eco-progress-success') ?>"
+                   style="width: <?= min($this->view->progressoMeta['percentual'], 100) ?>%"></div>
+            </div>
+            <p class="text-sm text-gray-600">
+              <?= number_format($this->view->progressoMeta['consumo_atual'], 0) ?> /
+              <?= number_format($this->view->progressoMeta['meta_litros'], 0) ?> L
+            </p>
+          <?php else: ?>
+            <p class="text-xl font-bold mb-2">Sem meta</p>
+            <p class="text-sm text-gray-600 mb-3">Defina sua meta em Metas</p>
+            <a href="/metas" class="btn-eco btn-eco-primary text-sm py-2">
+              <i class="fas fa-bullseye mr-2"></i>Definir Meta
+            </a>
+          <?php endif; ?>
         </div>
       </div>
 
-      <!-- Alertas -->
+      <!-- Alertas Melhorados -->
       <?php if (!empty($this->view->alertas)): ?>
-        <div class="mb-6">
+        <div class="mb-8 space-y-4">
           <?php foreach ($this->view->alertas as $alerta): ?>
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-3 rounded">
-              <div class="flex items-center">
+            <div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-r-lg animate-slide-in-right">
+              <div class="flex items-start">
                 <div class="flex-shrink-0">
-                  <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
-                  </svg>
-                </div>
-                <div class="ml-3">
-                  <p class="text-red-800 font-semibold"><?= htmlspecialchars($alerta['mensagem']) ?></p>
-                </div>
-                <?php if ($alerta['tipo'] == 'meta'): ?>
-                  <div class="ml-auto">
-                    <button onclick="window.location.href='/metas'" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
-                      Ver Metas
-                    </button>
+                  <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-exclamation-circle text-red-500 text-lg"></i>
                   </div>
-                <?php endif; ?>
+                </div>
+                <div class="ml-4 flex-1">
+                  <h4 class="font-semibold text-red-800 mb-1">
+                    <?= $alerta['tipo'] == 'meta' ? 'Meta Ultrapassada' : 'Alerta de Consumo' ?>
+                  </h4>
+                  <p class="text-red-700 text-sm"><?= htmlspecialchars($alerta['mensagem']) ?></p>
+                  <?php if ($alerta['tipo'] == 'meta'): ?>
+                    <button onclick="window.location.href='/metas'" class="mt-3 text-sm text-red-600 hover:text-red-800 font-medium underline inline-flex items-center">
+                      <i class="fas fa-arrow-right mr-1"></i>Ver Metas
+                    </button>
+                  <?php endif; ?>
+                </div>
               </div>
             </div>
           <?php endforeach; ?>
@@ -137,7 +153,7 @@ if(isset($_SESSION['login_realizado'])){
       <!-- Dicas de Economia -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div class="lg:col-span-2 bg-white shadow rounded-lg p-6">
-          <h3 class="text-lg font-semibold text-blue-900 mb-4">📊 Estatísticas Rápidas</h3>
+          <h3 class="text-lg font-semibold text-blue-900 mb-4"><i class="fas fa-chart-bar"></i> Estatísticas Rápidas</h3>
           <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div class="text-center p-4 bg-blue-50 rounded">
               <div class="text-2xl font-bold text-blue-900">
@@ -161,7 +177,7 @@ if(isset($_SESSION['login_realizado'])){
         </div>
 
         <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">💡 Dicas de Economia</div>
+          <div class="bg-blue-900 text-white px-4 py-3"><i class="fas fa-lightbulb"></i> Dicas de Economia</div>
           <ul class="list-disc list-inside text-gray-700 space-y-1 p-4">
             <?php if (!empty($this->view->dicas)): ?>
               <?php foreach ($this->view->dicas as $dica): ?>
@@ -179,7 +195,7 @@ if(isset($_SESSION['login_realizado'])){
         
         <!-- Gráfico de Linha: Consumo Mensal -->
         <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
-          <h3 class="text-lg font-medium text-blue-900 mb-4">📈 Consumo Mensal (Litros)</h3>
+          <h3 class="text-lg font-medium text-blue-900 mb-4"><i class="fas fa-chart-line"></i> Consumo Mensal (Litros)</h3>
           <div style="width: 500px; height: 500px; max-width: 100%;">
             <canvas id="lineChart"></canvas>
           </div>
@@ -187,7 +203,7 @@ if(isset($_SESSION['login_realizado'])){
 
         <!-- Gráfico de Linha: Faturas -->
         <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
-          <h3 class="text-lg font-medium text-blue-900 mb-4">💰 Valor das Faturas (R$)</h3>
+          <h3 class="text-lg font-medium text-blue-900 mb-4"><i class="fas fa-dollar-sign"></i> Valor das Faturas (R$)</h3>
           <div style="width: 500px; height: 500px; max-width: 100%;">
             <canvas id="lineChartFaturas"></canvas>
           </div>
@@ -195,7 +211,7 @@ if(isset($_SESSION['login_realizado'])){
 
         <!-- Gráfico Pizza: Consumo por Tipo -->
         <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
-          <h3 class="text-lg font-medium text-blue-900 mb-4">🥧 Consumo por Tipo</h3>
+          <h3 class="text-lg font-medium text-blue-900 mb-4"><i class="fas fa-chart-pie"></i> Consumo por Tipo</h3>
           <div style="width: 500px; height: 500px; max-width: 100%;">
             <canvas id="pieChart"></canvas>
           </div>
@@ -203,7 +219,7 @@ if(isset($_SESSION['login_realizado'])){
 
         <!-- Gráfico Rosca: Distribuição Detalhada -->
         <div class="bg-white shadow rounded-lg p-4 flex flex-col items-center">
-          <h3 class="text-lg font-medium text-blue-900 mb-4">🍩 Distribuição Detalhada</h3>
+          <h3 class="text-lg font-medium text-blue-900 mb-4"><i class="fas fa-chart-donut"></i> Distribuição Detalhada</h3>
           <div style="width: 500px; height: 500px; max-width: 100%;">
             <canvas id="doughnutChart"></canvas>
           </div>
@@ -212,7 +228,7 @@ if(isset($_SESSION['login_realizado'])){
 
       <!-- Tabela: Últimos 7 Dias -->
       <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-6 py-3 bg-blue-900 text-white font-medium">📋 Consumo Diário (Últimos 7 dias)</div>
+        <div class="px-6 py-3 bg-blue-900 text-white font-medium"><i class="fas fa-list"></i> Consumo Diário (Últimos 7 dias)</div>
         <div class="p-4 overflow-x-auto">
           <?php if (!empty($this->view->ultimos7dias)): ?>
             <table class="min-w-full table-auto divide-y divide-gray-200">
@@ -254,10 +270,14 @@ if(isset($_SESSION['login_realizado'])){
               </tbody>
             </table>
           <?php else: ?>
-            <div class="text-center py-8 text-gray-500">
-              <p>Nenhum consumo registrado nos últimos 7 dias.</p>
-              <button onclick="window.location.href='/consumo'" class="mt-4 bg-blue-900 hover:bg-blue-800 text-white px-6 py-2 rounded">
-                Registrar Consumo
+            <div class="eco-empty-state">
+              <div class="eco-empty-icon">
+                <i class="fas fa-droplet-slash"></i>
+              </div>
+              <h3 class="eco-empty-title">Nenhum consumo registrado</h3>
+              <p class="eco-empty-text">Comece registrando seu consumo diário para acompanhar seus gastos de água</p>
+              <button onclick="window.location.href='/consumo'" class="btn-eco btn-eco-primary">
+                <i class="fas fa-plus mr-2"></i>Registrar Primeiro Consumo
               </button>
             </div>
           <?php endif; ?>

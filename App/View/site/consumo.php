@@ -1,100 +1,168 @@
-<body class="bg-gray-50">
-  <div id="main-content" class="flex-1 pt-5 transition-[margin] duration-300">
+<body class="bg-gradient-to-br from-blue-50 via-white to-cyan-50 min-h-screen">
+  <div id="main-content" class="flex-1 pt-20 transition-[margin] duration-300">
     <main class="px-6 py-4">
-      <h2 class="text-2xl font-semibold text-blue-900 mb-6">Gerenciar Dados de Consumo</h2>
+      <h2 class="text-3xl font-bold text-gray-800 mb-8">Gerenciar Dados de Consumo</h2>
 
       <!-- Cards de Ações com Dados Reais -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+
         <!-- Card Inserir Valor da Conta -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Inserir Valor da Conta</div>
-          <div class="p-4">
-            <div class="text-3xl font-bold mb-2">
-              <?php if ($this->view->ultimaFatura): ?>
-                R$ <?= number_format($this->view->ultimaFatura['valor'], 2, ',', '.') ?>
-              <?php else: ?>
-                R$ 0,00
-              <?php endif; ?>
+        <div class="eco-card animate-fade-in" style="animation-delay: 0s;">
+          <div class="flex items-center justify-between mb-4">
+            <div class="eco-card-icon bg-green-100">
+              <i class="fas fa-dollar-sign text-green-600"></i>
             </div>
-            <p class="text-gray-600 mb-4">
-              <?php if ($this->view->ultimaFatura): ?>
-                Última fatura: <?= date('m/Y', strtotime($this->view->ultimaFatura['mes_da_fatura'])) ?>
-              <?php else: ?>
-                Registre o valor da sua fatura mensal.
-              <?php endif; ?>
-            </p>
-            <button id="btnConta" class="w-full bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 rounded">Registrar Fatura</button>
+            <?php if ($this->view->ultimaFatura): ?>
+              <span class="eco-badge eco-badge-success">
+                <i class="fas fa-check"></i> Registrada
+              </span>
+            <?php endif; ?>
           </div>
+          <p class="text-sm text-gray-600 font-medium mb-1">Valor da Conta</p>
+          <div class="text-3xl font-bold text-gray-800 mb-2">
+            <?php if ($this->view->ultimaFatura): ?>
+              R$ <?= number_format($this->view->ultimaFatura['valor'], 2, ',', '.') ?>
+            <?php else: ?>
+              R$ 0,00
+            <?php endif; ?>
+          </div>
+          <p class="text-sm text-gray-500 mb-4">
+            <?php if ($this->view->ultimaFatura): ?>
+              <i class="fas fa-calendar-alt mr-1"></i>
+              Última fatura: <?= date('m/Y', strtotime($this->view->ultimaFatura['mes_da_fatura'])) ?>
+            <?php else: ?>
+              Registre o valor da sua fatura mensal
+            <?php endif; ?>
+          </p>
+          <button id="btnConta" class="btn-eco btn-eco-primary w-full">
+            <i class="fas fa-file-invoice-dollar mr-2"></i>Registrar Fatura
+          </button>
         </div>
 
         <!-- Card Metas de Consumo -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Metas de Consumo</div>
-          <div class="p-4">
-            <div class="text-3xl font-bold mb-2">
-              <?php if ($this->view->metaAtiva): ?>
-                <?= number_format($this->view->metaAtiva['meta_mensal'], 0, ',', '.') ?> L
-              <?php else: ?>
-                -- L
-              <?php endif; ?>
+        <div class="eco-card animate-fade-in" style="animation-delay: 0.1s;">
+          <div class="flex items-center justify-between mb-4">
+            <div class="eco-card-icon bg-blue-100">
+              <i class="fas fa-bullseye text-blue-600"></i>
             </div>
-            <p class="text-gray-600 mb-4">
-              <?php if ($this->view->progressoMeta): ?>
-                Progresso: <?= $this->view->progressoMeta['percentual'] ?>%
-              <?php else: ?>
-                Defina suas metas de economia.
-              <?php endif; ?>
-            </p>
-            <button id="btnMetas" class="w-full bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 rounded">Definir Metas</button>
+            <?php if ($this->view->metaAtiva): ?>
+              <span class="eco-badge eco-badge-info">
+                <i class="fas fa-target"></i> Ativa
+              </span>
+            <?php endif; ?>
           </div>
+          <p class="text-sm text-gray-600 font-medium mb-1">Meta Mensal</p>
+          <div class="text-3xl font-bold text-gray-800 mb-2">
+            <?php if ($this->view->metaAtiva): ?>
+              <?= number_format($this->view->metaAtiva['meta_mensal'], 0, ',', '.') ?> L
+            <?php else: ?>
+              -- L
+            <?php endif; ?>
+          </div>
+          <?php if ($this->view->progressoMeta): ?>
+            <div class="mb-4">
+              <div class="eco-progress">
+                <div class="eco-progress-bar <?= $this->view->progressoMeta['alerta'] ? 'eco-progress-danger' : 'eco-progress-success' ?>"
+                     style="width: <?= min($this->view->progressoMeta['percentual'], 100) ?>%"></div>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">
+                Progresso: <?= $this->view->progressoMeta['percentual'] ?>%
+              </p>
+            </div>
+          <?php else: ?>
+            <p class="text-sm text-gray-500 mb-4">
+              Defina suas metas de economia
+            </p>
+          <?php endif; ?>
+          <button id="btnMetas" class="btn-eco btn-eco-primary w-full">
+            <i class="fas fa-chart-line mr-2"></i>Definir Metas
+          </button>
         </div>
 
         <!-- Card Consumo Diário -->
-        <div class="bg-white shadow rounded-lg overflow-hidden">
-          <div class="bg-blue-900 text-white px-4 py-3">Consumo do Mês</div>
-          <div class="p-4">
-            <div class="text-3xl font-bold mb-2">
-              <?= number_format($this->view->totalMesAtual, 0, ',', '.') ?> L
+        <div class="eco-card animate-fade-in" style="animation-delay: 0.2s;">
+          <div class="flex items-center justify-between mb-4">
+            <div class="eco-card-icon bg-cyan-100">
+              <i class="fas fa-tint text-cyan-600"></i>
             </div>
-            <p class="text-gray-600 mb-4">Total consumido este mês</p>
-            <button id="btnConsumo" class="w-full bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 rounded">Registrar Consumo</button>
+            <span class="eco-badge eco-badge-info">
+              <i class="fas fa-calendar-day"></i> Mês Atual
+            </span>
           </div>
+          <p class="text-sm text-gray-600 font-medium mb-1">Consumo do Mês</p>
+          <div class="text-3xl font-bold text-gray-800 mb-2">
+            <?= number_format($this->view->totalMesAtual, 0, ',', '.') ?> L
+          </div>
+          <p class="text-sm text-gray-500 mb-4">
+            <i class="fas fa-chart-bar mr-1"></i>
+            Total consumido este mês
+          </p>
+          <button id="btnConsumo" class="btn-eco btn-eco-primary w-full">
+            <i class="fas fa-plus-circle mr-2"></i>Registrar Consumo
+          </button>
         </div>
       </div>
 
       <!-- Seção Inserir Valor da Conta -->
-      <div id="secaoConta" class="hidden bg-white shadow rounded-lg p-6 mb-6">
-        <h3 class="text-xl font-semibold text-blue-900 mb-4">Inserir Valor da Conta</h3>
-        
-        <div id="successAlertConta" class="hidden mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
-          Valor da conta registrado com sucesso!
+      <div id="secaoConta" class="hidden eco-card animate-fade-in mb-8">
+        <div class="flex items-center mb-6">
+          <div class="eco-card-icon bg-green-100 mr-4">
+            <i class="fas fa-file-invoice-dollar text-green-600"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-800">Inserir Valor da Conta</h3>
         </div>
-        <div id="monthError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
-        <div id="valueError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
+
+        <div id="successAlertConta" class="hidden mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-lg flex items-center">
+          <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+          <span>Valor da conta registrado com sucesso!</span>
+        </div>
+        <div id="monthError" class="hidden mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg flex items-center">
+          <i class="fas fa-exclamation-circle text-red-500 mr-3 text-xl"></i>
+          <span></span>
+        </div>
+        <div id="valueError" class="hidden mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg flex items-center">
+          <i class="fas fa-exclamation-circle text-red-500 mr-3 text-xl"></i>
+          <span></span>
+        </div>
 
         <form id="contaForm" action="/InserirValordaConta" method="POST" novalidate class="max-w-md space-y-4">
           <div>
-            <label for="MES_DA_FATURA" class="block text-gray-700 font-medium mb-1">Mês da Fatura</label>
-            <input name="MES_DA_FATURA" type="month" id="MES_DA_FATURA" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+            <label for="MES_DA_FATURA" class="eco-label">
+              <i class="fas fa-calendar-alt mr-2"></i>Mês da Fatura
+            </label>
+            <input name="MES_DA_FATURA" type="month" id="MES_DA_FATURA" class="eco-input" required>
+            <p class="eco-help-text">Selecione o mês de referência da fatura</p>
           </div>
           <div>
-            <label for="VALOR" class="block text-gray-700 font-medium mb-1">Valor (R$ ex: 123,45)</label>
-            <input name="VALOR" type="text" id="VALOR" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe o valor da fatura" required>
+            <label for="VALOR" class="eco-label">
+              <i class="fas fa-dollar-sign mr-2"></i>Valor (R$)
+            </label>
+            <input name="VALOR" type="text" id="VALOR" class="eco-input" placeholder="Ex: 123,45" required>
+            <p class="eco-help-text">Informe o valor da fatura em reais</p>
           </div>
           <div class="flex space-x-4">
-            <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-6 rounded transition">Registrar Valor</button>
-            <button type="button" class="cancelBtn bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded transition">Cancelar</button>
+            <button type="submit" class="btn-eco btn-eco-success">
+              <i class="fas fa-save mr-2"></i>Registrar Valor
+            </button>
+            <button type="button" class="cancelBtn btn-eco bg-gray-500 hover:bg-gray-600 text-white">
+              <i class="fas fa-times mr-2"></i>Cancelar
+            </button>
           </div>
         </form>
       </div>
 
       <!-- Seção Metas de Consumo -->
-      <div id="secaoMetas" class="hidden bg-white shadow rounded-lg p-6 mb-6">
-        <h3 class="text-xl font-semibold text-blue-900 mb-4">Minhas Metas de Consumo</h3>
-        
-        <div id="metasAlert" class="hidden mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
-          Metas salvas com sucesso!
+      <div id="secaoMetas" class="hidden eco-card animate-fade-in mb-8">
+        <div class="flex items-center mb-6">
+          <div class="eco-card-icon bg-blue-100 mr-4">
+            <i class="fas fa-bullseye text-blue-600"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-800">Minhas Metas de Consumo</h3>
+        </div>
+
+        <div id="metasAlert" class="hidden mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-lg flex items-center">
+          <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+          <span>Metas salvas com sucesso!</span>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -102,124 +170,203 @@
           <div>
             <form id="metasForm" action="/inserirmetaconsumo" method="POST" class="space-y-4">
               <div>
-                <label for="monthlyGoal" class="block text-gray-700 font-medium mb-1">Meta Mensal (L)</label>
-                <input name="META_MENSAL" type="number" id="monthlyGoal" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 10000" required>
+                <label for="monthlyGoal" class="eco-label">
+                  <i class="fas fa-tint mr-2"></i>Meta Mensal (L)
+                </label>
+                <input name="META_MENSAL" type="number" id="monthlyGoal" class="eco-input" placeholder="Ex: 10000" required>
+                <p class="eco-help-text">Defina o consumo máximo mensal em litros</p>
               </div>
               <div>
-                <label for="reductionGoal" class="block text-gray-700 font-medium mb-1">Meta de Redução (%)</label>
-                <input name="META_REDUCAO" type="number" id="reductionGoal" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 15" required>
+                <label for="reductionGoal" class="eco-label">
+                  <i class="fas fa-percentage mr-2"></i>Meta de Redução (%)
+                </label>
+                <input name="META_REDUCAO" type="number" id="reductionGoal" class="eco-input" placeholder="Ex: 15" required>
+                <p class="eco-help-text">Percentual de economia desejado</p>
               </div>
               <div>
-                <label for="periodMonths" class="block text-gray-700 font-medium mb-1">Prazo (meses)</label>
-                <input name="PRAZO" type="number" id="periodMonths" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: 3" required>
+                <label for="periodMonths" class="eco-label">
+                  <i class="fas fa-calendar mr-2"></i>Prazo (meses)
+                </label>
+                <input name="PRAZO" type="number" id="periodMonths" class="eco-input" placeholder="Ex: 3" required>
+                <p class="eco-help-text">Tempo para atingir a meta</p>
               </div>
               <div class="flex space-x-4">
-                <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-6 rounded transition">Salvar Metas</button>
-                <button type="button" class="cancelBtn bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded transition">Cancelar</button>
+                <button type="submit" class="btn-eco btn-eco-success">
+                  <i class="fas fa-save mr-2"></i>Salvar Metas
+                </button>
+                <button type="button" class="cancelBtn btn-eco bg-gray-500 hover:bg-gray-600 text-white">
+                  <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
               </div>
             </form>
           </div>
 
           <!-- Metas Atuais - DINÂMICO -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-semibold text-blue-900 mb-4">Metas Atuais</h4>
+          <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-100">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <i class="fas fa-chart-line text-blue-600 mr-2"></i>Metas Atuais
+            </h4>
             <?php if ($this->view->metaAtiva): ?>
-              <ul class="space-y-2 text-gray-700">
-                <li><strong>Meta Mensal:</strong> <?= number_format($this->view->metaAtiva['meta_mensal'], 0, ',', '.') ?> L</li>
-                <li><strong>Meta de Redução:</strong> <?= $this->view->metaAtiva['meta_reducao'] ?>%</li>
-                <li><strong>Prazo:</strong> <?= $this->view->metaAtiva['prazo'] ?> meses</li>
+              <ul class="space-y-3 text-gray-700 mb-4">
+                <li class="flex items-start">
+                  <i class="fas fa-tint text-blue-600 mr-2 mt-1"></i>
+                  <span><strong>Meta Mensal:</strong> <?= number_format($this->view->metaAtiva['meta_mensal'], 0, ',', '.') ?> L</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-chart-line text-green-600 mr-2 mt-1"></i>
+                  <span><strong>Meta de Redução:</strong> <?= $this->view->metaAtiva['meta_reducao'] ?>%</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-calendar-alt text-orange-600 mr-2 mt-1"></i>
+                  <span><strong>Prazo:</strong> <?= $this->view->metaAtiva['prazo'] ?> meses</span>
+                </li>
               </ul>
               <?php if ($this->view->progressoMeta): ?>
                 <div class="mt-4">
-                  <div class="flex justify-between text-sm text-gray-600 mb-1">
-                    <span>Progresso</span>
-                    <span><?= $this->view->progressoMeta['percentual'] ?>%</span>
+                  <div class="flex justify-between text-sm text-gray-700 font-medium mb-2">
+                    <span><i class="fas fa-tasks mr-1"></i>Progresso</span>
+                    <span class="<?= $this->view->progressoMeta['alerta'] ? 'text-red-600' : 'text-green-600' ?>">
+                      <?= $this->view->progressoMeta['percentual'] ?>%
+                    </span>
                   </div>
-                  <div class="w-full bg-gray-200 rounded-full h-3">
-                    <div class="<?= $this->view->progressoMeta['alerta'] ? 'bg-red-600' : 'bg-green-600' ?> h-3 rounded-full transition-all" 
+                  <div class="eco-progress">
+                    <div class="eco-progress-bar <?= $this->view->progressoMeta['alerta'] ? 'eco-progress-danger' : 'eco-progress-success' ?>"
                          style="width: <?= min($this->view->progressoMeta['percentual'], 100) ?>%"></div>
                   </div>
-                  <p class="text-sm text-gray-600 mt-2">
+                  <p class="text-sm text-gray-600 mt-2 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
                     Consumido: <?= number_format($this->view->progressoMeta['consumo_atual'], 0, ',', '.') ?> L
                   </p>
                 </div>
               <?php endif; ?>
             <?php else: ?>
-              <p class="text-gray-500">Nenhuma meta definida ainda. Preencha o formulário ao lado para criar sua primeira meta!</p>
+              <div class="eco-empty-state py-6">
+                <div class="eco-empty-icon text-blue-400">
+                  <i class="fas fa-clipboard-list"></i>
+                </div>
+                <p class="eco-empty-title">Nenhuma meta definida</p>
+                <p class="eco-empty-text">Preencha o formulário ao lado para criar sua primeira meta de economia!</p>
+              </div>
             <?php endif; ?>
           </div>
         </div>
       </div>
 
       <!-- Seção Consumo Diário -->
-      <div id="secaoConsumo" class="hidden bg-white shadow rounded-lg p-6 mb-6">
-        <h3 class="text-xl font-semibold text-blue-900 mb-4">Registrar Consumo Diário</h3>
-        
-        <div id="successAlertConsumo" class="hidden mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
-          Consumo registrado com sucesso!
+      <div id="secaoConsumo" class="hidden eco-card animate-fade-in mb-8">
+        <div class="flex items-center mb-6">
+          <div class="eco-card-icon bg-cyan-100 mr-4">
+            <i class="fas fa-tint text-cyan-600"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-800">Registrar Consumo Diário</h3>
         </div>
-        <div id="dateError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
-        <div id="quantityError" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded"></div>
+
+        <div id="successAlertConsumo" class="hidden mb-4 p-4 bg-green-50 border-l-4 border-green-500 text-green-800 rounded-lg flex items-center">
+          <i class="fas fa-check-circle text-green-500 mr-3 text-xl"></i>
+          <span>Consumo registrado com sucesso!</span>
+        </div>
+        <div id="dateError" class="hidden mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg flex items-center">
+          <i class="fas fa-exclamation-circle text-red-500 mr-3 text-xl"></i>
+          <span></span>
+        </div>
+        <div id="quantityError" class="hidden mb-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-lg flex items-center">
+          <i class="fas fa-exclamation-circle text-red-500 mr-3 text-xl"></i>
+          <span></span>
+        </div>
 
         <form id="registroForm" action="/inserirconsumodiario" method="POST" novalidate class="max-w-md space-y-4">
           <div>
-            <label for="consumoDate" class="block text-gray-700 font-medium mb-1">Data do Consumo</label>
-            <input name="DATA_CONSUMO" type="date" id="consumoDate" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+            <label for="consumoDate" class="eco-label">
+              <i class="fas fa-calendar-day mr-2"></i>Data do Consumo
+            </label>
+            <input name="DATA_CONSUMO" type="date" id="consumoDate" class="eco-input" required>
+            <p class="eco-help-text">Selecione a data do registro</p>
           </div>
           <div>
-            <label for="tipo" class="block text-gray-700 font-medium mb-1">Tipo</label>
-            <input name="TIPO" type="text" id="tipo" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ex: Banho, Louça, Faxina" required>
+            <label for="tipo" class="eco-label">
+              <i class="fas fa-tag mr-2"></i>Tipo
+            </label>
+            <input name="TIPO" type="text" id="tipo" class="eco-input" placeholder="Ex: Banho, Louça, Faxina" required>
+            <p class="eco-help-text">Informe o tipo de uso da água</p>
           </div>
           <div>
-            <label for="consumoValue" class="block text-gray-700 font-medium mb-1">Quantidade (ex: 2,5 ou 2.5)</label>
-            <input name="QUANTIDADE" type="text" id="consumoValue" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Informe a quantidade" required>
+            <label for="consumoValue" class="eco-label">
+              <i class="fas fa-water mr-2"></i>Quantidade
+            </label>
+            <input name="QUANTIDADE" type="text" id="consumoValue" class="eco-input" placeholder="Ex: 2,5 ou 2.5" required>
+            <p class="eco-help-text">Digite o valor da quantidade consumida</p>
           </div>
           <div>
-            <label for="consumoUnit" class="block text-gray-700 font-medium mb-1">Unidade</label>
-            <select name="UNIDADE" id="consumoUnit" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" required>
+            <label for="consumoUnit" class="eco-label">
+              <i class="fas fa-balance-scale mr-2"></i>Unidade
+            </label>
+            <select name="UNIDADE" id="consumoUnit" class="eco-input" required>
               <option value="L">Litros (L)</option>
               <option value="m³">Metros Cúbicos (m³)</option>
               <option value="mL">Mililitros (mL)</option>
             </select>
+            <p class="eco-help-text">Selecione a unidade de medida</p>
           </div>
           <div class="flex space-x-4">
-            <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-6 rounded transition">Registrar Consumo</button>
-            <button type="button" class="cancelBtn bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded transition">Cancelar</button>
+            <button type="submit" class="btn-eco btn-eco-success">
+              <i class="fas fa-save mr-2"></i>Registrar Consumo
+            </button>
+            <button type="button" class="cancelBtn btn-eco bg-gray-500 hover:bg-gray-600 text-white">
+              <i class="fas fa-times mr-2"></i>Cancelar
+            </button>
           </div>
         </form>
       </div>
 
       <!-- Resumo dos Dados Registrados - DINÂMICO -->
-      <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-6 py-3 bg-blue-900 text-white font-medium">📋 Resumo dos Dados Registrados</div>
-        <div class="p-4 overflow-x-auto">
-          <?php 
-          $temDados = !empty($this->view->ultimasFaturas) || 
-                      !empty($this->view->ultimasMetas) || 
+      <div class="eco-card animate-fade-in" style="animation-delay: 0.3s;">
+        <div class="flex items-center mb-6">
+          <div class="eco-card-icon bg-gray-100 mr-4">
+            <i class="fas fa-list text-gray-600"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-800">Resumo dos Dados Registrados</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <?php
+          $temDados = !empty($this->view->ultimasFaturas) ||
+                      !empty($this->view->ultimasMetas) ||
                       !empty($this->view->ultimosConsumos);
           ?>
-          
+
           <?php if ($temDados): ?>
             <table class="min-w-full table-auto divide-y divide-gray-200">
-              <thead class="bg-gray-100">
+              <thead class="bg-gradient-to-r from-blue-50 to-cyan-50">
                 <tr>
-                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tipo</th>
-                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Data</th>
-                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Valor</th>
-                  <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">Status</th>
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                    <i class="fas fa-tag mr-2"></i>Tipo
+                  </th>
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                    <i class="fas fa-calendar mr-2"></i>Data
+                  </th>
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                    <i class="fas fa-chart-bar mr-2"></i>Valor
+                  </th>
+                  <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                    <i class="fas fa-info-circle mr-2"></i>Status
+                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
-                
+
                 <!-- Faturas -->
                 <?php if (!empty($this->view->ultimasFaturas)): ?>
                   <?php foreach ($this->view->ultimasFaturas as $fatura): ?>
-                    <tr>
-                      <td class="px-4 py-2">💰 Fatura</td>
-                      <td class="px-4 py-2"><?= date('m/Y', strtotime($fatura['mes'])) ?></td>
-                      <td class="px-4 py-2">R$ <?= number_format($fatura['valor'], 2, ',', '.') ?></td>
-                      <td class="px-4 py-2">
-                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Registrado</span>
+                    <tr class="hover:bg-blue-50 transition-colors">
+                      <td class="px-4 py-3">
+                        <i class="fas fa-dollar-sign text-green-600 mr-2"></i>
+                        <span class="font-medium">Fatura</span>
+                      </td>
+                      <td class="px-4 py-3 text-gray-700"><?= date('m/Y', strtotime($fatura['mes'])) ?></td>
+                      <td class="px-4 py-3 font-semibold text-gray-800">R$ <?= number_format($fatura['valor'], 2, ',', '.') ?></td>
+                      <td class="px-4 py-3">
+                        <span class="eco-badge eco-badge-success">
+                          <i class="fas fa-check"></i> Registrado
+                        </span>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -228,12 +375,17 @@
                 <!-- Metas -->
                 <?php if (!empty($this->view->ultimasMetas)): ?>
                   <?php foreach ($this->view->ultimasMetas as $meta): ?>
-                    <tr>
-                      <td class="px-4 py-2">🎯 Meta Mensal</td>
-                      <td class="px-4 py-2">--</td>
-                      <td class="px-4 py-2"><?= number_format($meta->__get('meta_mensal'), 0, ',', '.') ?> L</td>
-                      <td class="px-4 py-2">
-                        <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Ativa</span>
+                    <tr class="hover:bg-blue-50 transition-colors">
+                      <td class="px-4 py-3">
+                        <i class="fas fa-bullseye text-blue-600 mr-2"></i>
+                        <span class="font-medium">Meta Mensal</span>
+                      </td>
+                      <td class="px-4 py-3 text-gray-700">--</td>
+                      <td class="px-4 py-3 font-semibold text-gray-800"><?= number_format($meta->__get('meta_mensal'), 0, ',', '.') ?> L</td>
+                      <td class="px-4 py-3">
+                        <span class="eco-badge eco-badge-info">
+                          <i class="fas fa-flag"></i> Ativa
+                        </span>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -242,10 +394,10 @@
                 <!-- Consumos -->
                 <?php if (!empty($this->view->ultimosConsumos)): ?>
                   <?php foreach ($this->view->ultimosConsumos as $consumo): ?>
-                    <?php 
+                    <?php
                       $quantidade = $consumo->__get('quantidade');
                       $unidade = $consumo->__get('unidade');
-                      
+
                       // Conversão para litros
                       $litros = $quantidade;
                       if ($unidade == 'mL') {
@@ -254,12 +406,18 @@
                         $litros = $quantidade * 1000;
                       }
                     ?>
-                    <tr>
-                      <td class="px-4 py-2">💧 Consumo (<?= htmlspecialchars($consumo->__get('tipo')) ?>)</td>
-                      <td class="px-4 py-2"><?= date('d/m/Y', strtotime($consumo->__get('data_consumo'))) ?></td>
-                      <td class="px-4 py-2"><?= number_format($litros, 2, ',', '.') ?> L</td>
-                      <td class="px-4 py-2">
-                        <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Registrado</span>
+                    <tr class="hover:bg-blue-50 transition-colors">
+                      <td class="px-4 py-3">
+                        <i class="fas fa-tint text-cyan-600 mr-2"></i>
+                        <span class="font-medium">Consumo</span>
+                        <span class="text-xs text-gray-500">(<?= htmlspecialchars($consumo->__get('tipo')) ?>)</span>
+                      </td>
+                      <td class="px-4 py-3 text-gray-700"><?= date('d/m/Y', strtotime($consumo->__get('data_consumo'))) ?></td>
+                      <td class="px-4 py-3 font-semibold text-gray-800"><?= number_format($litros, 2, ',', '.') ?> L</td>
+                      <td class="px-4 py-3">
+                        <span class="eco-badge eco-badge-success">
+                          <i class="fas fa-check"></i> Registrado
+                        </span>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -268,12 +426,15 @@
               </tbody>
             </table>
           <?php else: ?>
-            <div class="text-center py-8 text-gray-500">
-              <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-              </svg>
-              <p class="text-lg font-medium mb-2">Nenhum dado registrado ainda</p>
-              <p class="text-sm">Comece registrando sua fatura, meta ou consumo diário!</p>
+            <div class="eco-empty-state py-12">
+              <div class="eco-empty-icon">
+                <i class="fas fa-inbox"></i>
+              </div>
+              <h3 class="eco-empty-title">Nenhum dado registrado ainda</h3>
+              <p class="eco-empty-text">Comece registrando sua fatura, meta ou consumo diário usando os cards acima!</p>
+              <button onclick="document.getElementById('btnConsumo').click()" class="btn-eco btn-eco-primary mt-4">
+                <i class="fas fa-plus-circle mr-2"></i>Registrar Primeiro Consumo
+              </button>
             </div>
           <?php endif; ?>
         </div>

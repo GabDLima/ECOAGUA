@@ -34,14 +34,12 @@ class MetaConsumoDAO extends DAO{
             $stmt->execute();
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
-            die();
+            error_log("Erro ao inserir meta de consumo: " . $ex->getMessage());
+            return false;
         }
+        return true;
     }
 
-    /**
-     * Busca a meta mais recente do usuário (considera como "ativa")
-     */
     public function buscarMetaAtiva($id_usuario) {
         try {
             $sql = "SELECT 
@@ -64,14 +62,11 @@ class MetaConsumoDAO extends DAO{
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar meta ativa: " . $ex->getMessage());
             return null;
-        }    
+        }
     }
 
-    /**
-     * Calcula o progresso da meta (% consumido)
-     * Retorna array com informações completas
-     */
     public function calcularProgressoMeta($id_usuario) {
         try {
             // Busca meta ativa
@@ -96,17 +91,15 @@ class MetaConsumoDAO extends DAO{
                 'restante' => $restante,
                 'meta_reducao' => $meta['meta_reducao'],
                 'prazo' => $meta['prazo'],
-                'alerta' => $percentual >= 90 // True se passou de 90%
+                'alerta' => $percentual >= 90
             );
         }
         catch(\PDOException $ex){
+            error_log("Erro ao calcular progresso da meta: " . $ex->getMessage());
             return null;
-        }    
+        }
     }
 
-    /**
-     * Busca todas as metas do usuário (histórico)
-     */
     public function listarPorUsuario($id_usuario) {
         try {
             $metas = array();
@@ -134,8 +127,9 @@ class MetaConsumoDAO extends DAO{
             return $metas;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao listar metas por usuário: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
     public function listar(){
@@ -155,12 +149,13 @@ class MetaConsumoDAO extends DAO{
             return $metas;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao listar metas: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
     public function excluir($obj) {}
     public function alterar($obj) {}
-    public function buscarPorId($id){ }
-    public function buscarPorLogado($id){}
+    public function buscarPorId($id) {}
+    public function buscarPorLogado($id) {}
 }

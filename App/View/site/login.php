@@ -1,128 +1,221 @@
-<?php
-$mensagem = "Operação concluída com sucesso!";
-?>
+<?php include __DIR__ . '/../includes/mensagens.php'; ?>
 
-<body>
-<?php
-session_start();
-//echo $_SESSION['mensagem_login_incorreto'];
-//exit;
-if(isset($_SESSION['mensagem_login_incorreto'])){
-  if($_SESSION['mensagem_login_incorreto'] == 1){
-    mostrarPopup("E-mail ou senha incorretos!");
-    $_SESSION['mensagem_login_incorreto'] = 0;
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-20px) translateX(10px); }
+    50% { transform: translateY(-10px) translateX(-10px); }
+    75% { transform: translateY(-30px) translateX(5px); }
   }
-}
-else{
-  //mostrarPopup("Login realizado com sucesso!");
-}
-if(isset($_SESSION['usuario_desconectado'])){
-  if($_SESSION['usuario_desconectado'] == 1){
-    mostrarPopup("Usuário desconectado!");
-    $_SESSION['usuario_desconectado'] = 0;
+
+  @keyframes rise {
+    0% { bottom: -100px; opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { bottom: 100vh; opacity: 0; }
   }
-}
-else{
-  //mostrarPopup("Login realizado com sucesso!");
-}
-if(isset($_SESSION['usuario_cadastrado'])){
-  if($_SESSION['usuario_cadastrado'] == 1){
-    mostrarPopup("Usuário cadastrado!");
-    $_SESSION['usuario_cadastrado'] = 0;
+
+  .bubble {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 197, 253, 0.5));
+    border-radius: 50%;
+    animation: rise linear infinite;
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
   }
-}
-else{
-  //mostrarPopup("Login realizado com sucesso!");
-}
-if(isset($_SESSION['senhas_nao_conferem'])){
-  if($_SESSION['senhas_nao_conferem'] == 1){
-    mostrarPopup("As senhas não conferem!");
-    $_SESSION['senhas_nao_conferem'] = 0;
+
+  .droplet {
+    position: absolute;
+    animation: float ease-in-out infinite;
   }
-}
-else{
-  //mostrarPopup("Login realizado com sucesso!");
-}
-?>
-  <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
-    <div class="card login-card shadow-lg">
-      <div class="card-body">
-        <h2 class="card-title text-center mb-4">Faça seu login</h2>
-        <form action="/login" method="POST" id="loginForm">
-          <div class="mb-3">
-            <label for="email" class="form-label">E-mail</label>
-            <input name="EMAIL" type="email" class="form-control" id="email" required />
+
+  .split-bg {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+  }
+</style>
+
+<body class="overflow-hidden">
+  <div class="d-flex min-vh-100">
+
+    <!-- Left Side - Animated Background -->
+    <div class="d-none d-lg-flex col-lg-6 split-bg position-relative align-items-center justify-content-center overflow-hidden">
+      <!-- Bubbles Animation -->
+      <div class="w-100 h-100 position-absolute">
+        <div class="bubble" style="width: 80px; height: 80px; left: 10%; animation-duration: 15s; animation-delay: 0s;"></div>
+        <div class="bubble" style="width: 60px; height: 60px; left: 20%; animation-duration: 12s; animation-delay: 2s;"></div>
+        <div class="bubble" style="width: 100px; height: 100px; left: 50%; animation-duration: 18s; animation-delay: 1s;"></div>
+        <div class="bubble" style="width: 70px; height: 70px; left: 70%; animation-duration: 14s; animation-delay: 3s;"></div>
+        <div class="bubble" style="width: 90px; height: 90px; left: 85%; animation-duration: 16s; animation-delay: 4s;"></div>
+        <div class="bubble" style="width: 50px; height: 50px; left: 35%; animation-duration: 10s; animation-delay: 5s;"></div>
+      </div>
+
+      <!-- Floating Droplets -->
+      <div class="droplet" style="left: 15%; top: 20%; animation-duration: 6s;">
+        <i class="fas fa-tint text-white" style="font-size: 3rem; opacity: 0.3;"></i>
+      </div>
+      <div class="droplet" style="left: 75%; top: 30%; animation-duration: 8s; animation-delay: 1s;">
+        <i class="fas fa-tint text-white" style="font-size: 2.5rem; opacity: 0.4;"></i>
+      </div>
+      <div class="droplet" style="left: 45%; top: 60%; animation-duration: 7s; animation-delay: 2s;">
+        <i class="fas fa-tint text-white" style="font-size: 2rem; opacity: 0.3;"></i>
+      </div>
+
+      <!-- Logo and Text -->
+      <div class="text-center position-relative z-1">
+        <div class="mb-4">
+          <i class="fas fa-tint text-white" style="font-size: 5rem; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));"></i>
+        </div>
+        <h1 class="text-white fw-bold mb-3" style="font-size: 3rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">ECOÁGUA</h1>
+        <p class="text-white fs-5" style="text-shadow: 1px 1px 5px rgba(0,0,0,0.2);">Economize água, preserve o futuro</p>
+        <div class="mt-4">
+          <div class="d-flex justify-content-center gap-4 text-white" style="font-size: 0.9rem;">
+            <span><i class="fas fa-chart-line me-2"></i>Monitore</span>
+            <span><i class="fas fa-bullseye me-2"></i>Economize</span>
+            <span><i class="fas fa-leaf me-2"></i>Sustentável</span>
           </div>
-          <div class="mb-3">
-            <label for="senha" class="form-label">Senha</label>
-            <input name="SENHA" type="password" class="form-control" id="senha" required minlength="6" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Login Form -->
+    <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center p-4 bg-light">
+      <div class="w-100" style="max-width: 480px;">
+        <div class="card border-0 shadow-lg">
+          <div class="card-body p-5">
+
+            <!-- Mobile Logo (only visible on small screens) -->
+            <div class="text-center mb-4 d-lg-none">
+              <i class="fas fa-tint text-blue-600" style="font-size: 3rem;"></i>
+              <h2 class="fw-bold text-blue-900 mt-2">ECOÁGUA</h2>
+            </div>
+
+            <div class="text-center mb-4">
+              <h2 class="fw-bold mb-2" style="font-size: 1.75rem; color: #1e3a8a;">Bem-vindo de volta!</h2>
+              <p class="text-muted">Entre com suas credenciais para continuar</p>
+            </div>
+
+            <form action="/login" method="POST" id="loginForm">
+              <div class="mb-3">
+                <label for="email" class="eco-label">
+                  <i class="fas fa-envelope mr-2"></i>E-mail
+                </label>
+                <input name="EMAIL" type="email" class="eco-input form-control" id="email" placeholder="seu@email.com" required />
+              </div>
+              <div class="mb-3">
+                <label for="senha" class="eco-label">
+                  <i class="fas fa-lock mr-2"></i>Senha
+                </label>
+                <input name="SENHA" type="password" class="eco-input form-control" id="senha" placeholder="••••••••" required minlength="6" />
+              </div>
+              <div class="mb-3 text-end">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#modalEsqueciSenha" class="text-decoration-none small">
+                  <i class="fas fa-question-circle me-1"></i>Esqueci minha senha
+                </a>
+              </div>
+              <button type="submit" class="btn-eco btn-eco-primary w-100 mb-3" style="padding: 0.75rem;">
+                <i class="fas fa-sign-in-alt me-2"></i>Entrar
+              </button>
+            </form>
+
+            <div class="text-center pt-3 border-top mt-3">
+              <p class="mb-3 text-muted small">Não tem uma conta?</p>
+              <button data-bs-toggle="modal" data-bs-target="#modalCadastro" class="btn btn-outline-primary w-100">
+                <i class="fas fa-user-plus me-2"></i>Criar conta gratuita
+              </button>
+            </div>
           </div>
-          <div class="mb-3 text-end">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#modalEsqueciSenha">Esqueci minha senha</a>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Entrar</button>
-        </form>
-        <p class="mt-3 text-center">
-          Não tem conta?
-          <a href="#" data-bs-toggle="modal" data-bs-target="#modalCadastro">Cadastre-se</a>
-        </p>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Modal de Cadastro -->
   <div class="modal modal-centered fade" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastroLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered d-flex justify-content-center ">
-    <div class="modal-content cadastro-card">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalCadastroLabel">Crie sua conta</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body">
-        <form id="cadastroForm" action="/inserirusuario" method="POST">
-          <div class="mb-3">
-            <label for="cpf" class="form-label">CPF</label>
-            <input name="USER_CPF" type="text" pattern="\d{11}" maxlength="11" minlength="11" oninput="this.value=this.value.replace(/\D/g,'')" class="form-control" id="cpf" />
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content cadastro-card">
+        <div class="modal-header border-bottom-0 pb-0">
+          <div class="w-100">
+            <div class="text-center mb-3">
+              <div class="eco-card-icon bg-green-100 mx-auto" style="width: 3.5rem; height: 3.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="fas fa-user-plus text-green-600" style="font-size: 1.75rem;"></i>
+              </div>
+            </div>
+            <h5 class="modal-title text-center w-100" id="modalCadastroLabel" style="font-size: 1.5rem; font-weight: 700;">Crie sua conta</h5>
+            <p class="text-center text-gray-600 mt-2">Junte-se ao ECOÁGUA e economize água!</p>
           </div>
-          <div class="mb-3">
-            <label for="nome" class="form-label">Nome completo</label>
-            <input name="USER_NOME" type="text" class="form-control" id="nome" required />
-          </div>
-          <div class="mb-3">
-            <label for="cadastroEmail" class="form-label">E-mail</label>
-            <input name="USER_EMAIL" type="email" class="form-control" id="cadastroEmail" required />
-          </div>
-          <div class="mb-3">
-            <label for="cadastroSenha" class="form-label">Senha</label>
-            <input name="USER_SENHA" type="password" class="form-control" id="cadastroSenha" required minlength="6" />
-          </div>
-          <div class="mb-3">
-            <label for="confirmarSenha" class="form-label">Confirme a senha</label>
-            <input name="USER_SENHA_2" type="password" class="form-control" id="confirmarSenha" required />
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
-        </form>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="cadastroForm" action="/inserirusuario" method="POST">
+            <div class="mb-3">
+              <label for="cpf" class="eco-label">
+                <i class="fas fa-id-card mr-2"></i>CPF
+              </label>
+              <input name="USER_CPF" type="text" pattern="\d{11}" maxlength="11" minlength="11" oninput="this.value=this.value.replace(/\D/g,'')" class="eco-input form-control" id="cpf" placeholder="00000000000" required />
+              <p class="eco-help-text">Apenas números, sem pontos ou traços</p>
+            </div>
+            <div class="mb-3">
+              <label for="nome" class="eco-label">
+                <i class="fas fa-user mr-2"></i>Nome completo
+              </label>
+              <input name="USER_NOME" type="text" class="eco-input form-control" id="nome" placeholder="Seu nome completo" required />
+            </div>
+            <div class="mb-3">
+              <label for="cadastroEmail" class="eco-label">
+                <i class="fas fa-envelope mr-2"></i>E-mail
+              </label>
+              <input name="USER_EMAIL" type="email" class="eco-input form-control" id="cadastroEmail" placeholder="seu@email.com" required />
+            </div>
+            <div class="mb-3">
+              <label for="cadastroSenha" class="eco-label">
+                <i class="fas fa-lock mr-2"></i>Senha
+              </label>
+              <input name="USER_SENHA" type="password" class="eco-input form-control" id="cadastroSenha" placeholder="••••••••" required minlength="6" />
+              <p class="eco-help-text">Mínimo 6 caracteres</p>
+            </div>
+            <div class="mb-4">
+              <label for="confirmarSenha" class="eco-label">
+                <i class="fas fa-lock mr-2"></i>Confirme a senha
+              </label>
+              <input name="USER_SENHA_2" type="password" class="eco-input form-control" id="confirmarSenha" placeholder="••••••••" required />
+            </div>
+            <button type="submit" class="btn-eco btn-eco-success w-100" style="padding: 0.75rem;">
+              <i class="fas fa-check-circle mr-2"></i>Cadastrar
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 
   <!-- Modal Esqueci Minha Senha -->
   <div class="modal fade" id="modalEsqueciSenha" tabindex="-1" aria-labelledby="modalEsqueciSenhaLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content reset-card">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalEsqueciSenhaLabel">Redefinir Senha</h5>
+        <div class="modal-header border-bottom-0 pb-0">
+          <div class="w-100">
+            <div class="text-center mb-3">
+              <div class="eco-card-icon bg-orange-100 mx-auto" style="width: 3.5rem; height: 3.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="fas fa-key text-orange-600" style="font-size: 1.75rem;"></i>
+              </div>
+            </div>
+            <h5 class="modal-title text-center w-100" id="modalEsqueciSenhaLabel" style="font-size: 1.5rem; font-weight: 700;">Redefinir Senha</h5>
+            <p class="text-center text-gray-600 mt-2">Enviaremos um link para recuperação</p>
+          </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body pt-3">
           <form id="resetForm" novalidate>
-            <div class="mb-3">
-              <label for="resetEmail" class="form-label">E-mail cadastrado</label>
-              <input type="email" class="form-control" id="resetEmail" required />
+            <div class="mb-4">
+              <label for="resetEmail" class="eco-label">
+                <i class="fas fa-envelope mr-2"></i>E-mail cadastrado
+              </label>
+              <input type="email" class="eco-input form-control" id="resetEmail" placeholder="seu@email.com" required />
+              <p class="eco-help-text">Digite o e-mail associado à sua conta</p>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Enviar</button>
+            <button type="submit" class="btn-eco btn-eco-primary w-100" style="padding: 0.75rem;">
+              <i class="fas fa-paper-plane mr-2"></i>Enviar Link de Recuperação
+            </button>
           </form>
         </div>
       </div>
@@ -130,133 +223,5 @@ else{
   </div>
   <!-- Bootstrap Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!--<script>
-    // fundo.js - bolhas animadas
-    function createBubble() {
-      const bubble = document.createElement("div");
-      bubble.className = "bubble";
-
-      const size = 5 + Math.random() * 20;
-      bubble.style.width = bubble.style.height = `${size}px`;
-      bubble.style.left = `${Math.random() * window.innerWidth}px`;
-      bubble.style.bottom = "-10px";
-      bubble.style.animationDuration = `${4 + Math.random() * 6}s`;
-      bubble.style.opacity = `${Math.random() * 0.5 + 0.5}`;
-      bubble.style.position = "absolute";
-
-      document.body.appendChild(bubble);
-      setTimeout(() => bubble.remove(), 10000);
-    }
-    setInterval(createBubble, 200);
-
-    // login.js (validação simples)
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const senha = document.getElementById("senha").value;
-      if (email && senha.length >= 6) {
-        alert("Login enviado!");
-        // Aqui você pode chamar sua função de autenticação
-      } else {
-        alert("Preencha os campos corretamente!");
-      }
-    });
-
-    // cadastro.js (validação simples)
-    document.getElementById("cadastroForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const senha = document.getElementById("cadastroSenha").value;
-      const confirmar = document.getElementById("confirmarSenha").value;
-
-      if (senha !== confirmar) {
-        alert("As senhas não coincidem!");
-        return;
-      }
-
-      alert("Cadastro enviado!");
-      // Aqui você pode chamar sua função de cadastro
-    });
-
-    // formularioSenha.js
-    document.getElementById("resetForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const email = document.getElementById("resetEmail").value;
-      if (email) {
-        alert("E-mail para redefinição enviado!");
-      } else {
-        alert("Informe seu e-mail.");
-      }
-    });
-  </script>-->
 
 </body>
-
-<?php
-function mostrarPopup($mensagem, $tipo = "sucesso") {
-    // Escapa o conteúdo para evitar problemas de segurança
-    $mensagem = htmlspecialchars($mensagem, ENT_QUOTES, 'UTF-8');
-    $tipo = ($tipo === "erro") ? "erro" : "sucesso";
-
-    echo <<<HTML
-    <div id="popupMensagem" class="popup $tipo">
-        <div class="popup-conteudo">
-            <span id="fecharPopup" class="fechar">&times;</span>
-            <p>$mensagem</p>
-        </div>
-    </div>
-
-    <style>
-    .popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-    .popup-conteudo {
-        background-color: #fff;
-        padding: 20px 30px;
-        border-radius: 8px;
-        text-align: center;
-        min-width: 300px;
-        max-width: 90%;
-        box-shadow: 0 0 15px rgba(0,0,0,0.3);
-        position: relative;
-    }
-    .fechar {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 20px;
-        cursor: pointer;
-    }
-    .popup.sucesso .popup-conteudo {
-        border-left: 5px solid #2b3f9bff;
-    }
-    .popup.erro .popup-conteudo {
-        border-left: 5px solid #dc3545;
-    }
-    </style>
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var popup = document.getElementById("popupMensagem");
-        if (popup) {
-            var fechar = document.getElementById("fecharPopup");
-            fechar.onclick = function() {
-                popup.style.display = "none";
-            }
-            setTimeout(function() {
-                popup.style.display = "none";
-            }, 10000);
-        }
-    });
-    </script>
-HTML;
-}
-?>

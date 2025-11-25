@@ -4,7 +4,7 @@
   <!-- Logo / Marca com ícone -->
   <div class="flex items-center space-x-2">
     <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md">
-      <span class="text-2xl">💧</span>
+      <i class="fas fa-tint text-blue-600 text-xl"></i>
     </div>
     <span class="text-2xl font-bold text-white tracking-wide hover:text-blue-200 transition-colors cursor-pointer" onclick="window.location.href='/dashboard'">
       ECOÁGUA
@@ -14,15 +14,15 @@
   <!-- Links de navegação principais -->
   <div class="ml-8 space-x-1 hidden md:flex">
     <a href="/dashboard" class="nav-link px-4 py-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2">
-      <span>📊</span>
+      <i class="fas fa-chart-bar"></i>
       <span>Dashboard</span>
     </a>
     <a href="/consumo" class="nav-link px-4 py-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2">
-      <span>💧</span>
+      <i class="fas fa-tint"></i>
       <span>Consumo</span>
     </a>
     <a href="/metas" class="nav-link px-4 py-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2">
-      <span>🎯</span>
+      <i class="fas fa-bullseye"></i>
       <span>Metas</span>
     </a>
   </div>
@@ -52,10 +52,10 @@
   <div class="ml-auto md:ml-4 relative hidden md:block">
     <button id="perfilToggle" class="flex items-center space-x-3 px-4 py-2 text-white hover:bg-white hover:bg-opacity-20 rounded-lg transition-all duration-200 group">
       <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-        <span class="text-lg">👤</span>
+        <i class="fas fa-user text-blue-600"></i>
       </div>
       <div class="text-left hidden xl:block">
-        <span class="block text-sm font-medium"><?= htmlspecialchars($_COOKIE['cookie_nome']) ?></span>
+        <span class="block text-sm font-medium"><?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?></span>
         <span class="block text-xs text-blue-200">Ver perfil</span>
       </div>
       <svg class="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="currentColor" viewBox="0 0 20 20">
@@ -67,27 +67,27 @@
     <div id="perfilDropdown"
          class="hidden absolute right-0 mt-2 w-64 bg-white border border-gray-200 shadow-2xl rounded-xl overflow-hidden z-50 animate-fadeIn">
       <div class="bg-gradient-to-r from-blue-900 to-blue-800 px-4 py-3 text-white">
-        <p class="font-semibold"><?= htmlspecialchars($_COOKIE['cookie_nome']) ?></p>
-        <p class="text-xs text-blue-200"><?= htmlspecialchars($_COOKIE['cookie_email'] ?? 'usuario@email.com') ?></p>
+        <p class="font-semibold"><?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?></p>
+        <p class="text-xs text-blue-200"><?= htmlspecialchars($_SESSION['usuario_email'] ?? 'usuario@email.com') ?></p>
       </div>
       <div class="py-2">
         <a href="/menu" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 transition-colors">
-          <span class="text-xl">👤</span>
+          <i class="fas fa-user text-lg"></i>
           <div>
             <p class="font-medium text-sm">Meu Perfil</p>
             <p class="text-xs text-gray-500">Configurações da conta</p>
           </div>
         </a>
         <a href="/dashboard" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 transition-colors">
-          <span class="text-xl">📊</span>
+          <i class="fas fa-chart-bar text-lg"></i>
           <div>
             <p class="font-medium text-sm">Dashboard</p>
             <p class="text-xs text-gray-500">Visão geral</p>
           </div>
         </a>
         <div class="border-t border-gray-200 my-2"></div>
-        <a href="/sair" onclick="return confirm('Tem certeza que deseja sair?')" class="flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors">
-          <span class="text-xl">🚪</span>
+        <a href="#" onclick="confirmarLogout(event)" class="flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors">
+          <i class="fas fa-sign-out-alt text-lg"></i>
           <div>
             <p class="font-medium text-sm">Sair</p>
             <p class="text-xs text-red-400">Encerrar sessão</p>
@@ -113,10 +113,10 @@
     <div class="p-4 border-b border-gray-200">
       <div class="flex items-center space-x-3">
         <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center">
-          <span class="text-2xl">👤</span>
+          <i class="fas fa-user text-white text-xl"></i>
         </div>
         <div>
-          <p class="font-semibold text-gray-800"><?= htmlspecialchars($_COOKIE['cookie_nome']) ?></p>
+          <p class="font-semibold text-gray-800"><?= htmlspecialchars($_SESSION['usuario_nome'] ?? 'Usuário') ?></p>
           <p class="text-xs text-gray-500">Ver perfil</p>
         </div>
       </div>
@@ -124,24 +124,24 @@
 
     <nav class="p-4 space-y-2">
       <a href="/dashboard" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-        <span class="text-xl">📊</span>
+        <i class="fas fa-chart-bar text-lg"></i>
         <span class="font-medium">Dashboard</span>
       </a>
       <a href="/consumo" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-        <span class="text-xl">💧</span>
+        <i class="fas fa-tint text-lg"></i>
         <span class="font-medium">Consumo</span>
       </a>
       <a href="/metas" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-        <span class="text-xl">🎯</span>
+        <i class="fas fa-bullseye text-lg"></i>
         <span class="font-medium">Metas</span>
       </a>
       <a href="/menu" class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-colors">
-        <span class="text-xl">⚙️</span>
+        <i class="fas fa-cog text-lg"></i>
         <span class="font-medium">Configurações</span>
       </a>
       <div class="border-t border-gray-200 my-2"></div>
-      <a href="/sair" onclick="return confirm('Tem certeza que deseja sair?')" class="flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-        <span class="text-xl">🚪</span>
+      <a href="#" onclick="confirmarLogout(event)" class="flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+        <i class="fas fa-sign-out-alt text-lg"></i>
         <span class="font-medium">Sair</span>
       </a>
     </nav>
@@ -238,14 +238,20 @@
       }
     });
 
-    // Opcional: Buscar consumo do dia (exemplo)
-    // Você pode implementar uma chamada AJAX aqui
-    const consumoHoje = document.getElementById('consumoHoje');
-    if (consumoHoje) {
-      // Exemplo estático - substituir por chamada real ao backend
-      setTimeout(() => {
-        consumoHoje.textContent = '85 L';
-      }, 1000);
-    }
   });
+
+  // Confirmação de logout com SweetAlert
+  function confirmarLogout(event) {
+    event.preventDefault();
+    EcoAlert.confirm(
+      'Deseja sair?',
+      'Você será desconectado da sua conta',
+      'Sim, sair',
+      'Cancelar'
+    ).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '/sair';
+      }
+    });
+  }
 </script>

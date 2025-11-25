@@ -30,91 +30,70 @@ class SiteController extends Action{
     }
 
     public function menu(){
-        session_start();
-        
-        // Verifica autenticação
-        if (!isset($_COOKIE['cookie_id'])) {
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
             header('Location: /');
             exit;
         }
-        else if($_COOKIE['cookie_id']==0){
-            header('Location: /');
-            exit;
-        }
-        
-        $id_usuario = $_COOKIE['cookie_id'];
-        
-        $title = "Menu";
-        $title_pagina = "Meu Perfil";
 
-        // === BUSCAR DADOS DO USUÁRIO ===
+        $id_usuario = $_SESSION['usuario_id'];
+
         $usuarioDAO = new \App\DAO\UsuarioDAO();
         $usuario = $usuarioDAO->buscarPorId($id_usuario);
-        
+
         if (!$usuario) {
-            // Se não encontrar o usuário, desloga
-            setcookie('cookie_id', '', time() - 3600, '/');
-            setcookie('cookie_nome', '', time() - 3600, '/');
-            setcookie('cookie_cpf', '', time() - 3600, '/');
+            session_destroy();
             header('Location: /');
             exit;
         }
 
-        // === FORMATAR CPF ===
         $cpf_exibir = str_pad($usuario['cpf'], 11, '0', STR_PAD_LEFT);
-        $cpf_formatado = substr($cpf_exibir, 0, 3) . '.' . 
-                        substr($cpf_exibir, 3, 3) . '.' . 
-                        substr($cpf_exibir, 6, 3) . '-' . 
+        $cpf_formatado = substr($cpf_exibir, 0, 3) . '.' .
+                        substr($cpf_exibir, 3, 3) . '.' .
+                        substr($cpf_exibir, 6, 3) . '-' .
                         substr($cpf_exibir, 9, 2);
 
-        // === VERIFICAR MENSAGENS DE FEEDBACK ===
         $mensagemSucesso = null;
         $mensagemErro = null;
-        
+
         if (isset($_SESSION['perfil_atualizado']) && $_SESSION['perfil_atualizado'] == 1) {
             $mensagemSucesso = 'Perfil atualizado com sucesso!';
             $_SESSION['perfil_atualizado'] = 0;
         }
-        
+
         if (isset($_SESSION['senha_alterada']) && $_SESSION['senha_alterada'] == 1) {
             $mensagemSucesso = 'Senha alterada com sucesso!';
             $_SESSION['senha_alterada'] = 0;
         }
-        
+
         if (isset($_SESSION['erro_edicao'])) {
             $mensagemErro = $_SESSION['erro_edicao'];
             unset($_SESSION['erro_edicao']);
         }
 
-        // === PASSAR DADOS PARA A VIEW ===
-        $this->getView()->title = $title;
-        $this->getView()->title_pagina = $title_pagina;
-        
-        // Dados do usuário
+        // CONSUMO DE HOJE PARA A NAVBAR
+        $consumoDAO = new ConsumoDiarioDAO();
+        $consumoHoje = $consumoDAO->buscarConsumoHoje($id_usuario);
+
+        $this->getView()->title = "Menu";
+        $this->getView()->title_pagina = "Meu Perfil";
         $this->getView()->usuario = $usuario;
         $this->getView()->cpf_formatado = $cpf_formatado;
-        
-        // Mensagens de feedback
         $this->getView()->mensagemSucesso = $mensagemSucesso;
         $this->getView()->mensagemErro = $mensagemErro;
+        $this->getView()->consumoHoje = round($consumoHoje, 0);
 
         $this->render('menu', 'site');
     }
 
 
      public function dashboard() {
-        // Verifica autenticação
-        if (!isset($_COOKIE['cookie_id'])) {
-            header('Location: /');
-            exit;
-        }
-        else if($_COOKIE['cookie_id']==0){
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
             header('Location: /');
             exit;
         }
 
-        $id_usuario = $_COOKIE['cookie_id'];
-        $nome_usuario = $_COOKIE['cookie_nome'];
+        $id_usuario = $_SESSION['usuario_id'];
+        $nome_usuario = $_SESSION['usuario_nome'];
 
         // === DICAS ALEATÓRIAS ===
         $dicasDAO = new DicasDAO();
@@ -265,17 +244,12 @@ class SiteController extends Action{
     }
 
     public function consumo(){
-    // Verifica autenticação
-    if (!isset($_COOKIE['cookie_id'])) {
-        header('Location: /');
-        exit;
-    }
-    else if($_COOKIE['cookie_id']==0){
-        header('Location: /');
-        exit;
-    }
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
+            header('Location: /');
+            exit;
+        }
 
-    $id_usuario = $_COOKIE['cookie_id'];
+        $id_usuario = $_SESSION['usuario_id'];
 
     $title = "Consumo";
     $title_pagina = "Gerenciar Dados de Consumo";
@@ -331,38 +305,28 @@ class SiteController extends Action{
     $consumoHoje = $consumoDAO->buscarConsumoHoje($id_usuario);
     $this->getView()->consumoHoje = round($consumoHoje, 0);
 
-    $this->render('consumo', 'site');
-}
+        $this->render('consumo', 'site');
+    }
 
     public function redefinirSenha(){
-        if (!isset($_COOKIE['cookie_id'])) {
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
             header('Location: /');
+            exit;
         }
-        else if($_COOKIE['cookie_id']==0){
-            header('Location: /');
-        }
-        
-        $title = "Consumo";
-        $title_pagina = "Bem vindo ao site";
 
-        $this->getView()->title = $title;
-        $this->getView()->title_pagina = $title_pagina;
+        $this->getView()->title = "Redefinir Senha";
+        $this->getView()->title_pagina = "Alterar Senha";
 
         $this->render('redefinirSenha', 'site_login');
     }
 
     public function metas(){
-    // Verifica autenticação
-    if (!isset($_COOKIE['cookie_id'])) {
-        header('Location: /');
-        exit;
-    }
-    else if($_COOKIE['cookie_id']==0){
-        header('Location: /');
-        exit;
-    }
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
+            header('Location: /');
+            exit;
+        }
 
-    $id_usuario = $_COOKIE['cookie_id'];
+        $id_usuario = $_SESSION['usuario_id'];
 
     $title = "Metas";
     $title_pagina = "Metas de Economia";
@@ -461,17 +425,21 @@ class SiteController extends Action{
     // === PASSAR DADOS PARA A VIEW ===
     $this->getView()->title = $title;
     $this->getView()->title_pagina = $title_pagina;
-    
+
     // Cards resumo
     $this->getView()->metaAtiva = $metaAtiva;
     $this->getView()->progressoMeta = $progressoMeta;
     $this->getView()->totalMesAtual = round($totalMesAtual, 0);
     $this->getView()->statusGeral = $statusGeral;
     $this->getView()->economiaEsperada = $economiaEsperada;
-    
+
     // Histórico e categorias
     $this->getView()->historicoMetas = $historicoMetas;
     $this->getView()->metasPorCategoria = $metasPorCategoria;
+
+    // CONSUMO DE HOJE PARA A NAVBAR
+    $consumoHoje = $consumoDAO->buscarConsumoHoje($id_usuario);
+    $this->getView()->consumoHoje = round($consumoHoje, 0);
 
     $this->render('metas', 'site');
 }

@@ -30,14 +30,12 @@ class ValordaContaDAO extends DAO{
             $stmt->execute();
         }
         catch(\PDOException $ex){
-            header('Location:/error104');
-            die();
+            error_log("Erro ao inserir valor da conta: " . $ex->getMessage());
+            return false;
         }
+        return true;
     }
 
-    /**
-     * Busca a última fatura registrada do usuário
-     */
     public function buscarUltimaFatura($id_usuario) {
         try {
             $sql = "SELECT 
@@ -58,13 +56,11 @@ class ValordaContaDAO extends DAO{
             return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar última fatura: " . $ex->getMessage());
             return null;
-        }    
+        }
     }
 
-    /**
-     * Busca faturas dos últimos meses
-     */
     public function buscarFaturasRecentes($id_usuario, $meses = 6) {
         try {
             $sql = "SELECT 
@@ -87,13 +83,11 @@ class ValordaContaDAO extends DAO{
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar faturas recentes: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
-    /**
-     * Calcula o total gasto no ano
-     */
     public function buscarTotalGastoAno($id_usuario, $ano = null) {
         try {
             if (!$ano) {
@@ -118,13 +112,11 @@ class ValordaContaDAO extends DAO{
             return $result['total_gasto'] ?? 0;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar total gasto no ano: " . $ex->getMessage());
             return 0;
-        }    
+        }
     }
 
-    /**
-     * Busca a média de gasto mensal
-     */
     public function buscarMediaMensal($id_usuario, $meses = 6) {
         try {
             $sql = "SELECT 
@@ -145,8 +137,9 @@ class ValordaContaDAO extends DAO{
             return $result['media_valor'] ?? 0;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar média mensal: " . $ex->getMessage());
             return 0;
-        }    
+        }
     }
 
     public function listar(){
@@ -166,12 +159,13 @@ class ValordaContaDAO extends DAO{
             return $faturas;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao listar faturas: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
     public function excluir($obj) {}
     public function alterar($obj) {}
-    public function buscarPorId($id){ }
-    public function buscarPorLogado($id){}
+    public function buscarPorId($id) {}
+    public function buscarPorLogado($id) {}
 }

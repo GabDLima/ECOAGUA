@@ -38,14 +38,12 @@ class ConsumoDiarioDAO extends DAO{
             $stmt->execute();
         }
         catch(\PDOException $ex){
-            header('Location:/error103');
-            die();
+            error_log("Erro ao inserir consumo diário: " . $ex->getMessage());
+            return false;
         }
+        return true;
     }
 
-    /**
-     * Busca os últimos 7 dias de consumo do usuário
-     */
     public function buscarUltimos7Dias($id_usuario) {
         try {
             $consumos = array();
@@ -77,13 +75,11 @@ class ConsumoDiarioDAO extends DAO{
             return $consumos;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar últimos 7 dias: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
-    /**
-     * Busca consumo mensal agrupado (soma total)
-     */
     public function buscarConsumoMensal($id_usuario, $meses = 6) {
         try {
             $sql = "SELECT 
@@ -116,13 +112,11 @@ class ConsumoDiarioDAO extends DAO{
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar consumo mensal: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
-    /**
-     * Busca consumo por tipo (Pizza/Doughnut chart)
-     */
     public function buscarConsumoPorTipo($id_usuario, $mes = null, $ano = null) {
         try {
             $sql = "SELECT 
@@ -159,13 +153,11 @@ class ConsumoDiarioDAO extends DAO{
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar consumo por tipo: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
-    /**
-     * Busca total de consumo do mês atual em litros
-     */
     public function buscarTotalMesAtual($id_usuario) {
         try {
             $sql = "SELECT 
@@ -193,13 +185,11 @@ class ConsumoDiarioDAO extends DAO{
             return $result['total_litros'] ?? 0;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar total mês atual: " . $ex->getMessage());
             return 0;
-        }    
+        }
     }
 
-    /**
-     * Busca consumo do mês anterior
-     */
     public function buscarTotalMesAnterior($id_usuario) {
         try {
             $sql = "SELECT 
@@ -227,13 +217,11 @@ class ConsumoDiarioDAO extends DAO{
             return $result['total_litros'] ?? 0;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar total mês anterior: " . $ex->getMessage());
             return 0;
-        }    
+        }
     }
 
-    /**
-     * Busca consumo apenas de HOJE
-     */
     public function buscarConsumoHoje($id_usuario) {
         try {
             $sql = "SELECT 
@@ -260,13 +248,11 @@ class ConsumoDiarioDAO extends DAO{
             return $result['total_litros'] ?? 0;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar consumo hoje: " . $ex->getMessage());
             return 0;
-        }    
+        }
     }
 
-    /**
-     * Busca consumo por mês específico (para comparar com meta)
-     */
     public function buscarConsumoPorMes($id_usuario, $mes, $ano) {
         try {
             $sql = "SELECT 
@@ -296,8 +282,9 @@ class ConsumoDiarioDAO extends DAO{
             return $result['total_litros'] ?? 0;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao buscar consumo por mês: " . $ex->getMessage());
             return 0;
-        }    
+        }
     }
 
     public function listar(){
@@ -317,12 +304,13 @@ class ConsumoDiarioDAO extends DAO{
             return $consumos;
         }
         catch(\PDOException $ex){
+            error_log("Erro ao listar consumos: " . $ex->getMessage());
             return array();
-        }    
+        }
     }
 
     public function excluir($obj) {}
     public function alterar($obj) {}
-    public function buscarPorId($id){ }
-    public function buscarPorLogado($id){}
+    public function buscarPorId($id) {}
+    public function buscarPorLogado($id) {}
 }
