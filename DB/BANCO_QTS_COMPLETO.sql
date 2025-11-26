@@ -6,12 +6,6 @@
 -- Tempo de geração: 24/11/2025 às 16:00
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
---
--- BANCO ATUALIZADO COM:
--- - Dark Mode implementado
--- - Emojis removidos (usar FontAwesome no frontend)
--- - Sistema de mensagens global
--- - Rota para toggle dark mode
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;

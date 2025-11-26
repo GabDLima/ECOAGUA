@@ -8,12 +8,20 @@
 
     // Aplicar dark mode baseado na sessão (já aplicado via PHP no header)
     function initDarkMode() {
-        // Verifica se o body já tem a classe (aplicada pelo PHP)
-        const isDarkMode = document.body.classList.contains('dark-mode');
+        // Verifica se o body ou documentElement já tem a classe (aplicada pelo PHP)
+        const isDarkMode = document.body.classList.contains('dark-mode') ||
+                          document.documentElement.classList.contains('dark-mode');
+
+        // Sincronizar a classe entre documentElement e body
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark-mode');
+            document.body.classList.add('dark-mode');
+        }
 
         // Verificar se existe o toggle na página
         const darkModeToggle = document.getElementById('darkModeToggle');
         if (darkModeToggle) {
+            // Sincronizar o estado do checkbox com o tema atual
             darkModeToggle.checked = isDarkMode;
 
             // Adicionar listener apenas se o toggle existir
@@ -22,13 +30,16 @@
     }
 
     // Função para alternar dark mode
-    function toggleDarkMode() {
-        const darkModeValue = this.checked ? 1 : 0;
+    function toggleDarkMode(event) {
+        const checkbox = event.target;
+        const darkModeValue = checkbox.checked ? 1 : 0;
 
-        // Aplicar/remover classe imediatamente
+        // Aplicar/remover classe imediatamente em ambos os elementos
         if (darkModeValue) {
+            document.documentElement.classList.add('dark-mode');
             document.body.classList.add('dark-mode');
         } else {
+            document.documentElement.classList.remove('dark-mode');
             document.body.classList.remove('dark-mode');
         }
 
@@ -42,22 +53,20 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                // Recarregar a página para aplicar em todos os elementos
-                setTimeout(() => {
-                    window.location.reload();
-                }, 300);
-            } else {
+            if (!data.success) {
                 console.error('Erro ao salvar preferência:', data.message);
                 // Reverter em caso de erro
-                this.checked = !this.checked;
+                checkbox.checked = !checkbox.checked;
+                document.documentElement.classList.toggle('dark-mode');
                 document.body.classList.toggle('dark-mode');
             }
+            // Não recarrega a página - o tema já foi aplicado instantaneamente
         })
         .catch(error => {
             console.error('Erro:', error);
             // Reverter em caso de erro
-            this.checked = !this.checked;
+            checkbox.checked = !checkbox.checked;
+            document.documentElement.classList.toggle('dark-mode');
             document.body.classList.toggle('dark-mode');
         });
     }
