@@ -48,7 +48,7 @@ class AlunosDAO extends DAO{
                             alunos a,
                             login l
                         WHERE
-                            ad.fk_login_log_id = l.log_id
+                            a.fk_login_log_id = l.log_id
                     ";
             $stmt = $this->getConn()->prepare($sql);
             $stmt->execute();

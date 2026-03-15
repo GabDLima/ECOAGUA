@@ -191,11 +191,13 @@ class UsuarioController extends Action{
         $usuarioDAO = new UsuarioDAO();
         $usuario = $usuarioDAO->buscarPorEmail($email);
 
-        if (!$usuario || $usuario['senha'] !== $senha) {
+        if (!$usuario || !password_verify($senha, $usuario['senha'])) {
             $_SESSION['mensagem_login_incorreto'] = 1;
             header('Location: /');
             exit;
         }
+
+        session_regenerate_id(true);
 
         $_SESSION['usuario_id'] = $usuario['id'];
         $_SESSION['usuario_nome'] = $usuario['nome'];

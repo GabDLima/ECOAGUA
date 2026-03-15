@@ -14,6 +14,7 @@ class UsuarioDAO extends DAO {
             $user_nome  = $obj->__get('user_nome');
             $user_email = $obj->__get('user_email');
             $user_senha = $obj->__get('user_senha');
+            $senha_hash = password_hash($user_senha, PASSWORD_DEFAULT);
 
             $sql = "INSERT INTO usuarios (
                         cpf,
@@ -31,7 +32,7 @@ class UsuarioDAO extends DAO {
             $stmt->bindValue(':user_cpf', $user_cpf);
             $stmt->bindValue(':user_nome', $user_nome);
             $stmt->bindValue(':user_email', $user_email);
-            $stmt->bindValue(':user_senha', $user_senha);
+            $stmt->bindValue(':user_senha', $senha_hash);
             $stmt->execute();
         }
         catch(\PDOException $ex) {
@@ -149,15 +150,16 @@ class UsuarioDAO extends DAO {
         try {
             $user_id    = $obj->__get('user_id');
             $user_senha = $obj->__get('user_senha');
+            $senha_hash = password_hash($user_senha, PASSWORD_DEFAULT);
 
             $sql = "UPDATE usuarios
-                    SET 
+                    SET
                         senha = :user_senha,
                         updated_at = NOW()
                     WHERE id = :id";
-            
+
             $stmt = $this->getConn()->prepare($sql);
-            $stmt->bindValue(':user_senha', $user_senha);
+            $stmt->bindValue(':user_senha', $senha_hash);
             $stmt->bindValue(':id', $user_id, \PDO::PARAM_INT);
             $stmt->execute();
             return true;

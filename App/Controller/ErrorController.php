@@ -22,9 +22,9 @@
         
 
         public function validaAutenticacao() {
-            if(!isset($_SESSION['id']) || $_SESSION['id'] == '' || !isset($_SESSION['nome']) || $_SESSION['nome'] == '') {
-                header('Location: /login');
-                die();
+            if (!isset($_SESSION['usuario_id']) || empty($_SESSION['usuario_id'])) {
+                header('Location: /');
+                exit;
             }
         }
 
