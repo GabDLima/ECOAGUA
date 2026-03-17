@@ -1,0 +1,21 @@
+# Credenciais e ambiente
+.env
+.env.local
+.env.production
+
+# Composer
+vendor/
+composer.phar
+
+# Claude Code
+.claude/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Mobile
+mobile/node_modules/
+mobile/.expo/
+mobile/android/
+mobile/ios/
