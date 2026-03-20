@@ -206,6 +206,7 @@ class UsuarioController extends Action{
         $_SESSION['dark_mode'] = $usuario['dark_mode'] ?? 0;
         $_SESSION['login_realizado'] = 1;
 
+        session_write_close();
         header('Location: /dashboard');
         exit;
     }
