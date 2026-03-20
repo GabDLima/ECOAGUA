@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import api from '../api/api';
 import theme from '../theme/theme';
+import { notificarMetaAtingida, notificarMetaUltrapassada } from '../services/NotificationService';
 
 const MetasScreen: React.FC = () => {
   const [meta, setMeta] = useState<any>(null);
@@ -22,6 +23,15 @@ const MetasScreen: React.FC = () => {
       const res = await api.get('/api/metas');
       setMeta(res.data.meta);
       setProgresso(res.data.progresso);
+
+      if (res.data.progresso) {
+        const { percentual, meta_litros, consumo_atual } = res.data.progresso;
+        if (percentual >= 100) {
+          await notificarMetaUltrapassada(consumo_atual, meta_litros);
+        } else if (percentual >= 90) {
+          await notificarMetaAtingida(percentual, meta_litros);
+        }
+      }
     } catch {
       Alert.alert('Erro', 'Não foi possível carregar as metas.');
     }

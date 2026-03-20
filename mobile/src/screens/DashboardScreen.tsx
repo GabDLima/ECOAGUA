@@ -9,6 +9,7 @@ import api from '../api/api';
 import theme from '../theme/theme';
 import Loading from '../components/Loading';
 import { LineChart } from 'react-native-gifted-charts';
+import { notificarMetaAtingida, notificarMetaUltrapassada } from '../services/NotificationService';
 
 interface DashboardData {
   consumo_hoje: number;
@@ -16,7 +17,7 @@ interface DashboardData {
   variacao_percent: number;
   projecao_mensal: number;
   ultima_fatura: { valor: number } | null;
-  progresso_meta: { percentual: number; meta_litros: number; alerta: boolean } | null;
+  progresso_meta: { percentual: number; meta_litros: number; consumo_atual: number; alerta: boolean } | null;
   alerta: boolean;
   ultimos_7_dias?: { data_consumo: string; quantidade: number }[];
 }
@@ -31,6 +32,15 @@ const DashboardScreen: React.FC = () => {
     try {
       const response = await api.get('/api/dashboard');
       setData(response.data);
+
+      if (response.data.progresso_meta) {
+        const { percentual, meta_litros, consumo_atual } = response.data.progresso_meta;
+        if (percentual >= 100) {
+          await notificarMetaUltrapassada(consumo_atual, meta_litros);
+        } else if (percentual >= 90) {
+          await notificarMetaAtingida(percentual, meta_litros);
+        }
+      }
     } catch {
       Alert.alert('Erro', 'Não foi possível carregar os dados.');
     } finally {
