@@ -1,57 +1,53 @@
-<?php include __DIR__ . '/../includes/mensagens.php'; ?>
+<div class="min-h-screen flex items-center justify-center py-12 px-4" style="background: linear-gradient(135deg, #f3f4f6 0%, #eff6ff 100%);">
+    <div class="w-full" style="max-width: 440px;">
 
-<body>
+        <div class="eco-card animate-fade-in" style="padding: 2.5rem;">
 
-  <div class="d-flex justify-content-center align-items-center min-vh-100 px-3">
-    <div class="card set-password-card shadow-lg animate-fade-in">
-      <div class="card-body p-5">
-        <div class="text-center mb-4">
-          <div class="eco-card-icon bg-purple-100 mx-auto mb-3" style="width: 4rem; height: 4rem; display: inline-flex; align-items: center; justify-content: center;">
-            <i class="fas fa-lock text-purple-600" style="font-size: 2rem;"></i>
-          </div>
-          <h2 class="card-title mb-2" style="font-size: 2rem; font-weight: 700;">Redefinir Senha</h2>
-          <p class="text-gray-600">Crie uma nova senha segura para sua conta</p>
-        </div>
-
-        <form action="/alterasenha" method="POST" id="redefinirSenhaForm">
-          <div class="mb-4">
-            <label for="novaSenha" class="eco-label">
-              <i class="fas fa-key mr-2"></i>Nova senha
-            </label>
-            <input name="USER_SENHA" type="password" class="eco-input form-control" id="novaSenha" placeholder="••••••••" required minlength="6" />
-            <p class="eco-help-text">Mínimo 6 caracteres</p>
-          </div>
-          <div class="mb-4">
-            <label for="confirmarSenha" class="eco-label">
-              <i class="fas fa-check-circle mr-2"></i>Confirmar senha
-            </label>
-            <input name="USER_SENHA_2" type="password" class="eco-input form-control" id="confirmarSenha" placeholder="••••••••" required />
-            <p class="eco-help-text">Digite a mesma senha para confirmar</p>
-          </div>
-
-          <div class="p-3 mb-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-            <div class="flex items-center">
-              <i class="fas fa-info-circle text-blue-600 mr-2"></i>
-              <p class="text-sm text-blue-800 mb-0">
-                <strong>Dica:</strong> Use uma senha forte com letras, números e símbolos
-              </p>
+            <div class="text-center mb-8">
+                <div class="eco-card-icon bg-blue-100 text-blue-600 mx-auto mb-4">
+                    <i class="fas fa-lock fa-lg"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-blue-900">Redefinir Senha</h1>
+                <p class="text-gray-500 mt-2 text-sm">Digite sua nova senha abaixo</p>
             </div>
-          </div>
 
-          <button type="submit" class="btn-eco btn-eco-success w-100 mb-3" style="padding: 0.75rem;">
-            <i class="fas fa-save mr-2"></i>Salvar Nova Senha
-          </button>
-        </form>
+            <?php include_once 'App/View/includes/mensagens.php'; ?>
 
-        <div class="text-center pt-3 border-top">
-          <p class="mb-0 text-gray-600">
-            <i class="fas fa-arrow-left mr-2"></i>
-            Lembrou a senha? <a href="/" class="text-decoration-none">Fazer login</a>
-          </p>
+            <form action="/alterasenha" method="POST">
+                <div class="mb-4">
+                    <label class="eco-label">
+                        <i class="fas fa-lock mr-2 text-blue-600"></i>Nova Senha
+                    </label>
+                    <input type="password" name="nova_senha" class="eco-input"
+                           placeholder="Mínimo 6 caracteres" required minlength="6">
+                </div>
+
+                <div class="mb-6">
+                    <label class="eco-label">
+                        <i class="fas fa-check-circle mr-2 text-blue-600"></i>Confirmar Nova Senha
+                    </label>
+                    <input type="password" name="confirmar_senha" class="eco-input"
+                           placeholder="Repita a nova senha" required minlength="6">
+                </div>
+
+                <div class="mb-6 p-3 rounded-lg" style="background: #eff6ff; border-left: 4px solid #3b82f6;">
+                    <p class="text-sm" style="color: #1e40af;">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Use pelo menos 6 caracteres combinando letras e números.
+                    </p>
+                </div>
+
+                <button type="submit" class="btn-eco btn-eco-success w-full">
+                    <i class="fas fa-check mr-2"></i>Salvar Nova Senha
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <a href="/" class="text-sm" style="color: #3b82f6; text-decoration: none;">
+                    <i class="fas fa-arrow-left me-1"></i>Voltar ao login
+                </a>
+            </div>
+
         </div>
-      </div>
     </div>
-  </div>
-
-</body>
-</html>
+</div>

@@ -314,6 +314,11 @@ class SiteController extends Action{
             exit;
         }
 
+        if (isset($_SESSION['usuario_id'])) {
+            $consumoDAO = new \App\DAO\ConsumoDiarioDAO();
+            $this->getView()->consumoHoje = $consumoDAO->buscarConsumoHoje($_SESSION['usuario_id']) ?? 0;
+        }
+
         $this->getView()->title = "Redefinir Senha";
         $this->getView()->title_pagina = "Alterar Senha";
 
@@ -365,8 +370,11 @@ class SiteController extends Action{
             $percentual = $meta_litros > 0 ? ($consumo_real / $meta_litros) * 100 : 0;
             $status = $percentual <= 100 ? 'atingida' : 'nao_atingida';
             
+            $meses_pt = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+            $ts = strtotime("-$meses_atras months");
+            $mes_formatado = $meses_pt[(int)date('n', $ts) - 1] . '/' . date('Y', $ts);
             $historicoMetas[] = array(
-                'mes_nome' => date('F/Y', strtotime("-$meses_atras months")),
+                'mes_nome' => $mes_formatado,
                 'mes' => $mes,
                 'ano' => $ano,
                 'meta_litros' => $meta_litros,

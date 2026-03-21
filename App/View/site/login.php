@@ -1,227 +1,309 @@
-<?php include __DIR__ . '/../includes/mensagens.php'; ?>
-
 <style>
-  @keyframes float {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    25% { transform: translateY(-20px) translateX(10px); }
-    50% { transform: translateY(-10px) translateX(-10px); }
-    75% { transform: translateY(-30px) translateX(5px); }
+  /* ── Painel esquerdo ── */
+  .split-bg {
+    background: linear-gradient(160deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
   }
-
-  @keyframes rise {
-    0% { bottom: -100px; opacity: 0; }
-    10% { opacity: 0.8; }
-    90% { opacity: 0.8; }
-    100% { bottom: 100vh; opacity: 0; }
-  }
-
   .bubble {
     position: absolute;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 197, 253, 0.5));
     border-radius: 50%;
-    animation: rise linear infinite;
-    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+    background: rgba(255,255,255,0.08);
+    animation: bubbleRise linear infinite;
+  }
+  @keyframes bubbleRise {
+    0%   { transform: translateY(110vh) scale(0.5); opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 0.6; }
+    100% { transform: translateY(-10vh) scale(1.1); opacity: 0; }
+  }
+  @keyframes dropFloat {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%       { transform: translateY(-18px) rotate(3deg); }
+  }
+  .drop-float { animation: dropFloat 4s ease-in-out infinite; }
+
+  /* ── Sistema de painéis ── */
+  .auth-panel {
+    display: none;
+    animation: panelIn 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+  .auth-panel.active { display: block; }
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  .droplet {
-    position: absolute;
-    animation: float ease-in-out infinite;
+  /* ── Separador ── */
+  .eco-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #9ca3af;
+    font-size: 0.8rem;
+    margin: 1.25rem 0;
+  }
+  .eco-divider::before,
+  .eco-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
   }
 
-  .split-bg {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+  /* ── Stats do painel esquerdo ── */
+  .stat-pill {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 999px;
+    padding: 0.5rem 1.25rem;
+    backdrop-filter: blur(4px);
   }
 </style>
 
-<body class="overflow-hidden">
-  <div class="d-flex min-vh-100">
+<?php include_once 'App/View/includes/mensagens.php'; ?>
 
-    <!-- Left Side - Animated Background -->
-    <div class="d-none d-lg-flex col-lg-6 split-bg position-relative align-items-center justify-content-center overflow-hidden">
-      <!-- Bubbles Animation -->
-      <div class="w-100 h-100 position-absolute">
-        <div class="bubble" style="width: 80px; height: 80px; left: 10%; animation-duration: 15s; animation-delay: 0s;"></div>
-        <div class="bubble" style="width: 60px; height: 60px; left: 20%; animation-duration: 12s; animation-delay: 2s;"></div>
-        <div class="bubble" style="width: 100px; height: 100px; left: 50%; animation-duration: 18s; animation-delay: 1s;"></div>
-        <div class="bubble" style="width: 70px; height: 70px; left: 70%; animation-duration: 14s; animation-delay: 3s;"></div>
-        <div class="bubble" style="width: 90px; height: 90px; left: 85%; animation-duration: 16s; animation-delay: 4s;"></div>
-        <div class="bubble" style="width: 50px; height: 50px; left: 35%; animation-duration: 10s; animation-delay: 5s;"></div>
-      </div>
+<div class="flex min-h-screen">
 
-      <!-- Floating Droplets -->
-      <div class="droplet" style="left: 15%; top: 20%; animation-duration: 6s;">
-        <i class="fas fa-tint text-white" style="font-size: 3rem; opacity: 0.3;"></i>
-      </div>
-      <div class="droplet" style="left: 75%; top: 30%; animation-duration: 8s; animation-delay: 1s;">
-        <i class="fas fa-tint text-white" style="font-size: 2.5rem; opacity: 0.4;"></i>
-      </div>
-      <div class="droplet" style="left: 45%; top: 60%; animation-duration: 7s; animation-delay: 2s;">
-        <i class="fas fa-tint text-white" style="font-size: 2rem; opacity: 0.3;"></i>
+  <!-- ══ PAINEL ESQUERDO ══ -->
+  <div class="hidden lg:flex lg:w-1/2 split-bg relative overflow-hidden items-center justify-center">
+
+    <!-- Bolhas de fundo -->
+    <div class="bubble w-20 h-20" style="left:8%;  animation-duration:11s; animation-delay:0s;"></div>
+    <div class="bubble w-32 h-32" style="left:25%; animation-duration:14s; animation-delay:3s;"></div>
+    <div class="bubble w-14 h-14" style="left:55%; animation-duration:9s;  animation-delay:1.5s;"></div>
+    <div class="bubble w-24 h-24" style="left:72%; animation-duration:13s; animation-delay:5s;"></div>
+    <div class="bubble w-10 h-10" style="left:42%; animation-duration:8s;  animation-delay:2s;"></div>
+    <div class="bubble w-16 h-16" style="left:88%; animation-duration:12s; animation-delay:4s;"></div>
+
+    <!-- Conteúdo central — totalmente centralizado -->
+    <div class="relative z-10 flex flex-col items-center justify-center text-center text-white px-10 w-full">
+
+      <!-- Ícone principal animado -->
+      <div class="drop-float mb-6" style="filter: drop-shadow(0 8px 24px rgba(0,0,0,0.3));">
+        <i class="fas fa-tint" style="font-size: 5.5rem; opacity: 0.95;"></i>
       </div>
 
-      <!-- Logo and Text -->
-      <div class="text-center position-relative z-1">
-        <div class="mb-4">
-          <i class="fas fa-tint text-white" style="font-size: 5rem; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));"></i>
+      <h1 class="font-bold tracking-widest uppercase" style="font-size: 2.8rem; letter-spacing: 0.15em; text-shadow: 0 2px 12px rgba(0,0,0,0.25);">
+        ECOÁGUA
+      </h1>
+
+      <p class="mt-3 text-lg opacity-85 font-light">
+        Monitore · Economize · Preserve
+      </p>
+
+      <!-- Linha divisória decorativa -->
+      <div class="my-8 flex items-center gap-3 w-full max-w-xs">
+        <div style="flex:1; height:1px; background:rgba(255,255,255,0.25);"></div>
+        <i class="fas fa-leaf text-sm opacity-60"></i>
+        <div style="flex:1; height:1px; background:rgba(255,255,255,0.25);"></div>
+      </div>
+
+      <!-- Estatísticas em pílulas -->
+      <div class="flex flex-wrap justify-center gap-3">
+        <div class="stat-pill text-white">
+          <span class="font-bold text-lg">37%</span>
+          <span class="text-xs opacity-80 ml-1">água desperdiçada</span>
         </div>
-        <h1 class="text-white fw-bold mb-3" style="font-size: 3rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">ECOÁGUA</h1>
-        <p class="text-white fs-5" style="text-shadow: 1px 1px 5px rgba(0,0,0,0.2);">Economize água, preserve o futuro</p>
-        <div class="mt-4">
-          <div class="d-flex justify-content-center gap-4 text-white" style="font-size: 0.9rem;">
-            <span><i class="fas fa-chart-line me-2"></i>Monitore</span>
-            <span><i class="fas fa-bullseye me-2"></i>Economize</span>
-            <span><i class="fas fa-leaf me-2"></i>Sustentável</span>
-          </div>
+        <div class="stat-pill text-white">
+          <span class="font-bold text-lg">200 L</span>
+          <span class="text-xs opacity-80 ml-1">por pessoa/dia</span>
         </div>
       </div>
-    </div>
 
-    <!-- Right Side - Login Form -->
-    <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center p-4 bg-light">
-      <div class="w-100" style="max-width: 480px;">
-        <div class="card border-0 shadow-lg">
-          <div class="card-body p-5">
-
-            <!-- Mobile Logo (only visible on small screens) -->
-            <div class="text-center mb-4 d-lg-none">
-              <i class="fas fa-tint text-blue-600" style="font-size: 3rem;"></i>
-              <h2 class="fw-bold text-blue-900 mt-2">ECOÁGUA</h2>
-            </div>
-
-            <div class="text-center mb-4">
-              <h2 class="fw-bold mb-2" style="font-size: 1.75rem; color: #1e3a8a;">Bem-vindo de volta!</h2>
-              <p class="text-muted">Entre com suas credenciais para continuar</p>
-            </div>
-
-            <form action="/login" method="POST" id="loginForm">
-              <div class="mb-3">
-                <label for="email" class="eco-label">
-                  <i class="fas fa-envelope mr-2"></i>E-mail
-                </label>
-                <input name="EMAIL" type="email" class="eco-input form-control" id="email" placeholder="seu@email.com" required />
-              </div>
-              <div class="mb-3">
-                <label for="senha" class="eco-label">
-                  <i class="fas fa-lock mr-2"></i>Senha
-                </label>
-                <input name="SENHA" type="password" class="eco-input form-control" id="senha" placeholder="••••••••" required minlength="6" />
-              </div>
-              <div class="mb-3 text-end">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#modalEsqueciSenha" class="text-decoration-none small">
-                  <i class="fas fa-question-circle me-1"></i>Esqueci minha senha
-                </a>
-              </div>
-              <button type="submit" class="btn-eco btn-eco-primary w-100 mb-3" style="padding: 0.75rem;">
-                <i class="fas fa-sign-in-alt me-2"></i>Entrar
-              </button>
-            </form>
-
-            <div class="text-center pt-3 border-top mt-3">
-              <p class="mb-3 text-muted small">Não tem uma conta?</p>
-              <button data-bs-toggle="modal" data-bs-target="#modalCadastro" class="btn btn-outline-primary w-100">
-                <i class="fas fa-user-plus me-2"></i>Criar conta gratuita
-              </button>
-            </div>
+      <!-- Features -->
+      <div class="mt-10 grid grid-cols-3 gap-4 w-full max-w-sm">
+        <div class="flex flex-col items-center gap-2 opacity-80">
+          <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-chart-line text-sm"></i>
           </div>
+          <span class="text-xs">Monitore</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 opacity-80">
+          <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-bullseye text-sm"></i>
+          </div>
+          <span class="text-xs">Metas</span>
+        </div>
+        <div class="flex flex-col items-center gap-2 opacity-80">
+          <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-file-invoice-dollar text-sm"></i>
+          </div>
+          <span class="text-xs">Faturas</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal de Cadastro -->
-  <div class="modal modal-centered fade" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastroLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content cadastro-card">
-        <div class="modal-header border-bottom-0 pb-0">
-          <div class="w-100">
-            <div class="text-center mb-3">
-              <div class="eco-card-icon bg-green-100 mx-auto" style="width: 3.5rem; height: 3.5rem; display: inline-flex; align-items: center; justify-content: center;">
-                <i class="fas fa-user-plus text-green-600" style="font-size: 1.75rem;"></i>
+  <!-- ══ PAINEL DIREITO ══ -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center min-h-screen p-6"
+       style="background: linear-gradient(160deg, #f9fafb 0%, #eff6ff 100%);">
+    <div class="w-full" style="max-width: 400px;">
+
+      <!-- Logo mobile -->
+      <div class="lg:hidden text-center mb-8">
+        <i class="fas fa-tint text-blue-700 mb-2" style="font-size:2.5rem;"></i>
+        <h1 class="text-3xl font-bold text-blue-900 tracking-widest uppercase">ECOÁGUA</h1>
+      </div>
+
+      <!-- ── PAINEL: LOGIN (padrão) ── -->
+      <div class="auth-panel active" id="painelLogin">
+        <div class="eco-card" style="padding: 2rem;">
+
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-blue-900">Bem-vindo de volta!</h2>
+            <p class="text-gray-400 text-sm mt-1">Acesse sua conta para continuar</p>
+          </div>
+
+          <form action="/login" method="POST">
+            <div class="mb-4">
+              <label class="eco-label">
+                <i class="fas fa-envelope mr-2 text-blue-500"></i>Email
+              </label>
+              <input type="email" name="EMAIL" class="eco-input"
+                     placeholder="seu@email.com" required autocomplete="email">
+            </div>
+            <div class="mb-2">
+              <label class="eco-label">
+                <i class="fas fa-lock mr-2 text-blue-500"></i>Senha
+              </label>
+              <input type="password" name="SENHA" class="eco-input"
+                     placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <div class="text-right mb-5">
+              <button type="button" onclick="trocarPainel('painelLogin','painelRecuperar')"
+                      class="text-xs text-blue-500 hover:text-blue-700 bg-transparent border-none cursor-pointer transition-colors">
+                <i class="fas fa-key mr-1"></i>Esqueci minha senha
+              </button>
+            </div>
+
+            <button type="submit" class="btn-eco btn-eco-primary w-full" style="padding:0.85rem;">
+              <i class="fas fa-sign-in-alt mr-2"></i>Entrar na conta
+            </button>
+          </form>
+
+          <div class="eco-divider">ou</div>
+
+          <button type="button" onclick="trocarPainel('painelLogin','painelCadastro')"
+                  class="btn-eco btn-eco-secondary w-full">
+            <i class="fas fa-user-plus"></i>Criar conta gratuita
+          </button>
+        </div>
+
+        <p class="text-center text-xs text-gray-400 mt-5">
+          EcoÁgua © <?= date('Y') ?> · IFSP São João da Boa Vista
+        </p>
+      </div>
+
+      <!-- ── PAINEL: CADASTRO ── -->
+      <div class="auth-panel" id="painelCadastro">
+        <div class="eco-card" style="padding: 2rem;">
+
+          <!-- Header do painel -->
+          <div class="flex items-center gap-3 mb-6 pb-4" style="border-bottom:1px solid #e5e7eb;">
+            <button type="button" onclick="trocarPainel('painelCadastro','painelLogin')"
+                    class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 border-none bg-transparent cursor-pointer"
+                    title="Voltar ao login">
+              <i class="fas fa-arrow-left text-gray-500"></i>
+            </button>
+            <div>
+              <h2 class="text-xl font-bold text-blue-900">Criar Nova Conta</h2>
+              <p class="text-gray-400 text-xs mt-0.5">Preencha os dados abaixo</p>
+            </div>
+            <div class="ml-auto">
+              <div class="eco-card-icon bg-blue-100" style="width:2.5rem;height:2.5rem;font-size:1rem;margin-bottom:0;">
+                <i class="fas fa-user-plus text-blue-600"></i>
               </div>
             </div>
-            <h5 class="modal-title text-center w-100" id="modalCadastroLabel" style="font-size: 1.5rem; font-weight: 700;">Crie sua conta</h5>
-            <p class="text-center text-gray-600 mt-2">Junte-se ao ECOÁGUA e economize água!</p>
           </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body pt-3">
-          <form id="cadastroForm" action="/inserirusuario" method="POST">
+
+          <form action="/inserirusuario" method="POST">
             <div class="mb-3">
-              <label for="cpf" class="eco-label">
-                <i class="fas fa-id-card mr-2"></i>CPF
-              </label>
-              <input name="USER_CPF" type="text" pattern="\d{11}" maxlength="11" minlength="11" oninput="this.value=this.value.replace(/\D/g,'')" class="eco-input form-control" id="cpf" placeholder="00000000000" required />
-              <p class="eco-help-text">Apenas números, sem pontos ou traços</p>
+              <label class="eco-label"><i class="fas fa-id-card mr-2 text-blue-500"></i>CPF</label>
+              <input type="text" name="USER_CPF" class="eco-input"
+                     placeholder="00000000000" required maxlength="11"
+                     pattern="\d{11}" oninput="this.value=this.value.replace(/\D/g,'')">
+              <p class="eco-help-text">Somente números, sem pontos ou traços</p>
             </div>
             <div class="mb-3">
-              <label for="nome" class="eco-label">
-                <i class="fas fa-user mr-2"></i>Nome completo
-              </label>
-              <input name="USER_NOME" type="text" class="eco-input form-control" id="nome" placeholder="Seu nome completo" required />
+              <label class="eco-label"><i class="fas fa-user mr-2 text-blue-500"></i>Nome Completo</label>
+              <input type="text" name="USER_NOME" class="eco-input" placeholder="Seu nome completo" required>
             </div>
             <div class="mb-3">
-              <label for="cadastroEmail" class="eco-label">
-                <i class="fas fa-envelope mr-2"></i>E-mail
-              </label>
-              <input name="USER_EMAIL" type="email" class="eco-input form-control" id="cadastroEmail" placeholder="seu@email.com" required />
+              <label class="eco-label"><i class="fas fa-envelope mr-2 text-blue-500"></i>Email</label>
+              <input type="email" name="USER_EMAIL" class="eco-input" placeholder="seu@email.com" required>
             </div>
             <div class="mb-3">
-              <label for="cadastroSenha" class="eco-label">
-                <i class="fas fa-lock mr-2"></i>Senha
-              </label>
-              <input name="USER_SENHA" type="password" class="eco-input form-control" id="cadastroSenha" placeholder="••••••••" required minlength="6" />
-              <p class="eco-help-text">Mínimo 6 caracteres</p>
+              <label class="eco-label"><i class="fas fa-lock mr-2 text-blue-500"></i>Senha</label>
+              <input type="password" name="USER_SENHA" class="eco-input"
+                     placeholder="Mínimo 6 caracteres" required minlength="6">
             </div>
-            <div class="mb-4">
-              <label for="confirmarSenha" class="eco-label">
-                <i class="fas fa-lock mr-2"></i>Confirme a senha
-              </label>
-              <input name="USER_SENHA_2" type="password" class="eco-input form-control" id="confirmarSenha" placeholder="••••••••" required />
+            <div class="mb-5">
+              <label class="eco-label"><i class="fas fa-check-circle mr-2 text-blue-500"></i>Confirmar Senha</label>
+              <input type="password" name="USER_SENHA_2" class="eco-input"
+                     placeholder="Repita a senha" required minlength="6">
             </div>
-            <button type="submit" class="btn-eco btn-eco-success w-100" style="padding: 0.75rem;">
-              <i class="fas fa-check-circle mr-2"></i>Cadastrar
+            <button type="submit" class="btn-eco btn-eco-success w-full" style="padding:0.85rem;">
+              <i class="fas fa-user-plus mr-2"></i>Criar conta
             </button>
           </form>
         </div>
+
+        <p class="text-center text-xs text-gray-400 mt-5">
+          EcoÁgua © <?= date('Y') ?> · IFSP São João da Boa Vista
+        </p>
       </div>
-    </div>
-  </div>
 
+      <!-- ── PAINEL: RECUPERAR SENHA ── -->
+      <div class="auth-panel" id="painelRecuperar">
+        <div class="eco-card" style="padding: 2rem;">
 
-  <!-- Modal Esqueci Minha Senha -->
-  <div class="modal fade" id="modalEsqueciSenha" tabindex="-1" aria-labelledby="modalEsqueciSenhaLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content reset-card">
-        <div class="modal-header border-bottom-0 pb-0">
-          <div class="w-100">
-            <div class="text-center mb-3">
-              <div class="eco-card-icon bg-orange-100 mx-auto" style="width: 3.5rem; height: 3.5rem; display: inline-flex; align-items: center; justify-content: center;">
-                <i class="fas fa-key text-orange-600" style="font-size: 1.75rem;"></i>
+          <!-- Header do painel -->
+          <div class="flex items-center gap-3 mb-6 pb-4" style="border-bottom:1px solid #e5e7eb;">
+            <button type="button" onclick="trocarPainel('painelRecuperar','painelLogin')"
+                    class="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100 border-none bg-transparent cursor-pointer"
+                    title="Voltar ao login">
+              <i class="fas fa-arrow-left text-gray-500"></i>
+            </button>
+            <div>
+              <h2 class="text-xl font-bold text-blue-900">Recuperar Senha</h2>
+              <p class="text-gray-400 text-xs mt-0.5">Informe seu email cadastrado</p>
+            </div>
+            <div class="ml-auto">
+              <div class="eco-card-icon bg-amber-100" style="width:2.5rem;height:2.5rem;font-size:1rem;margin-bottom:0;">
+                <i class="fas fa-key text-amber-600"></i>
               </div>
             </div>
-            <h5 class="modal-title text-center w-100" id="modalEsqueciSenhaLabel" style="font-size: 1.5rem; font-weight: 700;">Redefinir Senha</h5>
-            <p class="text-center text-gray-600 mt-2">Enviaremos um link para recuperação</p>
           </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body pt-3">
-          <form id="resetForm" novalidate>
-            <div class="mb-4">
-              <label for="resetEmail" class="eco-label">
-                <i class="fas fa-envelope mr-2"></i>E-mail cadastrado
-              </label>
-              <input type="email" class="eco-input form-control" id="resetEmail" placeholder="seu@email.com" required />
-              <p class="eco-help-text">Digite o e-mail associado à sua conta</p>
-            </div>
-            <button type="submit" class="btn-eco btn-eco-primary w-100" style="padding: 0.75rem;">
-              <i class="fas fa-paper-plane mr-2"></i>Enviar Link de Recuperação
-            </button>
-          </form>
+
+          <div class="mb-5 p-4 rounded-xl" style="background:#eff6ff; border-left:3px solid #3b82f6;">
+            <p class="text-sm text-blue-700">
+              <i class="fas fa-info-circle mr-2"></i>
+              Entre em contato com o administrador do sistema para redefinir sua senha. A recuperação automática está em desenvolvimento.
+            </p>
+          </div>
+
+          <div class="mb-5">
+            <label class="eco-label"><i class="fas fa-envelope mr-2 text-blue-500"></i>Email cadastrado</label>
+            <input type="email" class="eco-input" placeholder="seu@email.com">
+          </div>
+
+          <button type="button" onclick="trocarPainel('painelRecuperar','painelLogin')"
+                  class="btn-eco w-full" style="background:#f3f4f6; color:#6b7280; padding:0.85rem;">
+            <i class="fas fa-arrow-left mr-2"></i>Voltar ao login
+          </button>
         </div>
       </div>
-    </div>
-  </div>
-  <!-- Bootstrap Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
+    </div><!-- /max-width -->
+  </div><!-- /painel direito -->
+</div><!-- /flex min-h-screen -->
+
+<script>
+  function trocarPainel(origem, destino) {
+    document.getElementById(origem).classList.remove('active');
+    // Pequeno delay para a animação de entrada funcionar corretamente
+    setTimeout(function() {
+      document.getElementById(destino).classList.add('active');
+    }, 20);
+  }
+</script>
