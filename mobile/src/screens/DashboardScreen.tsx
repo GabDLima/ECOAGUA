@@ -1,40 +1,63 @@
 import React, { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  View, Text, ScrollView, StyleSheet,
-  TouchableOpacity, RefreshControl, Alert
+  View, Text, StyleSheet, ScrollView, RefreshControl, Alert, StatusBar,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { LineChart } from 'react-native-gifted-charts';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api/api';
-import theme from '../theme/theme';
 import Loading from '../components/Loading';
-import { LineChart } from 'react-native-gifted-charts';
+import EcoCard from '../components/EcoCard';
+import EcoButton from '../components/EcoButton';
+import EcoAlert from '../components/EcoAlert';
+import KpiCard from '../components/KpiCard';
+import { colors, typography, spacing, borderRadius, gradients } from '../theme/theme';
 import { notificarMetaAtingida, notificarMetaUltrapassada } from '../services/NotificationService';
 
 interface DashboardData {
-  consumo_hoje: number;
-  total_mes_atual: number;
+  consumo_hoje:     number;
+  total_mes_atual:  number;
   variacao_percent: number;
-  projecao_mensal: number;
-  ultima_fatura: { valor: number } | null;
-  progresso_meta: { percentual: number; meta_litros: number; consumo_atual: number; alerta: boolean } | null;
-  alerta: boolean;
-  ultimos_7_dias?: { data_consumo: string; quantidade: number }[];
+  projecao_mensal:  number;
+  ultima_fatura:    { valor: number } | null;
+  progresso_meta:   {
+    percentual:     number;
+    meta_litros:    number;
+    consumo_atual:  number;
+    alerta:         boolean;
+  } | null;
+  alerta:           boolean;
+  ultimos_7_dias?:  { data_consumo: string; quantidade: number }[];
 }
 
-const DashboardScreen: React.FC = () => {
-  const { usuario, logout } = useAuth();
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
+const DICAS = [
+  'Feche a torneira ao escovar os dentes — economize até 12L por vez',
+  'Banhos de até 5 min consomem 3× menos água',
+  'Reutilize a água do ar-condicionado para regar plantas',
+  'Conserte vazamentos: um cano pingando gasta 46L por dia',
+];
+
+function dataAtualPtBR(): string {
+  return new Date().toLocaleDateString('pt-BR', {
+    weekday: 'long', day: 'numeric', month: 'long',
+  });
+}
+
+export default function DashboardScreen({ navigation }: any) {
+  const { usuario } = useAuth();
+  const [data,         setData]         = useState<DashboardData | null>(null);
+  const [refreshing,   setRefreshing]   = useState(false);
+  const [loadingData,  setLoadingData]  = useState(true);
 
   const fetchDashboard = useCallback(async () => {
     try {
-      const response = await api.get('/api/dashboard');
-      setData(response.data);
+      // GET /api/dashboard
+      const res = await api.get('/api/dashboard');
+      setData(res.data);
 
-      if (response.data.progresso_meta) {
-        const { percentual, meta_litros, consumo_atual } = response.data.progresso_meta;
+      if (res.data.progresso_meta) {
+        const { percentual, meta_litros, consumo_atual } = res.data.progresso_meta;
         if (percentual >= 100) {
           await notificarMetaUltrapassada(consumo_atual, meta_litros);
         } else if (percentual >= 90) {
@@ -58,201 +81,264 @@ const DashboardScreen: React.FC = () => {
 
   if (loadingData) return <Loading />;
 
+  const meta = data?.progresso_meta;
+  const metaPct = meta?.percentual ?? 0;
+
   return (
     <ScrollView
       style={styles.container}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primary]} />}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.primary[900]]} />
+      }
     >
-      <View style={styles.header}>
-        <Text style={styles.greeting}>Olá, {usuario?.nome?.split(' ')[0]} 👋</Text>
-        <TouchableOpacity onPress={logout}>
-          <Text style={styles.logout}>Sair</Text>
-        </TouchableOpacity>
-      </View>
+      <StatusBar barStyle="light-content" backgroundColor={colors.primary[900]} />
 
-      {data?.alerta && (
-        <View style={styles.alertBox}>
-          <Text style={styles.alertText}>⚠️ Atenção! Seu consumo está elevado este mês.</Text>
-        </View>
-      )}
-
-      <View style={styles.cardsRow}>
-        <View style={styles.card}>
-          <Text style={styles.cardLabel}>Hoje</Text>
-          <Text style={styles.cardValue}>{Number(data?.consumo_hoje || 0).toFixed(0)}L</Text>
-        </View>
-        <View style={styles.card}>
-          <Text style={styles.cardLabel}>Este mês</Text>
-          <Text style={styles.cardValue}>{Number(data?.total_mes_atual || 0).toFixed(0)}L</Text>
-        </View>
-      </View>
-
-      <View style={styles.cardsRow}>
-        <View style={styles.card}>
-          <Text style={styles.cardLabel}>Projeção</Text>
-          <Text style={styles.cardValue}>{Number(data?.projecao_mensal || 0).toFixed(0)}L</Text>
-        </View>
-        <View style={styles.card}>
-          <Text style={styles.cardLabel}>Última fatura</Text>
-          <Text style={styles.cardValue}>R$ {Number(data?.ultima_fatura?.valor || 0).toFixed(2)}</Text>
-        </View>
-      </View>
-
-      {data?.progresso_meta && (
-        <View style={styles.metaBox}>
-          <Text style={styles.metaTitle}>Meta mensal</Text>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, {
-              width: `${Math.min(data.progresso_meta.percentual, 100)}%` as any,
-              backgroundColor: data.progresso_meta.alerta ? theme.colors.danger : theme.colors.success,
-            }]} />
+      {/* ── Cabeçalho ── */}
+      <LinearGradient colors={gradients.loginBg} style={styles.header}>
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.greeting}>
+              Olá, {usuario?.nome?.split(' ')[0]} 👋
+            </Text>
+            <Text style={styles.dateText}>{dataAtualPtBR()}</Text>
           </View>
-          <Text style={styles.metaText}>
-            {data.progresso_meta.percentual}% de {data.progresso_meta.meta_litros}L
-          </Text>
-        </View>
-      )}
-
-      <View style={styles.variacao}>
-        <Text style={styles.variacaoLabel}>Variação vs. mês anterior</Text>
-        <Text style={[styles.variacaoValue, {
-          color: (data?.variacao_percent || 0) > 0 ? theme.colors.danger : theme.colors.success,
-        }]}>
-          {(data?.variacao_percent || 0) > 0 ? '+' : ''}{data?.variacao_percent || 0}%
-        </Text>
-      </View>
-      {data?.ultimos_7_dias && data.ultimos_7_dias.length > 0 && (
-        <View style={styles.chartBox}>
-          <Text style={styles.chartTitle}>Consumo — últimos 7 dias</Text>
-          <LineChart
-            data={data.ultimos_7_dias.map((item) => ({
-              value: Number(item.quantidade) || 0,
-              label: item.data_consumo?.slice(5) || '',
-            })).reverse()}
-            width={280}
-            height={160}
-            color={theme.colors.primary}
-            thickness={2}
-            dataPointsColor={theme.colors.primary}
-            startFillColor={theme.colors.primaryPale}
-            endFillColor={theme.colors.surface}
-            areaChart
-            curved
-            hideRules
-            xAxisColor={theme.colors.border}
-            yAxisColor={theme.colors.border}
-            yAxisTextStyle={{ color: theme.colors.textMuted, fontSize: 10 }}
-            xAxisLabelTextStyle={{ color: theme.colors.textMuted, fontSize: 9 }}
-            noOfSections={4}
-            maxValue={Math.max(...data.ultimos_7_dias.map((i) => Number(i.quantidade) || 0)) * 1.2 || 100}
+          <EcoButton
+            title="Registrar"
+            icon="plus"
+            variant="secondary"
+            onPress={() => navigation.navigate('Consumo')}
+            style={styles.headerBtn}
           />
         </View>
-      )}
+      </LinearGradient>
+
+      <View style={styles.body}>
+
+        {/* ── Alerta de meta ── */}
+        {meta && metaPct >= 90 ? (
+          <EcoAlert
+            type={metaPct >= 100 ? 'danger' : 'warning'}
+            title={metaPct >= 100 ? 'Meta Ultrapassada!' : 'Atenção — Próximo ao Limite'}
+            message={
+              metaPct >= 100
+                ? `Você consumiu ${meta.consumo_atual}L de ${meta.meta_litros}L da sua meta.`
+                : `Você já usou ${metaPct}% da meta mensal (${meta.meta_litros}L).`
+            }
+            style={styles.alert}
+          />
+        ) : null}
+
+        {/* ── KPIs 2×2 ── */}
+        <View style={styles.kpiRow}>
+          <KpiCard
+            icon="water"
+            iconBg={colors.kpiCyan.bg}
+            iconColor={colors.kpiCyan.icon}
+            statusText="Este mês"
+            statusType="info"
+            label="Consumo do Mês"
+            value={`${Number(data?.total_mes_atual ?? 0).toFixed(0)} L`}
+            subtitle={`Hoje: ${Number(data?.consumo_hoje ?? 0).toFixed(0)} L`}
+          />
+          <KpiCard
+            icon="chart-line"
+            iconBg={colors.kpiPurple.bg}
+            iconColor={colors.kpiPurple.icon}
+            statusText="Projeção"
+            statusType="warning"
+            label="Projeção do Mês"
+            value={`${Number(data?.projecao_mensal ?? 0).toFixed(0)} L`}
+            subtitle="Baseado no consumo atual"
+          />
+        </View>
+
+        <View style={styles.kpiRow}>
+          <KpiCard
+            icon="file-document-outline"
+            iconBg={colors.kpiGreen.bg}
+            iconColor={colors.kpiGreen.icon}
+            statusText="Registrada"
+            statusType="success"
+            label="Última Fatura"
+            value={data?.ultima_fatura ? `R$ ${Number(data.ultima_fatura.valor).toFixed(2)}` : '—'}
+            subtitle="Fatura mais recente"
+          />
+          <KpiCard
+            icon="bullseye-arrow"
+            iconBg={colors.kpiAmber.bg}
+            iconColor={colors.kpiAmber.icon}
+            statusText={`${metaPct}%`}
+            statusType={metaPct >= 100 ? 'danger' : metaPct >= 80 ? 'warning' : 'success'}
+            label="Meta do Mês"
+            value={meta ? `${meta.consumo_atual} L` : '—'}
+            subtitle={meta ? `Meta: ${meta.meta_litros} L` : 'Sem meta definida'}
+            progress={metaPct}
+          />
+        </View>
+
+        {/* ── Estatísticas Rápidas ── */}
+        <EcoCard style={styles.section}>
+          <Text style={styles.sectionTitle}>Estatísticas Rápidas</Text>
+          <View style={styles.statsGrid}>
+            <View style={[styles.statCard, { backgroundColor: colors.primary[50] }]}>
+              <Text style={[styles.statValue, { color: colors.primary[900] }]}>
+                {Number(data?.total_mes_atual ?? 0).toFixed(0)} L
+              </Text>
+              <Text style={styles.statLabel}>Total no Mês</Text>
+            </View>
+            <View style={[styles.statCard, { backgroundColor: colors.success[50] }]}>
+              <Text style={[styles.statValue, { color: colors.success[700] }]}>
+                {(data?.variacao_percent ?? 0) > 0 ? '+' : ''}{data?.variacao_percent ?? 0}%
+              </Text>
+              <Text style={styles.statLabel}>Variação</Text>
+            </View>
+            <View style={[styles.statCard, { backgroundColor: colors.kpiPurple.bg }]}>
+              <Text style={[styles.statValue, { color: colors.kpiPurple.icon }]}>
+                {Number(data?.projecao_mensal ?? 0).toFixed(0)} L
+              </Text>
+              <Text style={styles.statLabel}>Projeção</Text>
+            </View>
+          </View>
+        </EcoCard>
+
+        {/* ── Gráfico 7 dias ── */}
+        {data?.ultimos_7_dias && data.ultimos_7_dias.length > 0 ? (
+          <EcoCard style={styles.section}>
+            <Text style={styles.sectionTitle}>Consumo — Últimos 7 dias</Text>
+            <LineChart
+              data={[...data.ultimos_7_dias].reverse().map((item) => ({
+                value: Number(item.quantidade) || 0,
+                label: item.data_consumo?.slice(5) || '',
+              }))}
+              width={300}
+              height={160}
+              color={colors.primary[700]}
+              thickness={2}
+              dataPointsColor={colors.primary[900]}
+              startFillColor={colors.primary[100]}
+              endFillColor={colors.white}
+              areaChart
+              curved
+              hideRules
+              xAxisColor={colors.slate[200]}
+              yAxisColor={colors.slate[200]}
+              yAxisTextStyle={{ color: colors.slate[400], fontSize: 10 }}
+              xAxisLabelTextStyle={{ color: colors.slate[400], fontSize: 9 }}
+              noOfSections={4}
+              maxValue={
+                Math.max(...data.ultimos_7_dias.map((i) => Number(i.quantidade) || 0)) * 1.2 || 100
+              }
+            />
+          </EcoCard>
+        ) : null}
+
+        {/* ── Dicas de Economia ── */}
+        <EcoCard style={[styles.section, styles.lastSection]}>
+          <Text style={styles.sectionTitle}>💡 Dicas de Economia</Text>
+          {DICAS.map((dica, i) => (
+            <View key={i} style={styles.dicaRow}>
+              <Text style={styles.dicaIcon}>✅</Text>
+              <Text style={styles.dicaText}>{dica}</Text>
+            </View>
+          ))}
+        </EcoCard>
+
+      </View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: theme.colors.background },
+  container: { flex: 1, backgroundColor: colors.background },
+
+  // Cabeçalho
   header: {
-    flexDirection: 'row',
+    paddingTop:        52,
+    paddingBottom:     spacing['2xl'],
+    paddingHorizontal: spacing['2xl'],
+  },
+  headerTop: {
+    flexDirection:  'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: theme.spacing.xl,
-    paddingTop: theme.spacing.xl3,
-    backgroundColor: theme.colors.primary,
+    alignItems:     'center',
   },
   greeting: {
-    fontSize: theme.typography.fontSize.xl2,
-    fontWeight: theme.typography.fontWeight.semibold as '600',
-    color: theme.colors.textWhite,
+    fontSize:   typography.sizes['2xl'],
+    fontWeight: '700',
+    color:      colors.white,
   },
-  logout: { color: 'rgba(255,255,255,0.8)', fontSize: theme.typography.fontSize.sm },
-  alertBox: {
-    margin: theme.spacing.base,
-    padding: theme.spacing.md,
-    backgroundColor: theme.colors.dangerFaint,
-    borderRadius: theme.borderRadius.md,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.colors.danger,
+  dateText: {
+    fontSize:  typography.sizes.sm,
+    color:     'rgba(255,255,255,0.75)',
+    marginTop: spacing.xs,
+    textTransform: 'capitalize',
   },
-  alertText: { color: theme.colors.dangerTextDark, fontSize: theme.typography.fontSize.sm },
-  cardsRow: {
+  headerBtn: {
+    paddingVertical:   8,
+    paddingHorizontal: spacing.lg,
+    backgroundColor:   'rgba(255,255,255,0.15)',
+    borderColor:       'rgba(255,255,255,0.5)',
+  },
+
+  body: { padding: spacing.lg },
+
+  // Alerta
+  alert: { marginBottom: spacing.lg },
+
+  // KPIs
+  kpiRow: {
+    flexDirection:  'row',
+    gap:            spacing.md,
+    marginBottom:   spacing.md,
+  },
+
+  // Seções
+  section: {
+    marginBottom: spacing.lg,
+    padding:      spacing['2xl'],
+  },
+  lastSection: { marginBottom: spacing['4xl'] },
+  sectionTitle: {
+    fontSize:     typography.sizes.lg,
+    fontWeight:   '700',
+    color:        colors.slate[800],
+    marginBottom: spacing.lg,
+  },
+
+  // Estatísticas rápidas
+  statsGrid: {
     flexDirection: 'row',
-    paddingHorizontal: theme.spacing.base,
-    gap: theme.spacing.md,
-    marginBottom: theme.spacing.md,
-    marginTop: theme.spacing.base,
+    gap:           spacing.md,
   },
-  card: {
-    flex: 1,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.base,
-    ...theme.shadows.card,
-    alignItems: 'center',
+  statCard: {
+    flex:          1,
+    borderRadius:  borderRadius.md,
+    padding:       spacing.md,
+    alignItems:    'center',
   },
-  cardLabel: {
-    fontSize: theme.typography.fontSize.xs,
-    color: theme.colors.textMuted,
-    marginBottom: theme.spacing.sm,
-    fontWeight: theme.typography.fontWeight.medium as '500',
+  statValue: {
+    fontSize:   typography.sizes.lg,
+    fontWeight: '700',
+    marginBottom: spacing.xs,
   },
-  cardValue: {
-    fontSize: theme.typography.fontSize.xl3,
-    fontWeight: theme.typography.fontWeight.bold as 'bold',
-    color: theme.colors.textPrimary,
+  statLabel: {
+    fontSize:   typography.sizes.xs,
+    color:      colors.slate[500],
+    textAlign:  'center',
   },
-  metaBox: {
-    margin: theme.spacing.base,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.base,
-    ...theme.shadows.card,
-  },
-  metaTitle: {
-    fontSize: theme.typography.fontSize.sm,
-    color: theme.colors.textMuted,
-    marginBottom: theme.spacing.sm,
-    fontWeight: theme.typography.fontWeight.medium as '500',
-  },
-  progressBar: {
-    height: theme.spacing.progressHeight,
-    backgroundColor: theme.colors.border,
-    borderRadius: theme.borderRadius.full,
-    overflow: 'hidden',
-  },
-  progressFill: { height: '100%', borderRadius: theme.borderRadius.full },
-  metaText: {
-    fontSize: theme.typography.fontSize.xs,
-    color: theme.colors.textMuted,
-    marginTop: theme.spacing.xs,
-  },
-  variacao: {
-    margin: theme.spacing.base,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.base,
-    ...theme.shadows.card,
+
+  // Dicas
+  dicaRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems:    'flex-start',
+    gap:           spacing.md,
+    marginBottom:  spacing.md,
   },
-  variacaoLabel: { fontSize: theme.typography.fontSize.sm, color: theme.colors.textMuted },
-  variacaoValue: { fontSize: theme.typography.fontSize.xl, fontWeight: theme.typography.fontWeight.bold as 'bold' },
-  chartBox: {
-    margin: theme.spacing.base,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.xl,
-    padding: theme.spacing.base,
-    ...theme.shadows.card,
-  },
-  chartTitle: {
-    fontSize: theme.typography.fontSize.sm,
-    fontWeight: theme.typography.fontWeight.semibold as '600',
-    color: theme.colors.primary,
-    marginBottom: theme.spacing.md,
+  dicaIcon: { fontSize: 14, marginTop: 1 },
+  dicaText: {
+    flex:       1,
+    fontSize:   typography.sizes.sm,
+    color:      colors.slate[700],
+    lineHeight: 20,
   },
 });
-
-export default DashboardScreen;

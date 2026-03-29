@@ -11,21 +11,34 @@ import ConsumoScreen from '../screens/ConsumoScreen';
 import MetasScreen from '../screens/MetasScreen';
 import FaturasScreen from '../screens/FaturasScreen';
 import PerfilScreen from '../screens/PerfilScreen';
-import theme from '../theme/theme';
+import { colors, typography } from '../theme/theme';
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+const Tab   = createBottomTabNavigator();
 
 function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.textMuted,
-        tabBarStyle: { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.border },
-        headerStyle: { backgroundColor: theme.colors.primary },
-        headerTintColor: theme.colors.textWhite,
-        headerTitleStyle: { fontWeight: theme.typography.fontWeight.bold as 'bold' },
+        headerShown: false,
+        tabBarActiveTintColor:   colors.primary[900],
+        tabBarInactiveTintColor: colors.slate[400],
+        tabBarLabelStyle: {
+          fontSize:   11,
+          fontWeight: '600',
+        },
+        tabBarStyle: {
+          backgroundColor: colors.white,
+          borderTopWidth:  0,
+          elevation:       12,
+          shadowColor:     '#000',
+          shadowOffset:    { width: 0, height: -3 },
+          shadowOpacity:   0.08,
+          shadowRadius:    8,
+          height:          65,
+          paddingBottom:   10,
+          paddingTop:      6,
+        },
       }}
     >
       <Tab.Screen
