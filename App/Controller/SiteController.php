@@ -325,6 +325,33 @@ class SiteController extends Action{
         $this->render('redefinirSenha', 'site_login');
     }
 
+    public function recuperarSenha() {
+        $token      = trim($_GET['token'] ?? '');
+        $tokenValido = false;
+        $tokenDados  = null;
+
+        if ($token) {
+            $resetDAO    = new \App\DAO\PasswordResetDAO();
+            $tokenDados  = $resetDAO->validarToken($token);
+            $tokenValido = (bool)$tokenDados;
+        }
+
+        $erroRecuperacao = null;
+        if (isset($_SESSION['erro_recuperacao'])) {
+            $erroRecuperacao = $_SESSION['erro_recuperacao'];
+            unset($_SESSION['erro_recuperacao']);
+        }
+
+        $this->getView()->title          = "Recuperar Senha";
+        $this->getView()->title_pagina   = "Recuperar Senha";
+        $this->getView()->token          = $token;
+        $this->getView()->tokenValido    = $tokenValido;
+        $this->getView()->tokenDados     = $tokenDados;
+        $this->getView()->erroRecuperacao = $erroRecuperacao;
+
+        $this->render('recuperarSenha_token', 'site_login');
+    }
+
     public function metas(){
         if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
             header('Location: /');

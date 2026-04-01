@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, RefreshControl, KeyboardAvoidingView, Platform, StatusBar,
@@ -33,6 +34,13 @@ export default function ConsumoScreen() {
   const [quantidade, setQuantidade] = useState('');
   const [unidade,    setUnidade]    = useState('L');
   const [tipo,       setTipo]       = useState('Banho');
+
+  // Carregar unidade padrão do AsyncStorage
+  useEffect(() => {
+    AsyncStorage.getItem('@ecoagua:unidade_padrao').then(val => {
+      if (val && UNIDADES.includes(val)) setUnidade(val);
+    });
+  }, []);
   const [dataConsumo, setDataConsumo] = useState(
     new Date().toISOString().split('T')[0]
   );

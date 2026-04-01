@@ -1,9 +1,13 @@
 <?php
 include __DIR__ . '/../includes/mensagens.php';
-$cpf_exibir = isset($this->view->cpf_formatado) ? $this->view->cpf_formatado : '';
-$nome       = isset($this->view->usuario['nome'])  ? $this->view->usuario['nome']  : '';
-$email      = isset($this->view->usuario['email']) ? $this->view->usuario['email'] : '';
-$inicial    = $nome ? strtoupper(mb_substr($nome, 0, 1, 'UTF-8')) : '?';
+$cpf_exibir     = isset($this->view->cpf_formatado) ? $this->view->cpf_formatado : '';
+$nome           = isset($this->view->usuario['nome'])  ? $this->view->usuario['nome']  : '';
+$email          = isset($this->view->usuario['email']) ? $this->view->usuario['email'] : '';
+$inicial        = $nome ? strtoupper(mb_substr($nome, 0, 1, 'UTF-8')) : '?';
+$notifAlertaMeta    = isset($this->view->usuario['notif_alerta_meta'])     ? (int)$this->view->usuario['notif_alerta_meta']     : 1;
+$notifLembreteFatura= isset($this->view->usuario['notif_lembrete_fatura']) ? (int)$this->view->usuario['notif_lembrete_fatura'] : 1;
+$notifDicas         = isset($this->view->usuario['notif_dicas'])           ? (int)$this->view->usuario['notif_dicas']           : 1;
+$unidadePadrao      = isset($this->view->usuario['unidade_padrao'])        ? $this->view->usuario['unidade_padrao']              : 'L';
 ?>
 
 <body class="bg-gray-50">
@@ -116,28 +120,56 @@ $inicial    = $nome ? strtoupper(mb_substr($nome, 0, 1, 'UTF-8')) : '?';
                 </div>
                 <div>
                   <p class="text-sm font-medium text-gray-700">Alerta de consumo alto</p>
-                  <p class="text-xs text-gray-400">Receba e-mail quando ultrapassar a meta</p>
+                  <p class="text-xs text-gray-400">Receba aviso quando ultrapassar a meta</p>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <span class="eco-badge eco-badge-success">Ativo</span>
-                <input type="checkbox" checked class="w-4 h-4" style="accent-color:#1e3a8a;">
+                <span id="badge-notif-alerta" class="eco-badge <?= $notifAlertaMeta ? 'eco-badge-success' : 'eco-badge-neutral' ?>">
+                  <?= $notifAlertaMeta ? 'Ativo' : 'Inativo' ?>
+                </span>
+                <input type="checkbox" id="notif_alerta_meta" data-campo="notif_alerta_meta"
+                       <?= $notifAlertaMeta ? 'checked' : '' ?>
+                       class="w-4 h-4 notif-toggle" style="accent-color:#1e3a8a;">
               </div>
             </label>
             <label class="flex items-center justify-between p-4 rounded-xl cursor-pointer transition-colors hover:bg-gray-50"
                    style="border:1px solid #e5e7eb;">
               <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#ede9fe;">
-                  <i class="fas fa-chart-bar text-purple-600 text-sm"></i>
+                  <i class="fas fa-file-invoice text-purple-600 text-sm"></i>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-700">Resumo semanal</p>
-                  <p class="text-xs text-gray-400">Relatório por e-mail toda segunda-feira</p>
+                  <p class="text-sm font-medium text-gray-700">Lembrete de fatura</p>
+                  <p class="text-xs text-gray-400">Aviso quando houver nova fatura disponível</p>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <span class="eco-badge eco-badge-info">Em breve</span>
-                <input type="checkbox" disabled class="w-4 h-4" style="accent-color:#1e3a8a;">
+                <span id="badge-notif-fatura" class="eco-badge <?= $notifLembreteFatura ? 'eco-badge-success' : 'eco-badge-neutral' ?>">
+                  <?= $notifLembreteFatura ? 'Ativo' : 'Inativo' ?>
+                </span>
+                <input type="checkbox" id="notif_lembrete_fatura" data-campo="notif_lembrete_fatura"
+                       <?= $notifLembreteFatura ? 'checked' : '' ?>
+                       class="w-4 h-4 notif-toggle" style="accent-color:#1e3a8a;">
+              </div>
+            </label>
+            <label class="flex items-center justify-between p-4 rounded-xl cursor-pointer transition-colors hover:bg-gray-50"
+                   style="border:1px solid #e5e7eb;">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#dcfce7;">
+                  <i class="fas fa-lightbulb text-green-600 text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-700">Dicas de economia</p>
+                  <p class="text-xs text-gray-400">Receba dicas para economizar água</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="badge-notif-dicas" class="eco-badge <?= $notifDicas ? 'eco-badge-success' : 'eco-badge-neutral' ?>">
+                  <?= $notifDicas ? 'Ativo' : 'Inativo' ?>
+                </span>
+                <input type="checkbox" id="notif_dicas" data-campo="notif_dicas"
+                       <?= $notifDicas ? 'checked' : '' ?>
+                       class="w-4 h-4 notif-toggle" style="accent-color:#1e3a8a;">
               </div>
             </label>
           </div>
@@ -184,9 +216,10 @@ $inicial    = $nome ? strtoupper(mb_substr($nome, 0, 1, 'UTF-8')) : '?';
           <div class="space-y-3">
             <div>
               <label class="eco-label text-xs"><i class="fas fa-ruler mr-1 text-purple-400"></i>Unidade padrão</label>
-              <select class="eco-input" style="appearance:auto; font-size:0.875rem; padding:0.5rem 0.75rem;">
-                <option value="L">Litros (L)</option>
-                <option value="m³">Metros cúbicos (m³)</option>
+              <select id="unidadePadrao" class="eco-input" style="appearance:auto; font-size:0.875rem; padding:0.5rem 0.75rem;">
+                <option value="L"  <?= $unidadePadrao === 'L'  ? 'selected' : '' ?>>Litros (L)</option>
+                <option value="mL" <?= $unidadePadrao === 'mL' ? 'selected' : '' ?>>Mililitros (mL)</option>
+                <option value="m³" <?= $unidadePadrao === 'm³' ? 'selected' : '' ?>>Metros cúbicos (m³)</option>
               </select>
             </div>
             <label class="flex items-center justify-between p-3 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors"
@@ -245,6 +278,61 @@ $inicial    = $nome ? strtoupper(mb_substr($nome, 0, 1, 'UTF-8')) : '?';
       'Sim, sair',
       'Cancelar'
     ).then(r => { if (r.isConfirmed) window.location.href = '/sair'; });
+  }
+
+  async function salvarPreferencia(campo, valor) {
+    try {
+      const res = await fetch('/salvarpreferencias', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ campo, valor })
+      });
+      const data = await res.json();
+      return data.success;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Notificações — cada toggle salva ao mudar
+  document.querySelectorAll('.notif-toggle').forEach(function(checkbox) {
+    checkbox.addEventListener('change', async function() {
+      const campo  = this.dataset.campo;
+      const valor  = this.checked;
+      const sucesso = await salvarPreferencia(campo, valor);
+
+      // Atualiza o badge correspondente
+      const badgeMap = {
+        'notif_alerta_meta':     'badge-notif-alerta',
+        'notif_lembrete_fatura': 'badge-notif-fatura',
+        'notif_dicas':           'badge-notif-dicas'
+      };
+      const badge = document.getElementById(badgeMap[campo]);
+      if (badge) {
+        badge.textContent = valor ? 'Ativo' : 'Inativo';
+        badge.className   = 'eco-badge ' + (valor ? 'eco-badge-success' : 'eco-badge-neutral');
+      }
+
+      if (!sucesso) {
+        this.checked = !valor; // reverte visualmente se falhou
+      }
+    });
+  });
+
+  // Unidade padrão — salva ao mudar o select
+  const selectUnidade = document.getElementById('unidadePadrao');
+  if (selectUnidade) {
+    selectUnidade.addEventListener('change', async function() {
+      const valor   = this.value;
+      const anterior = this.dataset.anterior || this.value;
+      const sucesso  = await salvarPreferencia('unidade_padrao', valor);
+      if (!sucesso) {
+        this.value = anterior; // reverte se falhou
+      } else {
+        this.dataset.anterior = valor;
+      }
+    });
+    selectUnidade.dataset.anterior = selectUnidade.value;
   }
 </script>
 </body>

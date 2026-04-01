@@ -9,7 +9,7 @@ import EcoInput from '../components/EcoInput';
 import EcoButton from '../components/EcoButton';
 import { colors, typography, spacing, borderRadius, gradients } from '../theme/theme';
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }: any) {
   const { login } = useAuth();
   const [email,   setEmail]   = useState('');
   const [senha,   setSenha]   = useState('');
@@ -114,7 +114,7 @@ export default function LoginScreen() {
             title="Criar conta gratuita"
             icon="account-plus-outline"
             variant="secondary"
-            onPress={() => Alert.alert('Em breve', 'Cadastro disponível em breve.')}
+            onPress={() => navigation.navigate('Register')}
             fullWidth
           />
 

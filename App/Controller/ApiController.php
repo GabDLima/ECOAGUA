@@ -10,6 +10,8 @@ use App\Model\UsuarioModel;
 use App\Model\ConsumoDiarioModel;
 use App\Model\MetaConsumoModel;
 use App\Model\ValordaContaModel;
+use App\DAO\DicasDAO;
+use App\DAO\PasswordResetDAO;
 
 class ApiController extends \FW\Controller\Action
 {
@@ -265,6 +267,149 @@ class ApiController extends \FW\Controller\Action
     // GET /api/dashboard
     // Header: Authorization: Bearer {token}
     // -------------------------------------------------------
+    // -------------------------------------------------------
+    // GET  /api/preferencias  → retorna preferências do usuário
+    // POST /api/preferencias  → atualiza preferências
+    // Header: Authorization: Bearer {token}
+    // POST Body: { unidade_padrao?, notif_alerta_meta?, notif_lembrete_fatura?, notif_dicas? }
+    // -------------------------------------------------------
+    public function preferencias(): void
+    {
+        $this->cors();
+        $payload = JwtMiddleware::validar();
+        $id      = $payload['id'];
+
+        $dao = new UsuarioDAO();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $body = $this->body();
+
+            if (isset($body['unidade_padrao'])) {
+                $unidades = ['L', 'mL', 'm³'];
+                if (in_array($body['unidade_padrao'], $unidades)) {
+                    $dao->atualizarUnidadePadrao($id, $body['unidade_padrao']);
+                }
+            }
+
+            if (isset($body['notif_alerta_meta']) || isset($body['notif_lembrete_fatura']) || isset($body['notif_dicas'])) {
+                $atual = $dao->buscarPorId($id);
+                $alertaMeta     = isset($body['notif_alerta_meta'])     ? (int)$body['notif_alerta_meta']     : ($atual['notif_alerta_meta']     ?? 1);
+                $lembreteFatura = isset($body['notif_lembrete_fatura']) ? (int)$body['notif_lembrete_fatura'] : ($atual['notif_lembrete_fatura'] ?? 1);
+                $dicas          = isset($body['notif_dicas'])           ? (int)$body['notif_dicas']           : ($atual['notif_dicas']           ?? 1);
+                $dao->atualizarPreferenciasNotificacao($id, $alertaMeta, $lembreteFatura, $dicas);
+            }
+
+            if (isset($body['dark_mode'])) {
+                $dao->alterarDarkMode($id, (int)$body['dark_mode']);
+            }
+
+            JwtMiddleware::json(200, ['success' => true, 'message' => 'Preferências atualizadas.']);
+        }
+
+        // GET
+        $usuario = $dao->buscarPorId($id);
+
+        JwtMiddleware::json(200, [
+            'success'      => true,
+            'preferencias' => [
+                'unidade_padrao'        => $usuario['unidade_padrao']        ?? 'L',
+                'notif_alerta_meta'     => (bool)($usuario['notif_alerta_meta']     ?? 1),
+                'notif_lembrete_fatura' => (bool)($usuario['notif_lembrete_fatura'] ?? 1),
+                'notif_dicas'           => (bool)($usuario['notif_dicas']           ?? 1),
+                'dark_mode'             => (bool)($usuario['dark_mode']             ?? 0),
+            ],
+        ]);
+    }
+
+    // -------------------------------------------------------
+    // POST /api/auth/forgot-password
+    // Body: { "email": "..." }
+    // -------------------------------------------------------
+    public function forgotPassword(): void
+    {
+        $this->cors();
+        $body  = $this->body();
+        $email = trim($body['email'] ?? '');
+
+        if (!$email) {
+            JwtMiddleware::json(400, ['success' => false, 'message' => 'Email é obrigatório.']);
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        $usuario    = $usuarioDAO->buscarPorEmail($email);
+
+        $token = null;
+        if ($usuario) {
+            $resetDAO = new PasswordResetDAO();
+            $token    = $resetDAO->criarToken($usuario['id']);
+        }
+
+        // Sempre retorna sucesso (não revelar se email existe)
+        JwtMiddleware::json(200, [
+            'success' => true,
+            'message' => 'Se o email estiver cadastrado, você receberá instruções.',
+            'token'   => $token, // apenas para demo do TCC
+        ]);
+    }
+
+    // -------------------------------------------------------
+    // POST /api/auth/reset-password
+    // Body: { "token": "...", "nova_senha": "..." }
+    // -------------------------------------------------------
+    public function resetPassword(): void
+    {
+        $this->cors();
+        $body      = $this->body();
+        $token     = trim($body['token']     ?? '');
+        $novaSenha = trim($body['nova_senha'] ?? '');
+
+        if (!$token || !$novaSenha) {
+            JwtMiddleware::json(400, ['success' => false, 'message' => 'Token e nova senha são obrigatórios.']);
+        }
+
+        if (strlen($novaSenha) < 6) {
+            JwtMiddleware::json(400, ['success' => false, 'message' => 'A senha deve ter no mínimo 6 caracteres.']);
+        }
+
+        $resetDAO = new PasswordResetDAO();
+        $dados    = $resetDAO->validarToken($token);
+
+        if (!$dados) {
+            JwtMiddleware::json(400, ['success' => false, 'message' => 'Token inválido ou expirado.']);
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        $model      = new UsuarioModel();
+        $model->__set('user_id',    $dados['usuario_id']);
+        $model->__set('user_senha', $novaSenha);
+        $usuarioDAO->alterarSenha($model);
+
+        $resetDAO->marcarUsado($token);
+
+        JwtMiddleware::json(200, ['success' => true, 'message' => 'Senha redefinida com sucesso.']);
+    }
+
+    // -------------------------------------------------------
+    // GET /api/dicas
+    // -------------------------------------------------------
+    public function getDicas(): void
+    {
+        $this->cors();
+
+        $dao        = new DicasDAO();
+        $dicas      = $dao->randomTips();
+        $dicasArray = [];
+
+        foreach ($dicas as $dica) {
+            $dicasArray[] = [
+                'id'       => $dica->__get('id_dicas'),
+                'descricao'=> $dica->__get('dicas_desc'),
+            ];
+        }
+
+        JwtMiddleware::json(200, ['success' => true, 'dicas' => $dicasArray]);
+    }
+
     public function getDashboard(): void
     {
         $this->cors();

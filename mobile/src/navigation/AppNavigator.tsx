@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useAuth } from '../contexts/AuthContext';
 import Loading from '../components/Loading';
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import ConsumoScreen from '../screens/ConsumoScreen';
 import MetasScreen from '../screens/MetasScreen';
@@ -104,7 +105,10 @@ export default function AppNavigator() {
         {token ? (
           <Stack.Screen name="Main" component={TabNavigator} />
         ) : (
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <>
+            <Stack.Screen name="Login"    component={LoginScreen}    />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

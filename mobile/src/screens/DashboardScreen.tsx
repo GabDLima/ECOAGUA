@@ -31,7 +31,7 @@ interface DashboardData {
   ultimos_7_dias?:  { data_consumo: string; quantidade: number }[];
 }
 
-const DICAS = [
+const DICAS_FALLBACK = [
   'Feche a torneira ao escovar os dentes — economize até 12L por vez',
   'Banhos de até 5 min consomem 3× menos água',
   'Reutilize a água do ar-condicionado para regar plantas',
@@ -47,25 +47,34 @@ function dataAtualPtBR(): string {
 export default function DashboardScreen({ navigation }: any) {
   const { usuario } = useAuth();
   const [data,         setData]         = useState<DashboardData | null>(null);
+  const [dicas,        setDicas]        = useState<string[]>(DICAS_FALLBACK);
   const [refreshing,   setRefreshing]   = useState(false);
   const [loadingData,  setLoadingData]  = useState(true);
 
   const fetchDashboard = useCallback(async () => {
     try {
-      // GET /api/dashboard
-      const res = await api.get('/api/dashboard');
-      setData(res.data);
+      const [dashRes, dicasRes] = await Promise.allSettled([
+        api.get('/api/dashboard'),
+        api.get('/api/dicas'),
+      ]);
 
-      if (res.data.progresso_meta) {
-        const { percentual, meta_litros, consumo_atual } = res.data.progresso_meta;
-        if (percentual >= 100) {
-          await notificarMetaUltrapassada(consumo_atual, meta_litros);
-        } else if (percentual >= 90) {
-          await notificarMetaAtingida(percentual, meta_litros);
+      if (dashRes.status === 'fulfilled') {
+        setData(dashRes.value.data);
+        if (dashRes.value.data.progresso_meta) {
+          const { percentual, meta_litros, consumo_atual } = dashRes.value.data.progresso_meta;
+          if (percentual >= 100) {
+            await notificarMetaUltrapassada(consumo_atual, meta_litros);
+          } else if (percentual >= 90) {
+            await notificarMetaAtingida(percentual, meta_litros);
+          }
         }
+      } else {
+        Alert.alert('Erro', 'Não foi possível carregar os dados.');
       }
-    } catch {
-      Alert.alert('Erro', 'Não foi possível carregar os dados.');
+
+      if (dicasRes.status === 'fulfilled' && dicasRes.value.data?.dicas?.length > 0) {
+        setDicas(dicasRes.value.data.dicas.map((d: any) => d.descricao));
+      }
     } finally {
       setLoadingData(false);
     }
@@ -235,7 +244,7 @@ export default function DashboardScreen({ navigation }: any) {
         {/* ── Dicas de Economia ── */}
         <EcoCard style={[styles.section, styles.lastSection]}>
           <Text style={styles.sectionTitle}>💡 Dicas de Economia</Text>
-          {DICAS.map((dica, i) => (
+          {dicas.map((dica, i) => (
             <View key={i} style={styles.dicaRow}>
               <Text style={styles.dicaIcon}>✅</Text>
               <Text style={styles.dicaText}>{dica}</Text>

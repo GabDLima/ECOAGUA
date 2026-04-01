@@ -76,6 +76,10 @@ class UsuarioDAO extends DAO {
                         nome,
                         email,
                         dark_mode,
+                        unidade_padrao,
+                        notif_alerta_meta,
+                        notif_lembrete_fatura,
+                        notif_dicas,
                         created_at
                     FROM
                         usuarios
@@ -246,5 +250,29 @@ class UsuarioDAO extends DAO {
     }
 
     public function excluir($obj) {
+    }
+
+    public function atualizarPreferenciasNotificacao($id, $alertaMeta, $lembreteFatura, $dicas) {
+        try {
+            $sql = "UPDATE usuarios SET notif_alerta_meta = ?, notif_lembrete_fatura = ?, notif_dicas = ? WHERE id = ?";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->execute([(int)$alertaMeta, (int)$lembreteFatura, (int)$dicas, (int)$id]);
+            return $stmt->rowCount() > 0;
+        } catch(\PDOException $ex) {
+            error_log("Erro ao atualizar preferências de notificação: " . $ex->getMessage());
+            return false;
+        }
+    }
+
+    public function atualizarUnidadePadrao($id, $unidade) {
+        try {
+            $sql = "UPDATE usuarios SET unidade_padrao = ? WHERE id = ?";
+            $stmt = $this->getConn()->prepare($sql);
+            $stmt->execute([$unidade, (int)$id]);
+            return $stmt->rowCount() > 0;
+        } catch(\PDOException $ex) {
+            error_log("Erro ao atualizar unidade padrão: " . $ex->getMessage());
+            return false;
+        }
     }
 }

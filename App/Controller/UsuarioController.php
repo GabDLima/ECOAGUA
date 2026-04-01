@@ -171,6 +171,137 @@ class UsuarioController extends Action{
     }
 
 
+    public function esqueceuSenha() {
+        header('Content-Type: application/json');
+
+        $raw   = file_get_contents('php://input');
+        $body  = json_decode($raw, true) ?? [];
+        $email = trim($body['email'] ?? $_POST['email'] ?? '');
+
+        if (!$email) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Email é obrigatório.']);
+            exit;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        $usuario    = $usuarioDAO->buscarPorEmail($email);
+
+        $link = null;
+        if ($usuario) {
+            $resetDAO = new \App\DAO\PasswordResetDAO();
+            $token    = $resetDAO->criarToken($usuario['id']);
+            $baseUrl  = rtrim($_ENV['BASE_URL'] ?? 'http://localhost:8000/', '/');
+            $link     = $baseUrl . '/recuperarsenha?token=' . $token;
+        }
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'Se o email estiver cadastrado, um link de recuperação foi gerado.',
+            'link'    => $link,
+        ]);
+        exit;
+    }
+
+    public function confirmarRecuperacao() {
+        $token          = trim($_POST['token']          ?? '');
+        $novaSenha      = $_POST['nova_senha']          ?? '';
+        $confirmarSenha = $_POST['confirmar_senha']     ?? '';
+
+        if (!$token || !$novaSenha || !$confirmarSenha) {
+            $_SESSION['erro_recuperacao'] = 'Todos os campos são obrigatórios.';
+            header('Location: /recuperarsenha?token=' . urlencode($token));
+            exit;
+        }
+
+        if ($novaSenha !== $confirmarSenha) {
+            $_SESSION['erro_recuperacao'] = 'As senhas não coincidem.';
+            header('Location: /recuperarsenha?token=' . urlencode($token));
+            exit;
+        }
+
+        if (strlen($novaSenha) < 6) {
+            $_SESSION['erro_recuperacao'] = 'A senha deve ter no mínimo 6 caracteres.';
+            header('Location: /recuperarsenha?token=' . urlencode($token));
+            exit;
+        }
+
+        $resetDAO = new \App\DAO\PasswordResetDAO();
+        $dados    = $resetDAO->validarToken($token);
+
+        if (!$dados) {
+            $_SESSION['erro_recuperacao'] = 'Token inválido ou expirado. Solicite um novo link.';
+            header('Location: /');
+            exit;
+        }
+
+        $usuarioDAO = new UsuarioDAO();
+        $model      = new UsuarioModel();
+        $model->__set('user_id',    $dados['usuario_id']);
+        $model->__set('user_senha', $novaSenha);
+        $sucesso = $usuarioDAO->alterarSenha($model);
+
+        if ($sucesso) {
+            $resetDAO->marcarUsado($token);
+            $_SESSION['senha_recuperada'] = 1;
+            header('Location: /');
+            exit;
+        }
+
+        $_SESSION['erro_recuperacao'] = 'Erro ao salvar nova senha. Tente novamente.';
+        header('Location: /recuperarsenha?token=' . urlencode($token));
+        exit;
+    }
+
+    public function salvarPreferencias() {
+        if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'Não autorizado']);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+        $id_usuario = $_SESSION['usuario_id'];
+
+        $raw   = file_get_contents('php://input');
+        $body  = json_decode($raw, true) ?? [];
+        $campo = $body['campo'] ?? '';
+        $valor = $body['valor'] ?? null;
+
+        $usuarioDAO = new UsuarioDAO();
+
+        if ($campo === 'unidade_padrao') {
+            $unidades = ['L', 'mL', 'm³'];
+            if (!in_array($valor, $unidades)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Unidade inválida.']);
+                exit;
+            }
+            $sucesso = $usuarioDAO->atualizarUnidadePadrao($id_usuario, $valor);
+
+        } elseif (in_array($campo, ['notif_alerta_meta', 'notif_lembrete_fatura', 'notif_dicas'])) {
+            $atual          = $usuarioDAO->buscarPorId($id_usuario);
+            $alertaMeta     = $atual['notif_alerta_meta']     ?? 1;
+            $lembreteFatura = $atual['notif_lembrete_fatura'] ?? 1;
+            $dicas          = $atual['notif_dicas']           ?? 1;
+
+            $v = $valor ? 1 : 0;
+            if ($campo === 'notif_alerta_meta')     $alertaMeta     = $v;
+            if ($campo === 'notif_lembrete_fatura') $lembreteFatura = $v;
+            if ($campo === 'notif_dicas')           $dicas          = $v;
+
+            $sucesso = $usuarioDAO->atualizarPreferenciasNotificacao($id_usuario, $alertaMeta, $lembreteFatura, $dicas);
+
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Campo inválido.']);
+            exit;
+        }
+
+        echo json_encode(['success' => (bool)$sucesso]);
+        exit;
+    }
+
     public function validaAutenticacao() {
         if (!isset($_SESSION['usuario_id']) || $_SESSION['usuario_id'] == 0) {
             header('Location: /');

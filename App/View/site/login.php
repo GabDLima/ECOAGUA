@@ -60,6 +60,11 @@
 </style>
 
 <?php include_once 'App/View/includes/mensagens.php'; ?>
+<?php if (isset($_SESSION['senha_recuperada']) && $_SESSION['senha_recuperada']): unset($_SESSION['senha_recuperada']); ?>
+<div style="position:fixed;top:1rem;right:1rem;z-index:9999;background:#f0fdf4;border:1px solid #22c55e;border-radius:0.75rem;padding:0.75rem 1.25rem;color:#15803d;font-size:0.875rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+  <i class="fas fa-check-circle mr-2"></i>Senha redefinida com sucesso! Faça login.
+</div>
+<?php endif; ?>
 
 <div class="flex min-h-screen">
 
@@ -275,22 +280,32 @@
             </div>
           </div>
 
-          <div class="mb-5 p-4 rounded-xl" style="background:#eff6ff; border-left:3px solid #3b82f6;">
-            <p class="text-sm text-blue-700">
-              <i class="fas fa-info-circle mr-2"></i>
-              Entre em contato com o administrador do sistema para redefinir sua senha. A recuperação automática está em desenvolvimento.
-            </p>
-          </div>
-
           <div class="mb-5">
             <label class="eco-label"><i class="fas fa-envelope mr-2 text-blue-500"></i>Email cadastrado</label>
-            <input type="email" class="eco-input" placeholder="seu@email.com">
+            <input type="email" id="emailRecuperacao" class="eco-input" placeholder="seu@email.com">
           </div>
 
-          <button type="button" onclick="trocarPainel('painelRecuperar','painelLogin')"
-                  class="btn-eco w-full" style="background:#f3f4f6; color:#6b7280; padding:0.85rem;">
-            <i class="fas fa-arrow-left mr-2"></i>Voltar ao login
+          <div id="msgRecuperacao" style="display:none;" class="mb-4 p-3 rounded-xl text-sm"></div>
+
+          <div id="linkRecuperacaoDiv" style="display:none;" class="mb-4 p-4 rounded-xl" style="background:#f0fdf4; border-left:3px solid #22c55e;">
+            <p class="text-xs font-medium mb-2" style="color:#15803d;">
+              <i class="fas fa-check-circle mr-1"></i>Link de recuperação gerado (demo TCC):
+            </p>
+            <a id="urlRecuperacao" href="#" class="text-xs text-blue-600 break-all underline" target="_blank"></a>
+            <p class="text-xs text-gray-400 mt-1">Em produção este link seria enviado por e-mail.</p>
+          </div>
+
+          <button type="button" id="btnRecuperar" onclick="solicitarRecuperacao()"
+                  class="btn-eco btn-eco-primary w-full" style="padding:0.85rem;">
+            <i class="fas fa-paper-plane mr-2"></i>Gerar link de recuperação
           </button>
+
+          <div class="mt-4 text-center">
+            <button type="button" onclick="trocarPainel('painelRecuperar','painelLogin')"
+                    class="text-xs text-gray-400 hover:text-gray-600 bg-transparent border-none cursor-pointer">
+              <i class="fas fa-arrow-left mr-1"></i>Voltar ao login
+            </button>
+          </div>
         </div>
       </div>
 
@@ -301,9 +316,62 @@
 <script>
   function trocarPainel(origem, destino) {
     document.getElementById(origem).classList.remove('active');
-    // Pequeno delay para a animação de entrada funcionar corretamente
     setTimeout(function() {
       document.getElementById(destino).classList.add('active');
     }, 20);
+  }
+
+  async function solicitarRecuperacao() {
+    const email   = document.getElementById('emailRecuperacao').value.trim();
+    const msg     = document.getElementById('msgRecuperacao');
+    const linkDiv = document.getElementById('linkRecuperacaoDiv');
+    const btn     = document.getElementById('btnRecuperar');
+
+    linkDiv.style.display = 'none';
+    msg.style.display = 'none';
+
+    if (!email) {
+      msg.style.display = 'block';
+      msg.style.background = '#fef2f2';
+      msg.style.borderLeft = '3px solid #ef4444';
+      msg.style.color = '#b91c1c';
+      msg.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i>Informe seu e-mail.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Aguarde...';
+
+    try {
+      const res  = await fetch('/esqueceisenha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      const data = await res.json();
+
+      msg.style.display = 'block';
+      msg.style.background = '#f0fdf4';
+      msg.style.borderLeft = '3px solid #22c55e';
+      msg.style.color = '#15803d';
+      msg.innerHTML = '<i class="fas fa-check-circle mr-1"></i>' + data.message;
+
+      if (data.link) {
+        document.getElementById('urlRecuperacao').href        = data.link;
+        document.getElementById('urlRecuperacao').textContent = data.link;
+        linkDiv.style.display = 'block';
+        linkDiv.style.background = '#f0fdf4';
+        linkDiv.style.borderLeft = '3px solid #22c55e';
+      }
+    } catch (e) {
+      msg.style.display = 'block';
+      msg.style.background = '#fef2f2';
+      msg.style.borderLeft = '3px solid #ef4444';
+      msg.style.color = '#b91c1c';
+      msg.innerHTML = '<i class="fas fa-times-circle mr-1"></i>Erro ao processar. Tente novamente.';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Gerar link de recuperação';
   }
 </script>
