@@ -14,6 +14,7 @@ import EcoAlert from '../components/EcoAlert';
 import KpiCard from '../components/KpiCard';
 import { colors, typography, spacing, borderRadius, gradients } from '../theme/theme';
 import { notificarMetaAtingida, notificarMetaUltrapassada } from '../services/NotificationService';
+import { formatLitros, formatPercent, formatReais } from '../utils/formatNumber';
 
 interface DashboardData {
   consumo_hoje:     number;
@@ -130,8 +131,8 @@ export default function DashboardScreen({ navigation }: any) {
             title={metaPct >= 100 ? 'Meta Ultrapassada!' : 'Atenção — Próximo ao Limite'}
             message={
               metaPct >= 100
-                ? `Você consumiu ${meta.consumo_atual}L de ${meta.meta_litros}L da sua meta.`
-                : `Você já usou ${metaPct}% da meta mensal (${meta.meta_litros}L).`
+                ? `Você consumiu ${formatLitros(meta.consumo_atual)}L de ${formatLitros(meta.meta_litros)}L da sua meta.`
+                : `Você já usou ${formatPercent(metaPct)}% da meta mensal (${formatLitros(meta.meta_litros)}L).`
             }
             style={styles.alert}
           />
@@ -146,8 +147,8 @@ export default function DashboardScreen({ navigation }: any) {
             statusText="Este mês"
             statusType="info"
             label="Consumo do Mês"
-            value={`${Number(data?.total_mes_atual ?? 0).toFixed(0)} L`}
-            subtitle={`Hoje: ${Number(data?.consumo_hoje ?? 0).toFixed(0)} L`}
+            value={`${formatLitros(Number(data?.total_mes_atual ?? 0))} L`}
+            subtitle={`Hoje: ${formatLitros(Number(data?.consumo_hoje ?? 0))} L`}
           />
           <KpiCard
             icon="chart-line"
@@ -156,7 +157,7 @@ export default function DashboardScreen({ navigation }: any) {
             statusText="Projeção"
             statusType="warning"
             label="Projeção do Mês"
-            value={`${Number(data?.projecao_mensal ?? 0).toFixed(0)} L`}
+            value={`${formatLitros(Number(data?.projecao_mensal ?? 0))} L`}
             subtitle="Baseado no consumo atual"
           />
         </View>
@@ -169,18 +170,18 @@ export default function DashboardScreen({ navigation }: any) {
             statusText="Registrada"
             statusType="success"
             label="Última Fatura"
-            value={data?.ultima_fatura ? `R$ ${Number(data.ultima_fatura.valor).toFixed(2)}` : '—'}
+            value={data?.ultima_fatura ? `R$ ${formatReais(Number(data.ultima_fatura.valor))}` : '—'}
             subtitle="Fatura mais recente"
           />
           <KpiCard
             icon="bullseye-arrow"
             iconBg={colors.kpiAmber.bg}
             iconColor={colors.kpiAmber.icon}
-            statusText={`${metaPct}%`}
+            statusText={`${formatPercent(metaPct)}%`}
             statusType={metaPct >= 100 ? 'danger' : metaPct >= 80 ? 'warning' : 'success'}
             label="Meta do Mês"
-            value={meta ? `${meta.consumo_atual} L` : '—'}
-            subtitle={meta ? `Meta: ${meta.meta_litros} L` : 'Sem meta definida'}
+            value={meta ? `${formatLitros(meta.consumo_atual)} L` : '—'}
+            subtitle={meta ? `Meta: ${formatLitros(meta.meta_litros)} L` : 'Sem meta definida'}
             progress={metaPct}
           />
         </View>
@@ -191,19 +192,19 @@ export default function DashboardScreen({ navigation }: any) {
           <View style={styles.statsGrid}>
             <View style={[styles.statCard, { backgroundColor: colors.primary[50] }]}>
               <Text style={[styles.statValue, { color: colors.primary[900] }]}>
-                {Number(data?.total_mes_atual ?? 0).toFixed(0)} L
+                {formatLitros(Number(data?.total_mes_atual ?? 0))} L
               </Text>
               <Text style={styles.statLabel}>Total no Mês</Text>
             </View>
             <View style={[styles.statCard, { backgroundColor: colors.success[50] }]}>
               <Text style={[styles.statValue, { color: colors.success[700] }]}>
-                {(data?.variacao_percent ?? 0) > 0 ? '+' : ''}{data?.variacao_percent ?? 0}%
+                {(data?.variacao_percent ?? 0) > 0 ? '+' : ''}{formatPercent(data?.variacao_percent ?? 0)}%
               </Text>
               <Text style={styles.statLabel}>Variação</Text>
             </View>
             <View style={[styles.statCard, { backgroundColor: colors.kpiPurple.bg }]}>
               <Text style={[styles.statValue, { color: colors.kpiPurple.icon }]}>
-                {Number(data?.projecao_mensal ?? 0).toFixed(0)} L
+                {formatLitros(Number(data?.projecao_mensal ?? 0))} L
               </Text>
               <Text style={styles.statLabel}>Projeção</Text>
             </View>

@@ -12,6 +12,7 @@ import EcoInput from '../components/EcoInput';
 import EcoButton from '../components/EcoButton';
 import EcoBadge from '../components/EcoBadge';
 import { colors, typography, spacing, borderRadius, gradients } from '../theme/theme';
+import { formatReais } from '../utils/formatNumber';
 
 interface Fatura {
   mes_da_fatura:  string;
@@ -98,7 +99,7 @@ export default function FaturasScreen() {
               </View>
               <Text style={styles.resumoLabel}>Total {new Date().getFullYear()}</Text>
               <Text style={[styles.resumoValue, { color: colors.primary[900] }]}>
-                R$ {Number(totalAno).toFixed(2)}
+                R$ {formatReais(Number(totalAno))}
               </Text>
             </EcoCard>
             <EcoCard style={styles.resumoCard}>
@@ -107,7 +108,7 @@ export default function FaturasScreen() {
               </View>
               <Text style={styles.resumoLabel}>Média Mensal</Text>
               <Text style={[styles.resumoValue, { color: colors.warning[700] }]}>
-                R$ {Number(media).toFixed(2)}
+                R$ {formatReais(Number(media))}
               </Text>
             </EcoCard>
           </View>
@@ -164,7 +165,7 @@ export default function FaturasScreen() {
                     <EcoBadge text="Paga" type="success" />
                   </View>
                   <Text style={[styles.tableCell, styles.tableCellRight, { flex: 1 }]}>
-                    R$ {Number(item.valor).toFixed(2)}
+                    R$ {formatReais(Number(item.valor))}
                   </Text>
                 </View>
               ))

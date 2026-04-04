@@ -14,6 +14,7 @@ import EcoAlert from '../components/EcoAlert';
 import KpiCard from '../components/KpiCard';
 import { colors, typography, spacing, borderRadius, gradients } from '../theme/theme';
 import { notificarMetaAtingida, notificarMetaUltrapassada } from '../services/NotificationService';
+import { formatLitros, formatPercent } from '../utils/formatNumber';
 
 interface Meta {
   meta_mensal?:  number;
@@ -141,8 +142,8 @@ export default function MetasScreen() {
               iconBg={colors.kpiAmber.bg}
               iconColor={colors.kpiAmber.icon}
               label="Meta Atual"
-              value={metaL > 0 ? `${metaL} L` : '—'}
-              subtitle={`Redução: ${economia}%`}
+              value={metaL > 0 ? `${formatLitros(metaL)} L` : '—'}
+              subtitle={`Redução: ${formatPercent(economia)}%`}
               statusText={meta ? 'Ativa' : 'Sem meta'}
               statusType={meta ? 'success' : 'info'}
             />
@@ -151,9 +152,9 @@ export default function MetasScreen() {
               iconBg={colors.kpiCyan.bg}
               iconColor={colors.kpiCyan.icon}
               label="Consumido"
-              value={consumoL > 0 ? `${consumoL} L` : '—'}
-              subtitle={pct > 0 ? `${pct}% da meta` : '—'}
-              statusText={pct > 0 ? `${pct}%` : '—'}
+              value={consumoL > 0 ? `${formatLitros(consumoL)} L` : '—'}
+              subtitle={pct > 0 ? `${formatPercent(pct)}% da meta` : '—'}
+              statusText={pct > 0 ? `${formatPercent(pct)}%` : '—'}
               statusType={statusType()}
             />
           </View>
@@ -164,7 +165,7 @@ export default function MetasScreen() {
               iconBg={colors.kpiGreen.bg}
               iconColor={colors.kpiGreen.icon}
               label="Economia Esperada"
-              value={metaL > 0 ? `${Math.round(metaL * (economia / 100))} L` : '—'}
+              value={metaL > 0 ? `${formatLitros(Math.round(metaL * (economia / 100)))} L` : '—'}
               subtitle="Economia mensal esperada"
               statusText="Projeção"
               statusType="info"
@@ -175,7 +176,7 @@ export default function MetasScreen() {
               iconColor={pct >= 100 ? colors.kpiRed.icon : colors.kpiGreen.icon}
               label="Status Geral"
               value={statusLabel()}
-              subtitle={pct > 0 ? `${pct}% utilizado` : 'Sem dados'}
+              subtitle={pct > 0 ? `${formatPercent(pct)}% utilizado` : 'Sem dados'}
               statusText={statusLabel()}
               statusType={statusType()}
             />
@@ -188,8 +189,8 @@ export default function MetasScreen() {
               title={pct >= 100 ? 'Meta Excedida!' : 'Atenção — Próximo ao Limite'}
               message={
                 pct >= 100
-                  ? `Você consumiu ${consumoL}L, ultrapassando a meta de ${metaL}L.`
-                  : `Você está a ${100 - pct}% de atingir sua meta mensal!`
+                  ? `Você consumiu ${formatLitros(consumoL)}L, ultrapassando a meta de ${formatLitros(metaL)}L.`
+                  : `Você está a ${formatPercent(100 - pct)}% de atingir sua meta mensal!`
               }
               style={styles.alert}
             />
@@ -197,7 +198,7 @@ export default function MetasScreen() {
             <EcoAlert
               type="success"
               title="Dentro da Meta"
-              message={`Você consumiu ${consumoL}L de ${metaL}L. Ainda tem ${restante}L disponíveis.`}
+              message={`Você consumiu ${formatLitros(consumoL)}L de ${formatLitros(metaL)}L. Ainda tem ${formatLitros(restante)}L disponíveis.`}
               style={styles.alert}
             />
           ) : null}
@@ -209,9 +210,9 @@ export default function MetasScreen() {
 
               <View style={styles.progressMiniCards}>
                 {[
-                  { label: 'Meta', value: `${metaL} L`,     color: colors.primary[900] },
-                  { label: 'Consumido', value: `${consumoL} L`, color: pct >= 100 ? colors.danger[600] : colors.warning[600] },
-                  { label: 'Restante',  value: `${restante} L`, color: colors.success[700] },
+                  { label: 'Meta', value: `${formatLitros(metaL)} L`,     color: colors.primary[900] },
+                  { label: 'Consumido', value: `${formatLitros(consumoL)} L`, color: pct >= 100 ? colors.danger[600] : colors.warning[600] },
+                  { label: 'Restante',  value: `${formatLitros(restante)} L`, color: colors.success[700] },
                 ].map((item) => (
                   <View key={item.label} style={[styles.miniCard, { backgroundColor: colors.slate[50] }]}>
                     <Text style={[styles.miniCardValue, { color: item.color }]}>{item.value}</Text>
@@ -229,7 +230,7 @@ export default function MetasScreen() {
                   style={[styles.progressFill, { width: `${Math.min(pct, 100)}%` as any }]}
                 />
               </View>
-              <Text style={styles.progressPct}>{pct}% utilizado</Text>
+              <Text style={styles.progressPct}>{formatPercent(pct)}% utilizado</Text>
             </EcoCard>
           ) : null}
 

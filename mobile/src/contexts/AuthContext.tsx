@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from '../api/api';
+import api, { setUnauthorizedCallback } from '../api/api';
 
 interface Usuario {
   id: number;
@@ -24,6 +24,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setUnauthorizedCallback(() => {
+      setToken(null);
+      setUsuario(null);
+    });
+
     async function loadStorage() {
       try {
         const storedToken = await AsyncStorage.getItem('token');

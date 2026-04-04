@@ -13,6 +13,7 @@ import EcoInput from '../components/EcoInput';
 import EcoButton from '../components/EcoButton';
 import EcoBadge from '../components/EcoBadge';
 import { colors, typography, spacing, borderRadius, gradients } from '../theme/theme';
+import { formatLitros } from '../utils/formatNumber';
 
 const TIPOS   = ['Banho', 'Cozinha', 'Lavanderia', 'Jardim', 'Outros'];
 const UNIDADES = ['L', 'mL', 'm³'];
@@ -364,7 +365,7 @@ export default function ConsumoScreen() {
                     <EcoBadge text={item.tipo} type="info" />
                   </View>
                   <Text style={[styles.tableCell, styles.tableCellRight, { flex: 1 }]}>
-                    {item.quantidade} {item.unidade}
+                    {item.unidade === 'L' ? formatLitros(item.quantidade) : item.quantidade} {item.unidade}
                   </Text>
                 </View>
               ))

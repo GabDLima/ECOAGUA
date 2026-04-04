@@ -153,3 +153,21 @@ export async function agendarDicaSemanal(): Promise<void> {
 export async function cancelarDicaSemanal(): Promise<void> {
   await notifee.cancelNotification('dica-semanal');
 }
+
+// ── Teste de notificação agendada (easter egg) ────────────────────────────────
+
+export async function testarNotificacaoAgendada(): Promise<void> {
+  const trigger: TimestampTrigger = {
+    type:      TriggerType.TIMESTAMP,
+    timestamp: Date.now() + 30000, // 30 segundos
+  };
+
+  await notifee.createTriggerNotification(
+    {
+      title:   'Teste EcoÁgua',
+      body:    'Se você viu isso com o app fechado, as notificações agendadas funcionam!',
+      android: { channelId: CHANNEL_ID },
+    },
+    trigger,
+  );
+}

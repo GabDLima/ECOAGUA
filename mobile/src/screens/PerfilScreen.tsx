@@ -17,6 +17,7 @@ import {
   cancelarLembreteFatura,
   agendarDicaSemanal,
   cancelarDicaSemanal,
+  testarNotificacaoAgendada,
 } from '../services/NotificationService';
 import { colors, typography, spacing, borderRadius, gradients } from '../theme/theme';
 
@@ -45,6 +46,9 @@ export default function PerfilScreen() {
   // Preferências gerais
   const [unidadePadrao, setUnidadePadrao] = useState('L');
   const [loadingPrefs,  setLoadingPrefs]  = useState(true);
+
+  // Easter egg — teste de notificação agendada
+  const [tapCount, setTapCount] = useState(0);
 
   // ── Carregar preferências do banco ao montar ─────────────────────────────
 
@@ -163,6 +167,20 @@ export default function PerfilScreen() {
       Alert.alert('Erro', 'Não foi possível alterar a senha.');
     } finally {
       setSavingSenha(false);
+    }
+  }
+
+  async function handleVersionTap() {
+    const next = tapCount + 1;
+    setTapCount(next);
+    if (next >= 3) {
+      setTapCount(0);
+      try {
+        await testarNotificacaoAgendada();
+        Alert.alert('Notificação agendada para 30 segundos. Feche o app e aguarde!');
+      } catch {
+        Alert.alert('Erro', 'Não foi possível agendar a notificação de teste.');
+      }
     }
   }
 
@@ -333,10 +351,14 @@ export default function PerfilScreen() {
           {/* ── Sobre ── */}
           <EcoCard style={[styles.section, { backgroundColor: cardBg }]}>
             <Text style={[styles.sectionTitle, { color: textPrimary }]}>Sobre</Text>
-            <View style={[styles.sobreRow, { borderBottomColor: borderColor }]}>
+            <TouchableOpacity
+              style={[styles.sobreRow, { borderBottomColor: borderColor }]}
+              onPress={handleVersionTap}
+              activeOpacity={1}
+            >
               <Text style={[styles.sobreLabel, { color: textSecondary }]}>Versão do app</Text>
               <Text style={[styles.sobreValue, { color: textPrimary }]}>1.0.0</Text>
-            </View>
+            </TouchableOpacity>
             <View style={[styles.sobreRow, { borderBottomColor: borderColor }]}>
               <Text style={[styles.sobreLabel, { color: textSecondary }]}>Desenvolvido por</Text>
               <Text style={[styles.sobreValue, { color: textPrimary }]}>IFSP São João da Boa Vista</Text>
